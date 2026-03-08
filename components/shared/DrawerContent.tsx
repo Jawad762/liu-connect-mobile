@@ -1,0 +1,95 @@
+import React, { useState } from 'react'
+import type { DrawerContentComponentProps } from '@react-navigation/drawer'
+import { ThemedView } from '../reusable/themed-view'
+import { ThemedText } from '../reusable/themed-text'
+import useAuthStore from '@/stores/auth.store'
+import { Redirect, router } from 'expo-router'
+import { Alert, Pressable, ScrollView, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { IconSymbol } from '../reusable/icon-symbol'
+import { useColorScheme } from 'nativewind'
+import { Colors } from '@/constants/theme-colors'
+import { menus } from '@/constants/menus'
+import { SymbolViewProps } from 'expo-symbols'
+import ProfileIcon from '../reusable/profile-icon'
+import { authService } from '@/services/auth.service'
+import ConfirmationDialog from '../reusable/confirmation-dialog'
+
+const DrawerContent = (_props: DrawerContentComponentProps) => {
+    const { colorScheme: colorScheme = "light" } = useColorScheme();
+    const [confirmationDialogVisible, setConfirmationDialogVisible] = useState(false);
+    const user = useAuthStore((state) => state.user);
+    const [logoutLoading, setLogoutLoading] = useState(false);
+    const refreshToken = useAuthStore((state) => state.refreshToken);
+    const logout = useAuthStore((state) => state.logout);
+
+    const handleLogout = async () => {
+        try {
+            setLogoutLoading(true);
+            const response = await authService.logout(refreshToken!);
+            if (!response.success) {
+                Alert.alert('Error', response.message);
+                throw new Error(response.message);
+            }
+            logout();
+            router.replace('/(auth)/login');
+        } catch (error) {
+            console.error(error);
+            return;
+        } finally {
+            setLogoutLoading(false);
+        }
+    }
+
+    if (!user) {
+        return <Redirect href="/(auth)/login" />;
+    }
+
+    return (
+        <SafeAreaView className='bg-background dark:bg-backgroundDark flex-1 border-r-[0.25px] border-border dark:border-borderDark'>
+            <ThemedView className='flex-1'>
+                <View className='p-4 gap-2'>
+                    <ProfileIcon avatarUrl={user.avatar_url} />
+                    <ThemedText className='font-sans-bold text-lg'>{user.name}</ThemedText>
+                    {(user.school || user.major) && (
+                        <View className='gap-2'>
+                            {user.school && (
+                                <View className='flex-row items-center gap-2'>
+                                    <IconSymbol name="building.2" size={16} color={Colors[colorScheme].icon} />
+                                    <ThemedText className='text-sm font-sans'>{user.school}</ThemedText>
+                                </View>
+                            )}
+                            {user.major && (
+                                <View className='flex-row items-center gap-2'>
+                                    <IconSymbol name="book.closed" size={16} color={Colors[colorScheme].icon} />
+                                    <ThemedText className='text-sm font-sans'>{user.major}</ThemedText>
+                                </View>
+                            )}
+                        </View>
+                    )}
+                    <View className='flex-row gap-3'>
+                        <ThemedText>{user.following_count} <ThemedText className='text-muted dark:text-mutedDark'>Following</ThemedText></ThemedText>
+                        <ThemedText>{user.followers_count} <ThemedText className='text-muted dark:text-mutedDark'>Followers</ThemedText></ThemedText>
+                    </View>
+                </View>
+
+                <ScrollView showsVerticalScrollIndicator={false} contentContainerClassName='gap-2 mt-12'>
+                    {menus.map((menu) => (
+                        <Pressable key={menu.name} className='p-4 flex-row items-center gap-6 active:bg-border active:dark:bg-borderDark'>
+                            <IconSymbol name={menu.icon as SymbolViewProps['name']} size={24} color={Colors[colorScheme].icon} />
+                            <ThemedText className='text-2xl font-sans-bold'>{menu.name}</ThemedText>
+                        </Pressable>
+                    ))}
+                </ScrollView>
+
+                <Pressable onPress={() => setConfirmationDialogVisible(true)} className='p-4 mt-auto flex-row items-center gap-6 border-t-[0.25px] border-border dark:border-borderDark pt-4 active:bg-border active:dark:bg-borderDark'>
+                    <IconSymbol name="rectangle.portrait.and.arrow.right" size={24} color={Colors[colorScheme].icon} />
+                    <ThemedText className='text-2xl font-sans-bold'>Logout</ThemedText>
+                </Pressable>
+            </ThemedView>
+            <ConfirmationDialog visible={confirmationDialogVisible} onRequestClose={() => setConfirmationDialogVisible(false)} title='Logout' message='Are you sure you want to logout?' onConfirm={handleLogout} onCancel={() => setConfirmationDialogVisible(false)} loading={logoutLoading} />
+        </SafeAreaView>
+    )
+}
+
+export default DrawerContent
