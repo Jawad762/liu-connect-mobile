@@ -1,7 +1,10 @@
-import { ActivityIndicator, Pressable, Text, View, type PressableProps } from "react-native";
+import { ActivityIndicator, Pressable, View, type PressableProps } from "react-native";
 import { Platform } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { cn } from "@/utils/cn.utils";
+import { ThemedText } from "./themed-text";
+import { Colors } from "@/constants/theme";
+import { useColorScheme } from "nativewind";
 
 const GRADIENT_BTN = ["#60a5fa", "#818cf8", "#a78bfa"] as const;
 
@@ -20,6 +23,8 @@ export function Button({
   loading = false,
   ...props
 }: ButtonProps) {
+  const { colorScheme: colorScheme = "light" } = useColorScheme();
+
   if (variant === "primary") {
     return (
       <Pressable
@@ -48,11 +53,11 @@ export function Button({
             }}
           >
             {loading ? (
-              <ActivityIndicator size="small" color="white" />
+              <ActivityIndicator size="small" color={Colors[colorScheme].foreground} />
             ) : (
-            <Text className="text-white text-[17px] font-sans-semibold">
+            <ThemedText className="text-[17px] font-sans-semibold">
               {children}
-            </Text>
+            </ThemedText>
             )}
           </LinearGradient>
         )}
@@ -72,14 +77,14 @@ export function Button({
             height: 56,
             opacity: pressed ? 0.85 : 1,
           }}
-          className="rounded-[28px] items-center justify-center bg-white/10 border border-white/35"
+          className="rounded-[28px] items-center justify-center border border-border dark:border-borderDark"
         >
           {loading ? (
-            <ActivityIndicator size="small" color="white" />
+            <ActivityIndicator size="small" color={Colors[colorScheme].foreground} />
           ) : (
-            <Text className="text-white text-[17px] font-sans-semibold">
+            <ThemedText className="text-[17px] font-sans-semibold">
               {children}
-            </Text>
+            </ThemedText>
           )}
         </View>
       )}
