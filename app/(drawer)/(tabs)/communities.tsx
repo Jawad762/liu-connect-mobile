@@ -1,5 +1,5 @@
 import { ThemedView } from "@/components/reusable/themed-view";
-import CommunitiesHeader from "@/components/Communities/CommunitiesHeader";
+import CommunitiesHeader from "@/components/communities/CommunitiesHeader";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function CommunitiesScreen() {

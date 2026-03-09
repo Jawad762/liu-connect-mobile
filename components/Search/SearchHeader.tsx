@@ -31,7 +31,7 @@ const SearchHeader = () => {
             <View style={{ backgroundColor: Colors[colorScheme].surface }} className='flex-1 flex-row items-center gap-2 p-3 rounded-full'>
                 <IconSymbol name="magnifyingglass" size={16} color={Colors[colorScheme].muted} />
                 <TextInput
-                    className="flex-1 min-w-0 mb-0 text-foreground dark:text-foregroundDark font-sans-medium"
+                    className="flex-1 min-w-0 text-foreground dark:text-foregroundDark font-sans-medium"
                     placeholder="Search"
                     placeholderClassName='text-muted dark:text-mutedDark font-sans-medium'
                 />

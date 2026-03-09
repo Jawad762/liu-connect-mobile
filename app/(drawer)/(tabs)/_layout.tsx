@@ -5,11 +5,10 @@ import { HapticTab } from '@/components/reusable/haptic-tab';
 import { IconSymbol } from '@/components/reusable/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from "nativewind";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { TAB_BAR_HEIGHT } from '@/constants/general';
 
 export default function TabLayout() {
   const { colorScheme: colorScheme = "light" } = useColorScheme();
-  const insets = useSafeAreaInsets();
 
   return (
       <Tabs
@@ -22,7 +21,7 @@ export default function TabLayout() {
           tabBarStyle: {
             backgroundColor: Colors[colorScheme].background,
             paddingTop: 6,
-            paddingBottom: insets.bottom
+            height: TAB_BAR_HEIGHT 
           },
         }}>
         <Tabs.Screen

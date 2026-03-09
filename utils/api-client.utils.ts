@@ -3,7 +3,7 @@ import axios from 'axios'
 import { Href, router } from 'expo-router'
 
 export const apiClient = axios.create({
-    baseURL: 'https://4f23-185-97-94-176.ngrok-free.app/api',
+    baseURL: 'https://6396-185-97-94-175.ngrok-free.app/api',
     timeout: 10000,
     // Don't throw on 4xx/5xx
     validateStatus: (status) => status >= 200 && status < 600,
@@ -58,7 +58,7 @@ apiClient.interceptors.response.use(
         return apiClient.request(originalRequest)
     },
     (error) => {
-        // Network errors, timeouts, etc. - still reject
+        // Network errors, timeouts, etc.
         return Promise.reject(error)
     }
 )

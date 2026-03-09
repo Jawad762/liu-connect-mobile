@@ -1,5 +1,5 @@
 import { ThemedView } from "@/components/reusable/themed-view";
-import NotificationsHeader from "@/components/Notifications/NotificationsHeader";
+import NotificationsHeader from "@/components/notifications/NotificationsHeader";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function NotificationsScreen() {

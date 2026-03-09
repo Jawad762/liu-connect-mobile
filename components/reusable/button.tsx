@@ -13,6 +13,8 @@ interface ButtonProps extends Omit<PressableProps, "children"> {
   variant?: "primary" | "outline";
   className?: string;
   loading?: boolean;
+  textClassName?: string;
+  viewHeight?: number | "auto";
 }
 
 export function Button({
@@ -21,6 +23,8 @@ export function Button({
   disabled = false,
   className,
   loading = false,
+  textClassName,
+  viewHeight,
   ...props
 }: ButtonProps) {
   const { colorScheme: colorScheme = "light" } = useColorScheme();
@@ -38,7 +42,7 @@ export function Button({
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={{
-              height: 56,
+              height: viewHeight || 56,
               borderRadius: 28,
               alignItems: "center",
               justifyContent: "center",
@@ -55,7 +59,7 @@ export function Button({
             {loading ? (
               <ActivityIndicator size="small" color={Colors[colorScheme].foreground} />
             ) : (
-            <ThemedText className="text-[17px] font-sans-semibold">
+            <ThemedText className={cn("text-[17px] font-sans-semibold", textClassName)}>
               {children}
             </ThemedText>
             )}
@@ -74,15 +78,15 @@ export function Button({
       {({ pressed }) => (
         <View
           style={{
-            height: 56,
+            height: viewHeight || 56,
             opacity: pressed ? 0.85 : 1,
           }}
-          className="rounded-[28px] items-center justify-center border border-border dark:border-borderDark"
+          className={cn("rounded-[28px] items-center justify-center border border-border dark:border-borderDark")}
         >
           {loading ? (
             <ActivityIndicator size="small" color={Colors[colorScheme].foreground} />
           ) : (
-            <ThemedText className="text-[17px] font-sans-semibold">
+            <ThemedText className={cn("text-[17px] font-sans-semibold", textClassName)}>
               {children}
             </ThemedText>
           )}
