@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Modal, useWindowDimensions, View } from 'react-native'
 import Animated, { interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
-import { Button } from './button'
+import { Button, GradientButton } from './button'
 import { ThemedText } from './themed-text'
 import { Colors } from '@/constants/theme'
 import { useColorScheme } from 'nativewind'
@@ -54,14 +54,14 @@ const ConfirmationDialog = ({
           <ThemedText className="font-sans text-base mb-4">{message}</ThemedText>
           <View className="flex-row gap-2">
             <Animated.View style={cancelStyle}>
-              <Button variant="outline" onPress={onCancel} disabled={loading}>
+              <Button variant="outline" size="md" onPress={onCancel} disabled={loading}>
                 Cancel
               </Button>
             </Animated.View>
             <View className="flex-1">
-              <Button variant="primary" onPress={onConfirm} loading={loading} disabled={loading}>
+              <GradientButton size="md" onPress={onConfirm} loading={loading} disabled={loading} fullWidth>
                 Yes
-              </Button>
+              </GradientButton>
             </View>
           </View>
         </View>

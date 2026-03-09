@@ -16,6 +16,7 @@ export interface PostAuthor {
     publicId: string
     name: string | null
     avatar_url: string | null
+    major: string | null
 }
 
 export interface Post {
@@ -23,12 +24,13 @@ export interface Post {
     publicId: string
     content: string
     likes_count: number
+    comments_count: number
     is_deleted: boolean
     createdAt: Date
     updatedAt: Date
     userId: number
     communityId: number | null
-    user: PostAuthor | User
+    user: PostAuthor
     community: PostCommunity | null
     media: PostMedia[]
     isLiked: boolean
@@ -43,7 +45,7 @@ export interface GetPostsQuery {
 
 export interface CreatePostPayload {
     content: string
-    communityPublicId: string
+    communityPublicId: string | null
     media: string[]
 }
 

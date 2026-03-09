@@ -7,7 +7,7 @@ import { authService } from "@/services/auth.service";
 import useAuthStore from "@/stores/auth.store";
 import { GradientBackground } from "@/components/reusable/gradient-background";
 import { Input } from "@/components/reusable/input";
-import { Button } from "@/components/reusable/button";
+import { Button, GradientButton } from "@/components/reusable/button";
 import { PressableText } from "@/components/reusable/pressable-text";
 import { BackButton } from "@/components/reusable/back-button";
 
@@ -171,10 +171,11 @@ export default function ResetPasswordScreen() {
               error={error}
             />
 
-            <Button onPress={handleSubmit} disabled={loading} loading={loading}>
+            <GradientButton size="lg" onPress={handleSubmit} disabled={loading} loading={loading} fullWidth>
               Reset Password
-            </Button>
+            </GradientButton>
             <Button
+              size="lg"
               variant="outline"
               onPress={handleResend}
               disabled={resending || resendAfterSeconds > 0}

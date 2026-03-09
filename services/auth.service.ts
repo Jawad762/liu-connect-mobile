@@ -20,7 +20,7 @@ export const authService = {
         return response.data
     },
     refreshToken: async (refreshToken: string): Promise<ApiResponse<RefreshTokenResponse>> => {
-        const response = await apiClient.post('/auth/refresh-token', { refreshToken })
+        const response = await apiClient.post('/auth/refresh', { refreshToken })
         return response.data
     },
     verifyEmail: async (email: string, code: string): Promise<ApiResponse<undefined>> => {

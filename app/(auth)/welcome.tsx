@@ -13,7 +13,7 @@ import { useRouter, type Href } from "expo-router";
 import * as Haptics from "expo-haptics";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GradientBackground } from "@/components/reusable/gradient-background";
-import { Button } from "@/components/reusable/button";
+import { Button, GradientButton } from "@/components/reusable/button";
 import { ONBOARDING_SCREENS } from "@/constants/onboarding";
 
 export default function WelcomeScreen() {
@@ -91,10 +91,10 @@ export default function WelcomeScreen() {
           ))}
         </ScrollView>
 
-        <View
-          className="px-6 pt-6"
-          style={{ paddingBottom: insets.bottom + 32 }}
-        >
+          <View
+            className="px-6 pt-6"
+            style={{ paddingBottom: insets.bottom + 32 }}
+          >
           <View className="flex-row justify-center items-center gap-2 mb-7">
             {ONBOARDING_SCREENS.map((_, index) => (
               <View
@@ -109,11 +109,11 @@ export default function WelcomeScreen() {
             ))}
           </View>
 
-          <Button onPress={goToLogin}>
+          <GradientButton size="lg" onPress={goToLogin} fullWidth>
             Login
-          </Button>
+          </GradientButton>
 
-          <Button variant="outline" onPress={goToRegister}>
+          <Button variant="outline" size="lg" onPress={goToRegister} fullWidth>
             Sign Up
           </Button>
         </View>

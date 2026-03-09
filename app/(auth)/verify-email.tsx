@@ -14,7 +14,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { authService } from "@/services/auth.service";
 import { GradientBackground } from "@/components/reusable/gradient-background";
 import { Input } from "@/components/reusable/input";
-import { Button } from "@/components/reusable/button";
+import { Button, GradientButton } from "@/components/reusable/button";
 import { PressableText } from "@/components/reusable/pressable-text";
 import { BackButton } from "@/components/reusable/back-button";
 import useAuthStore from "@/stores/auth.store";
@@ -176,10 +176,10 @@ export default function VerifyEmailScreen() {
               error={error}
             />
 
-            <Button onPress={handleVerify} disabled={loading} loading={loading}>
+            <GradientButton size="lg" onPress={handleVerify} disabled={loading} loading={loading} fullWidth>
               Verify Email
-            </Button>
-            <Button variant="outline" onPress={handleResend} disabled={resending || resendAfterSeconds > 0} loading={resending}>
+            </GradientButton>
+            <Button variant="outline" size="lg" onPress={handleResend} disabled={resending || resendAfterSeconds > 0} loading={resending}>
               {resendAfterSeconds > 0 ? `Resend code in ${Math.ceil(resendAfterSeconds)}s` : "Resend Code"}
             </Button>
 

@@ -7,7 +7,7 @@ import { authService } from "@/services/auth.service";
 import useAuthStore from "@/stores/auth.store";
 import { GradientBackground } from "@/components/reusable/gradient-background";
 import { Input } from "@/components/reusable/input";
-import { Button } from "@/components/reusable/button";
+import { Button, GradientButton } from "@/components/reusable/button";
 import { PressableText } from "@/components/reusable/pressable-text";
 import { BackButton } from "@/components/reusable/back-button";
 
@@ -120,9 +120,9 @@ export default function LoginScreen() {
               </Pressable>
             </View>
 
-            <Button onPress={handleLogin} disabled={loading} loading={loading}>
+            <GradientButton size="lg" onPress={handleLogin} disabled={loading} loading={loading} fullWidth>
               Log In
-            </Button>
+            </GradientButton>
 
             <View className="mt-8 items-center">
               <PressableText

@@ -7,7 +7,7 @@ import { authService } from "@/services/auth.service";
 import useAuthStore from "@/stores/auth.store";
 import { GradientBackground } from "@/components/reusable/gradient-background";
 import { Input } from "@/components/reusable/input";
-import { Button } from "@/components/reusable/button";
+import { Button, GradientButton } from "@/components/reusable/button";
 import { BackButton } from "@/components/reusable/back-button";
 
 export default function ForgotPasswordScreen() {
@@ -92,9 +92,9 @@ export default function ForgotPasswordScreen() {
               error={error}
             />
 
-            <Button onPress={handleSubmit} disabled={loading} loading={loading}>
+            <GradientButton size="lg" onPress={handleSubmit} disabled={loading} loading={loading} fullWidth>
               Send Reset Link
-            </Button>
+            </GradientButton>
           </ScrollView>
         </KeyboardAvoidingView>
       </GradientBackground>

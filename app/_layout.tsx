@@ -14,6 +14,7 @@ import 'react-native-reanimated';
 import "./global.css"
 import { useColorScheme } from "nativewind";
 import useAuthStore from '@/stores/auth.store';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -21,10 +22,12 @@ export const unstable_settings = {
   anchor: '(tabs)',
 };
 
+
 export default function RootLayout() {
   const { colorScheme } = useColorScheme();
-  const isAuthenticated = useAuthStore(state => !!state.accessToken);
-
+  const isAuthenticated = useAuthStore(state => !!state.accessToken && !!state.refreshToken);
+  const queryClient = new QueryClient();
+  
   const [fontsLoaded] = useFonts({
     DMSans_400Regular,
     DMSans_500Medium,
@@ -42,6 +45,7 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <QueryClientProvider client={queryClient}>
       <Stack>
         <Stack.Protected guard={!isAuthenticated}>
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
@@ -51,6 +55,7 @@ export default function RootLayout() {
         </Stack.Protected>
       </Stack>
       <StatusBar style="auto" />
+      </QueryClientProvider>
     </ThemeProvider>
   );
 }

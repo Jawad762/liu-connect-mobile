@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { authService } from "@/services/auth.service";
 import { GradientBackground } from "@/components/reusable/gradient-background";
 import { Input } from "@/components/reusable/input";
-import { Button } from "@/components/reusable/button";
+import { Button, GradientButton } from "@/components/reusable/button";
 import { PressableText } from "@/components/reusable/pressable-text";
 import { BackButton } from "@/components/reusable/back-button";
 
@@ -120,9 +120,9 @@ export default function RegisterScreen() {
               secureTextEntry
             />
 
-            <Button onPress={handleRegister} disabled={loading} loading={loading}>
+            <GradientButton size="lg" onPress={handleRegister} disabled={loading} loading={loading} fullWidth>
               Continue
-            </Button>
+            </GradientButton>
 
             <View className="mt-8 items-center">
               <PressableText
