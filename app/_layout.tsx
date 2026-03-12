@@ -21,8 +21,6 @@ SplashScreen.preventAutoHideAsync();
 export const unstable_settings = {
   anchor: '(tabs)',
 };
-
-
 export default function RootLayout() {
   const { colorScheme } = useColorScheme();
   const isAuthenticated = useAuthStore(state => !!state.accessToken && !!state.refreshToken);
@@ -51,7 +49,7 @@ export default function RootLayout() {
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         </Stack.Protected>
         <Stack.Protected guard={isAuthenticated}>
-          <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
+          <Stack.Screen name="(app)" options={{ headerShown: false }} />
         </Stack.Protected>
       </Stack>
       <StatusBar style="auto" />

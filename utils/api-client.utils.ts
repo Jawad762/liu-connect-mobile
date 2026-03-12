@@ -1,9 +1,10 @@
+import { API_URL } from '@/constants/api'
 import useAuthStore from '@/stores/auth.store'
 import axios from 'axios'
 import { Href, router } from 'expo-router'
 
 export const apiClient = axios.create({
-    baseURL: 'https://6396-185-97-94-175.ngrok-free.app/api',
+    baseURL: `${API_URL}/api`,
     timeout: 10000,
     // Don't throw on 4xx/5xx
     validateStatus: (status) => status >= 200 && status < 600,

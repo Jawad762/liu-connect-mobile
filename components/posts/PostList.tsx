@@ -1,6 +1,7 @@
 import usePosts from '@/hooks/usePosts';
 import React from 'react'
-import { ActivityIndicator, FlatList, View } from 'react-native'
+import { ActivityIndicator, RefreshControl, View } from 'react-native'
+import { FlatList } from 'react-native-gesture-handler'
 import PostCard from './PostCard';
 import PostListSkeleton from '../skeletons/PostListSkeleton';
 
@@ -20,8 +21,7 @@ const PostList = () => {
             showsVerticalScrollIndicator={false}
             onEndReached={() => hasNextPage && !isFetchingNextPage && fetchNextPage()}
             onEndReachedThreshold={0.8}
-            onRefresh={() => refetch()}
-            refreshing={isFetching}
+            refreshControl={<RefreshControl refreshing={isFetching} onRefresh={() => refetch()} />}
             ListFooterComponent={
                 isFetchingNextPage ? (
                     <View className='py-4 items-center'>

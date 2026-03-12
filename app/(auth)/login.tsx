@@ -111,7 +111,7 @@ export default function LoginScreen() {
 
             <View className="mb-4">
               <Pressable
-                onPress={() => router.push("/forgot-password" as Href)}
+                onPress={() => router.push("/(auth)/forgot-password" as Href)}
                 className="active:opacity-80"
               >
                 <Text className="text-white/90 text-sm font-sans">
@@ -128,7 +128,7 @@ export default function LoginScreen() {
               <PressableText
                 text="Don't have an account? Sign Up"
                 highlight="Sign Up"
-                onPress={() => router.push("/register" as Href)}
+                onPress={() => router.push("/(auth)/register" as Href)}
               />
             </View>
           </ScrollView>

@@ -1,6 +1,8 @@
 import { Post } from '@/types/post.types'
-import React from 'react'
-import { Alert, Image, Pressable, View } from 'react-native'
+import React, { useState } from 'react'
+import { Alert, Pressable, View, ViewStyle } from 'react-native'
+import MediaItem from './MediaItem'
+import { ImageViewerModal } from './ImageViewerModal'
 import { ThemedText } from '../reusable/themed-text'
 import ProfileIcon from '../reusable/profile-icon'
 import { formatDate } from '@/utils/date.utils'
@@ -12,12 +14,14 @@ import { Colors } from '@/constants/theme'
 import { cn } from '@/utils/cn.utils'
 import { postService } from '@/services/post.service'
 import { InfiniteData, useQueryClient } from '@tanstack/react-query'
+import { Href, router } from 'expo-router'
 
 type PostsQueryData = InfiniteData<{ data: Post[] }>
 
 const PostCard = ({ post }: { post: Post }) => {
     const { colorScheme: colorScheme = "light" } = useColorScheme();
     const queryClient = useQueryClient();
+    const [fullScreenImageUri, setFullScreenImageUri] = useState<string | null>(null);
 
     const handleLikePost = async () => {
         const previousDataList = queryClient.getQueriesData<PostsQueryData>({ queryKey: ['posts'] })
@@ -54,7 +58,7 @@ const PostCard = ({ post }: { post: Post }) => {
     }
 
     return (
-        <View className='flex-row gap-3 p-4 border-b border-border dark:border-borderDark'>
+        <Pressable onPress={() => router.push(`/post/${post.publicId}` as Href)} className='flex-row gap-3 p-4 border-b border-border dark:border-borderDark'>
             <ProfileIcon avatarUrl={post.user.avatar_url} />
             <View className='flex-1 min-w-0'>
                 <View className='flex-row flex-wrap items-center gap-x-2 gap-y-1'>
@@ -76,17 +80,28 @@ const PostCard = ({ post }: { post: Post }) => {
                         @{post.community.name}
                     </ThemedText>
                 )}
-                <ThemedText className='text-lg font-sans mt-2'>{post.content}</ThemedText>
+                {post.content.trim().length > 0 && (
+                    <ThemedText className='text-lg font-sans mt-2'>{post.content}</ThemedText>
+                )}
                 {post.media.length > 0 && (
-                    <View className='flex-row flex-wrap gap-2 mt-3'>
-                        {post.media.map((media) => (
-                            <Image
-                                key={media.id}
-                                source={{ uri: media.media_url }}
-                                className='w-full aspect-video rounded-xl'
-                                resizeMode='cover'
-                            />
-                        ))}
+                    <View className='flex-row flex-wrap gap-2 mt-2'>
+                        {post.media.map((m, index) => {
+                            const count = post.media.length;
+                            let itemStyle: ViewStyle = { width: '100%' };
+                            if (count === 2) itemStyle = { width: '48%' };
+                            else if (count === 3) itemStyle = index < 2 ? { width: '48%' } : { width: '100%' };
+                            else if (count === 4) itemStyle = { width: '48%' };
+
+                            return (
+                                <MediaItem
+                                    key={m.publicId}
+                                    uri={m.media_url}
+                                    type={m.type}
+                                    style={itemStyle}
+                                    onImagePress={() => m.type === 'IMAGE' && setFullScreenImageUri(m.media_url)}
+                                />
+                            )
+                        })}
                     </View>
                 )}
                 <View className='flex-row items-center gap-6 mt-5'>
@@ -113,8 +128,13 @@ const PostCard = ({ post }: { post: Post }) => {
                         <IconSymbol name='square.and.arrow.up' size={20} color={Colors[colorScheme].muted} />
                     </Pressable>
                 </View>
+                <ImageViewerModal
+                    visible={!!fullScreenImageUri}
+                    imageUri={fullScreenImageUri}
+                    onClose={() => setFullScreenImageUri(null)}
+                />
             </View>
-        </View>
+        </Pressable>
     )
 }
 

@@ -16,7 +16,7 @@ const NotificationsHeader = () => {
     };
 
     if (!user) {
-        return <Redirect href="/login" />;
+        return <Redirect href="/(auth)/login" />;
     }
 
     return (

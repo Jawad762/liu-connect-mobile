@@ -20,7 +20,7 @@ const CommunitiesHeader = () => {
     const tabs = ["Home", "Explore"]
 
     if (!user) {
-        return <Redirect href="/login" />;
+        return <Redirect href="/(auth)/login" />;
     }
 
     return (

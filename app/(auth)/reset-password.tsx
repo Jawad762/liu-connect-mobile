@@ -188,7 +188,7 @@ export default function ResetPasswordScreen() {
               <PressableText
                 text="Remember your password? Log In"
                 highlight="Log In"
-                onPress={() => router.replace("/login" as Href)}
+                onPress={() => router.replace("/(auth)/login" as Href)}
               />
             </View>
           </ScrollView>

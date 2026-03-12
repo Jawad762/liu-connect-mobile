@@ -1,8 +1,9 @@
-import { User } from "./user.types"
+export type MediaType = 'IMAGE' | 'VIDEO';
 
 export interface PostMedia {
-    id: number
+    publicId: string
     media_url: string
+    type: MediaType
 }
 
 export interface PostCommunity {
@@ -40,18 +41,24 @@ export interface GetPostsQuery {
     page?: number
     size?: number
     communityPublicId?: string
-    userPublicId?: string
+    authorPublicId?: string
+    followingOnly?: boolean
+}
+
+export interface CreatePostMedia {
+    url: string
+    type: MediaType
 }
 
 export interface CreatePostPayload {
     content: string
     communityPublicId: string | null
-    media: string[]
+    media: CreatePostMedia[]
 }
 
 export interface UpdatePostPayload {
     content: string
-    media: string[]
+    media: CreatePostMedia[]
 }
 
 export interface LikePostPayload {

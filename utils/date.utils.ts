@@ -1,7 +1,11 @@
 export const formatDate = (date: Date): string => {
     const dateObj = new Date(date);
     const now = new Date().getTime();
-    const diffInMinutes = (now - dateObj.getTime()) / 60000;
+    const diffInSeconds = (now - dateObj.getTime()) / 1000;
+    if (diffInSeconds < 60) {
+        return `${Math.floor(diffInSeconds)}s`;
+    }
+    const diffInMinutes = diffInSeconds / 60;
     if (diffInMinutes < 60) {
         return `${Math.floor(diffInMinutes)}m`;
     }

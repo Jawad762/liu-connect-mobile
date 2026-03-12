@@ -36,6 +36,14 @@
             "backgroundColor": "#000000"
           }
         }
+      ],
+      "expo-video",
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow LIU Connect to access your photos to save images.",
+          "savePhotosPermission": "Allow LIU Connect to save photos to your library."
+        }
       ]
     ],
     "experiments": {

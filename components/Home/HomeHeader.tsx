@@ -22,7 +22,7 @@ const HomeHeader = () => {
     const tabs = ["For you", "Following"]
 
     if (!user) {
-        return <Redirect href="/login" />;
+        return <Redirect href="/(auth)/login" />;
     }
 
     return (

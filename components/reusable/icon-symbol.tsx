@@ -31,6 +31,9 @@ const MAPPING = {
   // School & major
   'building.2': 'account-balance',
   'book.closed': 'menu-book',
+  // Media
+  'photo.on.rectangle.angled': 'photo-library',
+  'camera.fill': 'camera-alt',
 } as IconMapping;
 
 export function IconSymbol({

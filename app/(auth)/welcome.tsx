@@ -35,12 +35,12 @@ export default function WelcomeScreen() {
 
   const goToLogin = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push("/login" as Href);
+    router.navigate("/(auth)/login" as Href);
   };
 
   const goToRegister = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push("/register" as Href);
+    router.navigate("/(auth)/register" as Href);
   };
 
   return (
