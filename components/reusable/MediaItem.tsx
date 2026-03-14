@@ -1,12 +1,12 @@
 import { Colors } from '@/constants/theme';
-import type { MediaType } from '@/types/post.types';
 import { Image } from 'expo-image';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import type { PlayingChangeEventPayload } from 'expo-video';
 import { useColorScheme } from 'nativewind';
 import React, { useEffect, useState } from 'react';
 import { Pressable, View, ViewStyle } from 'react-native';
-import { IconSymbol } from '../reusable/icon-symbol';
+import { IconSymbol } from './icon-symbol';
+import { MediaType } from '@/types/media.types';
 
 interface MediaItemProps {
     uri: string;

@@ -1,4 +1,4 @@
-export const formatDate = (date: Date): string => {
+export const formatRelativeDate = (date: Date): string => {
     const dateObj = new Date(date);
     const now = new Date().getTime();
     const diffInSeconds = (now - dateObj.getTime()) / 1000;

@@ -14,8 +14,8 @@ export const postService = {
         return response.data
     },
 
-    getPost: async (publicId: string): Promise<ApiResponse<Post>> => {
-        const response = await apiClient.get(`/posts/${publicId}`)
+    getPost: async (id: string): Promise<ApiResponse<Post>> => {
+        const response = await apiClient.get(`/posts/${id}`)
         return response.data
     },
 
@@ -25,15 +25,15 @@ export const postService = {
     },
 
     updatePost: async (
-        publicId: string,
+        id: string,
         payload: UpdatePostPayload,
     ): Promise<ApiResponse<undefined>> => {
-        const response = await apiClient.put(`/posts/${publicId}`, payload)
+        const response = await apiClient.put(`/posts/${id}`, payload)
         return response.data
     },
 
-    deletePost: async (publicId: string): Promise<ApiResponse<undefined>> => {
-        const response = await apiClient.delete(`/posts/${publicId}`)
+    deletePost: async (id: string): Promise<ApiResponse<undefined>> => {
+        const response = await apiClient.delete(`/posts/${id}`)
         return response.data
     },
 

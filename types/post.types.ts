@@ -1,47 +1,38 @@
-export type MediaType = 'IMAGE' | 'VIDEO';
-
-export interface PostMedia {
-    publicId: string
-    media_url: string
-    type: MediaType
-}
+import { MediaItem, MediaType } from "./media.types"
 
 export interface PostCommunity {
-    id: number
-    publicId: string
+    id: string
     name: string
 }
 
 export interface PostAuthor {
-    id: number
-    publicId: string
+    id: string
     name: string | null
     avatar_url: string | null
     major: string | null
 }
 
 export interface Post {
-    id: number
-    publicId: string
+    id: string
     content: string
     likes_count: number
     comments_count: number
     is_deleted: boolean
     createdAt: Date
     updatedAt: Date
-    userId: number
-    communityId: number | null
+    userId: string
+    communityId: string | null
     user: PostAuthor
     community: PostCommunity | null
-    media: PostMedia[]
+    media: MediaItem[]
     isLiked: boolean
 }
 
 export interface GetPostsQuery {
     page?: number
     size?: number
-    communityPublicId?: string
-    authorPublicId?: string
+    communityId?: string
+    authorId?: string
     followingOnly?: boolean
 }
 
@@ -52,7 +43,7 @@ export interface CreatePostMedia {
 
 export interface CreatePostPayload {
     content: string
-    communityPublicId: string | null
+    communityId: string | null
     media: CreatePostMedia[]
 }
 
@@ -62,6 +53,5 @@ export interface UpdatePostPayload {
 }
 
 export interface LikePostPayload {
-    publicId: string
+    id: string
 }
-

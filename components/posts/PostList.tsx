@@ -14,22 +14,22 @@ const PostList = () => {
 
     return (
         <View className='flex-1'>
-        <FlatList
-            data={posts}
-            keyExtractor={(item) => item.publicId}
-            renderItem={({ item }) => <PostCard post={item} />}
-            showsVerticalScrollIndicator={false}
-            onEndReached={() => hasNextPage && !isFetchingNextPage && fetchNextPage()}
-            onEndReachedThreshold={0.8}
-            refreshControl={<RefreshControl refreshing={isFetching} onRefresh={() => refetch()} />}
-            ListFooterComponent={
-                isFetchingNextPage ? (
-                    <View className='py-4 items-center'>
-                        <ActivityIndicator />
-                    </View>
-                ) : null
-            }
-        />
+            <FlatList
+                data={posts}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => <PostCard post={item} />}
+                showsVerticalScrollIndicator={false}
+                onEndReached={() => hasNextPage && !isFetchingNextPage && fetchNextPage()}
+                onEndReachedThreshold={0.8}
+                refreshControl={<RefreshControl refreshing={isFetching} onRefresh={() => refetch()} />}
+                ListFooterComponent={
+                    isFetchingNextPage ? (
+                        <View className='py-4 items-center'>
+                            <ActivityIndicator />
+                        </View>
+                    ) : null
+                }
+            />
         </View>
     )
 }

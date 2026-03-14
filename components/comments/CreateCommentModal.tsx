@@ -1,5 +1,5 @@
 import { Colors } from '@/constants/theme';
-import type { CreatePostMedia } from '@/types/post.types';
+import type { CreateCommentMedia } from '@/types/comment.types';
 import { useColorScheme } from 'nativewind';
 import React, { useEffect, useRef, useState } from 'react';
 import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, TextInput, View, ViewStyle } from 'react-native';
@@ -10,7 +10,6 @@ import { IconSymbol } from '../reusable/icon-symbol';
 import ProfileIcon from '../reusable/profile-icon';
 import useAuthStore from '@/stores/auth.store';
 import { Redirect } from 'expo-router';
-import { postService } from '@/services/post.service';
 import { validatePost } from '@/utils/post.utils';
 import { useImageUploader, uploadFiles } from '@/lib/uploadthing';
 import { inferMediaType } from '@/utils/media-utils';
@@ -20,17 +19,18 @@ import MediaItem from '../reusable/MediaItem';
 import * as ImagePicker from 'expo-image-picker';
 import { MAX_MEDIA, MAX_POST_CONTENT_LENGTH } from '@/constants/general';
 import { ImageViewerModal } from '../reusable/ImageViewerModal';
+import { commentService } from '@/services/comment.service';
+import { useQueryClient } from '@tanstack/react-query';
 
-const CreatePostModal = ({ visible, onRequestClose }: { visible: boolean; onRequestClose: () => void }) => {
+const CreateCommentModal = ({ visible, onRequestClose, postId, parentId }: { visible: boolean; onRequestClose: () => void, postId: string, parentId?: string }) => {
     const { colorScheme: colorScheme = 'light' } = useColorScheme();
     const [content, setContent] = useState('');
-    const [media, setMedia] = useState<CreatePostMedia[]>([]);
-    const [postCreationLoading, setPostCreationLoading] = useState(false);
-    const [communityId, setCommunityId] = useState<string | null>(null);
+    const [media, setMedia] = useState<CreateCommentMedia[]>([]);
+    const [commentCreationLoading, setCommentCreationLoading] = useState(false);
     const insets = useSafeAreaInsets();
     const user = useAuthStore((state) => state.user);
     const textInputRef = useRef<TextInput>(null);
-
+    const queryClient = useQueryClient();
     const [customUploading, setCustomUploading] = useState(false);
     const [fullScreenImageUri, setFullScreenImageUri] = useState<string | null>(null);
 
@@ -57,7 +57,7 @@ const CreatePostModal = ({ visible, onRequestClose }: { visible: boolean; onRequ
 
     const handlePickFromLibrary = async () => {
         if (remainingSlots <= 0) {
-            Alert.alert('Media limit reached', 'Posts can include up to 4 media items. Remove one to add more.');
+            Alert.alert('Media limit reached', 'Comments can include up to 4 media items. Remove one to add more.');
             return;
         }
         const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
@@ -97,7 +97,7 @@ const CreatePostModal = ({ visible, onRequestClose }: { visible: boolean; onRequ
 
     const handlePickFromCamera = () => {
         if (remainingSlots <= 0) {
-            Alert.alert('Media limit reached', 'Posts can include up to 4 media items. Remove one to add more.');
+            Alert.alert('Media limit reached', 'Comments can include up to 4 media items. Remove one to add more.');
             return;
         }
         openImagePicker({ source: 'camera', onInsufficientPermissions: imagePerms });
@@ -108,21 +108,25 @@ const CreatePostModal = ({ visible, onRequestClose }: { visible: boolean; onRequ
 
     const handleClose = () => onRequestClose();
 
-    const handlePost = async () => {
+    const handleComment = async () => {
         try {
-            setPostCreationLoading(true);
+            setCommentCreationLoading(true);
             const contentValidation = validatePost(content, media);
             if (!contentValidation.success) throw new Error(contentValidation.message);
-            const result = await postService.createPost({ content, communityId, media });
+            const result = await commentService.createComment({ content, media, postId, parentCommentId: parentId });
             if (!result.success) throw new Error(result.message);
             setContent('');
             setMedia([]);
             onRequestClose();
-            Alert.alert('Success', 'Post created successfully');
+            Alert.alert('Success', 'Comment created successfully');
         } catch (error) {
-            Alert.alert('Oops!', error instanceof Error ? error.message : 'An error occurred while creating the post');
+            Alert.alert('Oops!', error instanceof Error ? error.message : 'An error occurred while creating the comment');
         } finally {
-            setPostCreationLoading(false);
+            queryClient.invalidateQueries({ queryKey: ['comments', postId] });
+            queryClient.invalidateQueries({ queryKey: ['comment', parentId] });
+            queryClient.invalidateQueries({ queryKey: ['post', postId] });
+            queryClient.invalidateQueries({ queryKey: ['posts'] });
+            setCommentCreationLoading(false);
         }
     };
 
@@ -136,7 +140,6 @@ const CreatePostModal = ({ visible, onRequestClose }: { visible: boolean; onRequ
         if (!visible) {
             setContent('');
             setMedia([]);
-            setCommunityId(null);
         }
     }, [visible]);
 
@@ -167,7 +170,7 @@ const CreatePostModal = ({ visible, onRequestClose }: { visible: boolean; onRequ
                         variant='outline'
                         size='sm'
                         onPress={handleClose}
-                        disabled={postCreationLoading}
+                        disabled={commentCreationLoading}
                         className='min-w-20'
                         textClassName='text-sm'
                     >
@@ -175,13 +178,13 @@ const CreatePostModal = ({ visible, onRequestClose }: { visible: boolean; onRequ
                     </Button>
                     <GradientButton
                         size='sm'
-                        onPress={handlePost}
-                        disabled={postCreationLoading}
+                        onPress={handleComment}
+                        disabled={commentCreationLoading}
                         className='min-w-20'
                         textClassName='text-sm text-white'
-                        loading={postCreationLoading}
+                        loading={commentCreationLoading}
                     >
-                        Post
+                        Reply
                     </GradientButton>
                 </View>
 
@@ -259,4 +262,4 @@ const CreatePostModal = ({ visible, onRequestClose }: { visible: boolean; onRequ
     );
 };
 
-export default CreatePostModal;
+export default CreateCommentModal;

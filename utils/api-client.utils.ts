@@ -29,6 +29,11 @@ const UNAUTHENTICATED_ENDPOINTS = [
 
 apiClient.interceptors.response.use(
     async (response) => {
+        if (response.status === 429) {
+            router.navigate('/rate-limited' as Href)
+            return Promise.reject(response)
+        }
+
         if (response.status !== 401) return response
 
         const originalRequest = response.config as typeof response.config & { _retry?: boolean }

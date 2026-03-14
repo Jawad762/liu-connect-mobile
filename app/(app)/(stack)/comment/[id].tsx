@@ -1,29 +1,29 @@
 import React, { useState } from 'react'
 import { useLocalSearchParams } from 'expo-router'
-import usePost from '@/hooks/usePost'
 import { ThemedText } from '@/components/reusable/themed-text'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { ThemedView } from '@/components/reusable/themed-view'
-import PostDetailsCard from '@/components/posts/PostDetailsCard'
-import PostCardSkeleton from '@/components/skeletons/PostCardSkeleton'
 import CommentList from '@/components/comments/CommentList'
 import { Pressable, View } from 'react-native'
 import CreateCommentModal from '@/components/comments/CreateCommentModal'
 import useComments from '@/hooks/useComments'
+import useComment from '@/hooks/useComment'
+import CommentCardSkeleton from '@/components/skeletons/CommentCardSkeleton'
+import CommentDetailsCard from '@/components/comments/CommentDetailsCard'
 
-const PostScreen = () => {
-    const { id } = useLocalSearchParams()
+const CommentScreen = () => {
+    const { id, postId } = useLocalSearchParams()
     const insets = useSafeAreaInsets();
     const [createCommentModalVisible, setCreateCommentModalVisible] = useState(false);
-    const { post, isFetching: isPostFetching, error, refetch: refetchPost } = usePost({ id: id as string })
-    const { comments, isFetching: isCommentsFetching, fetchNextPage, hasNextPage, isFetchingNextPage, refetch: refetchComments } = useComments({ postId: id as string })
+    const { comment, isFetching: isCommentFetching, error, refetch: refetchComment } = useComment({ id: id as string })
+    const { comments, isFetching: isCommentsFetching, fetchNextPage, hasNextPage, isFetchingNextPage, refetch: refetchComments } = useComments({ parentCommentId: id as string, postId: postId as string })
 
     const handleRefresh = () => {
-        refetchPost()
+        refetchComment()
         refetchComments()
     }
 
-    if (!isPostFetching && (error || !post)) {
+    if (!isCommentFetching && (error || !comment)) {
         return <ThemedText className='text-2xl font-bold'>Error: {error?.message}</ThemedText>
     }
 
@@ -36,11 +36,11 @@ const PostScreen = () => {
                 isFetchingNextPage={isFetchingNextPage}
                 refetch={refetchComments}
                 isFetching={isCommentsFetching}
-                isRefreshing={isPostFetching || isCommentsFetching}
+                isRefreshing={isCommentFetching || isCommentsFetching}
                 onRefresh={handleRefresh}
                 ListHeaderComponent={
                     <>
-                        {isPostFetching ? <PostCardSkeleton /> : post && <PostDetailsCard post={post} />}
+                        {isCommentFetching ? <CommentCardSkeleton /> : comment && <CommentDetailsCard comment={comment} />}
                         <ThemedText className='text-2xl font-bold p-4'>Replies</ThemedText>
                     </>
                 }
@@ -50,9 +50,9 @@ const PostScreen = () => {
                     <ThemedText className='text-muted dark:text-mutedDark'>Post your reply</ThemedText>
                 </Pressable>
             </View>
-            <CreateCommentModal visible={createCommentModalVisible} onRequestClose={() => setCreateCommentModalVisible(false)} postId={id as string} />
+            <CreateCommentModal visible={createCommentModalVisible} onRequestClose={() => setCreateCommentModalVisible(false)} postId={comment?.postId ?? ''} parentId={id as string} />
         </ThemedView>
     )
 }
 
-export default PostScreen
+export default CommentScreen

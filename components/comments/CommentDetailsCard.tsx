@@ -1,51 +1,59 @@
-import { Post } from '@/types/post.types'
 import React, { useState } from 'react'
 import { Alert, Pressable, View, ViewStyle } from 'react-native'
+import MediaItem from '../reusable/MediaItem'
 import { ThemedText } from '../reusable/themed-text'
 import ProfileIcon from '../reusable/profile-icon'
-import { formatRelativeDate } from '@/utils/date.utils'
 import Tag from '../reusable/tag'
-import { abbreviateMajor } from '@/utils/general.utils'
 import { IconSymbol } from '../reusable/icon-symbol'
 import { useColorScheme } from 'nativewind'
 import { Colors } from '@/constants/theme'
 import { cn } from '@/utils/cn.utils'
-import { postService } from '@/services/post.service'
 import { InfiniteData, useQueryClient } from '@tanstack/react-query'
-import { Href, router } from 'expo-router'
-import MediaItem from '../reusable/MediaItem'
+import { abbreviateMajor } from '@/utils/general.utils'
 import { ImageViewerModal } from '../reusable/ImageViewerModal'
+import { Comment } from '@/types/comment.types'
+import { commentService } from '@/services/comment.service'
 
-type PostsQueryData = InfiniteData<{ data: Post[] }>
+type CommentsQueryData = InfiniteData<{ data: Comment[] }>
 
-const PostCard = ({ post }: { post: Post }) => {
+const CommentDetailsCard = ({ comment }: { comment: Comment }) => {
     const { colorScheme: colorScheme = "light" } = useColorScheme();
     const queryClient = useQueryClient();
     const [fullScreenImageUri, setFullScreenImageUri] = useState<string | null>(null);
 
-    const handleLikePost = async () => {
-        const previousDataList = queryClient.getQueriesData<PostsQueryData>({ queryKey: ['posts'] })
+    const handleLikeComment = async () => {
+        const previousDataList = queryClient.getQueriesData<CommentsQueryData>({ queryKey: ['comments'] })
+        const previousComment = queryClient.getQueryData<Comment>(['comment', comment.id])
 
-        queryClient.setQueriesData<PostsQueryData>(
-            { queryKey: ['posts'] },
+        queryClient.setQueriesData<CommentsQueryData>(
+            { queryKey: ['comments'] },
             (old) => {
                 if (!old) return old
                 return {
                     ...old,
                     pages: old.pages.map((page) => ({
                         ...page,
-                        data: page.data.map((p) =>
-                            p.id === post.id
-                                ? { ...p, isLiked: !p.isLiked, likes_count: p.isLiked ? p.likes_count - 1 : p.likes_count + 1 }
-                                : p
+                        data: page.data.map((c) =>
+                            c.id === comment.id
+                                ? { ...c, isLiked: !c.isLiked, likes_count: c.isLiked ? c.likes_count - 1 : c.likes_count + 1 }
+                                : c
                         ),
                     })),
                 }
             }
         )
 
+        queryClient.setQueryData(['comment', comment.id], (old: Comment | undefined) => {
+            if (!old) return old
+            return {
+                ...old,
+                isLiked: !old.isLiked,
+                likes_count: old.isLiked ? old.likes_count - 1 : old.likes_count + 1,
+            }
+        })
+
         try {
-            const result = post.isLiked ? await postService.unlikePost({ id: post.id }) : await postService.likePost({ id: post.id })
+            const result = comment.isLiked ? await commentService.unlikeComment(comment.id) : await commentService.likeComment(comment.id)
             if (!result.success) {
                 throw new Error(result.message)
             }
@@ -53,48 +61,33 @@ const PostCard = ({ post }: { post: Post }) => {
             previousDataList.forEach(([queryKey, data]) => {
                 queryClient.setQueryData(queryKey, data)
             })
-            Alert.alert('Oops!', error instanceof Error ? error.message : 'An error occurred while liking/unliking the post')
+            queryClient.setQueryData(['comment', comment.id], previousComment)
+            Alert.alert('Oops!', error instanceof Error ? error.message : 'An error occurred while liking/unliking the comment')
         }
     }
 
-    const handleNavigateToProfile = () => {
-        // TODO: router.push(`/profile/${post.user.id}`)
-    }
-
     return (
-        <Pressable onPress={() => router.push(`/post/${post.id}` as Href)} className='flex-row gap-3 p-4 border-b border-border dark:border-borderDark'>
-            <Pressable onPress={handleNavigateToProfile}>
-                <ProfileIcon avatarUrl={post.user.avatar_url} />
-            </Pressable>
+        <Pressable className='flex-row gap-3 p-4 border-b border-border dark:border-borderDark'>
+            <ProfileIcon avatarUrl={comment.user.avatar_url} />
             <View className='flex-1 min-w-0'>
                 <View className='flex-row flex-wrap items-center gap-x-2 gap-y-1'>
-                    <Pressable onPress={handleNavigateToProfile} className='flex-row items-center gap-x-2'>
-                        <ThemedText className='text-lg font-sans-bold' numberOfLines={1}>
-                            {post.user.name}
-                        </ThemedText>
-                        {post.user.major && (
-                            <Tag label={abbreviateMajor(post.user.major)} />
-                        )}
-                    </Pressable>
-                    <ThemedText className='text-sm text-muted dark:text-mutedDark font-sans' numberOfLines={1}>
-                        • {formatRelativeDate(post.createdAt)}
+                    <ThemedText className='text-lg font-sans-bold' numberOfLines={1}>
+                        {comment.user.name}
                     </ThemedText>
+                    {comment.user.major && (
+                        <Tag label={abbreviateMajor(comment.user.major)} />
+                    )}
                     <Pressable className='ml-auto p-1 -m-1' hitSlop={8}>
                         <IconSymbol name='ellipsis' size={20} color={Colors[colorScheme].muted} />
                     </Pressable>
                 </View>
-                {post.community && (
-                    <ThemedText className='text-sm text-muted dark:text-mutedDark font-sans mt-0.5'>
-                        @{post.community.name}
-                    </ThemedText>
+                {comment.content.trim().length > 0 && (
+                    <ThemedText className='text-xl font-sans mt-2'>{comment.content}</ThemedText>
                 )}
-                {post.content.trim().length > 0 && (
-                    <ThemedText className='text-lg font-sans mt-2'>{post.content}</ThemedText>
-                )}
-                {post.media.length > 0 && (
+                {comment.media.length > 0 && (
                     <View className='flex-row flex-wrap gap-2 mt-2'>
-                        {post.media.map((m, index) => {
-                            const count = post.media.length;
+                        {comment.media.map((m, index) => {
+                            const count = comment.media.length;
                             let itemStyle: ViewStyle = { width: '100%' };
                             if (count === 2) itemStyle = { width: '48%' };
                             else if (count === 3) itemStyle = index < 2 ? { width: '48%' } : { width: '100%' };
@@ -112,17 +105,20 @@ const PostCard = ({ post }: { post: Post }) => {
                         })}
                     </View>
                 )}
+                <ThemedText className='text-sm text-muted dark:text-mutedDark font-sans mt-2' numberOfLines={1}>
+                    {new Date(comment.createdAt).toLocaleString()}
+                </ThemedText>
                 <View className='flex-row items-center gap-6 mt-5'>
-                    <Pressable onPress={handleLikePost} className='flex-row items-center gap-1.5' hitSlop={8}>
-                        <IconSymbol name={post.isLiked ? 'heart.fill' : 'heart'} size={20} color={post.isLiked ? Colors[colorScheme].accent : Colors[colorScheme].muted} />
-                        <ThemedText className={cn('text-sm font-sans', post.isLiked ? 'text-accent dark:text-accentDark' : 'text-muted dark:text-mutedDark')}>
-                            {post.likes_count}
+                    <Pressable onPress={handleLikeComment} className='flex-row items-center gap-1.5' hitSlop={8}>
+                        <IconSymbol name={comment.isLiked ? 'heart.fill' : 'heart'} size={20} color={comment.isLiked ? Colors[colorScheme].accent : Colors[colorScheme].muted} />
+                        <ThemedText className={cn('text-sm font-sans', comment.isLiked ? 'text-accent dark:text-accentDark' : 'text-muted dark:text-mutedDark')}>
+                            {comment.likes_count}
                         </ThemedText>
                     </Pressable>
                     <Pressable className='flex-row items-center gap-1.5' hitSlop={8}>
                         <IconSymbol name='message' size={20} color={Colors[colorScheme].muted} />
                         <ThemedText className='text-sm font-sans text-muted dark:text-mutedDark'>
-                            {post.comments_count}
+                            {comment.replies_count}
                         </ThemedText>
                     </Pressable>
                     <Pressable className='flex-row items-center gap-1.5 opacity-50' hitSlop={8}>
@@ -146,4 +142,4 @@ const PostCard = ({ post }: { post: Post }) => {
     )
 }
 
-export default PostCard
+export default CommentDetailsCard

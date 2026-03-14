@@ -1,30 +1,29 @@
 import { Post } from '@/types/post.types'
 import React, { useState } from 'react'
 import { Alert, Pressable, View, ViewStyle } from 'react-native'
+import MediaItem from '../reusable/MediaItem'
 import { ThemedText } from '../reusable/themed-text'
 import ProfileIcon from '../reusable/profile-icon'
-import { formatRelativeDate } from '@/utils/date.utils'
 import Tag from '../reusable/tag'
-import { abbreviateMajor } from '@/utils/general.utils'
 import { IconSymbol } from '../reusable/icon-symbol'
 import { useColorScheme } from 'nativewind'
 import { Colors } from '@/constants/theme'
 import { cn } from '@/utils/cn.utils'
 import { postService } from '@/services/post.service'
 import { InfiniteData, useQueryClient } from '@tanstack/react-query'
-import { Href, router } from 'expo-router'
-import MediaItem from '../reusable/MediaItem'
+import { abbreviateMajor } from '@/utils/general.utils'
 import { ImageViewerModal } from '../reusable/ImageViewerModal'
 
 type PostsQueryData = InfiniteData<{ data: Post[] }>
 
-const PostCard = ({ post }: { post: Post }) => {
+const PostDetailsCard = ({ post }: { post: Post }) => {
     const { colorScheme: colorScheme = "light" } = useColorScheme();
     const queryClient = useQueryClient();
     const [fullScreenImageUri, setFullScreenImageUri] = useState<string | null>(null);
 
     const handleLikePost = async () => {
         const previousDataList = queryClient.getQueriesData<PostsQueryData>({ queryKey: ['posts'] })
+        const previousPost = queryClient.getQueryData<Post>(['post', post.id])
 
         queryClient.setQueriesData<PostsQueryData>(
             { queryKey: ['posts'] },
@@ -44,6 +43,15 @@ const PostCard = ({ post }: { post: Post }) => {
             }
         )
 
+        queryClient.setQueryData(['post', post.id], (old: Post | undefined) => {
+            if (!old) return old
+            return {
+                ...old,
+                isLiked: !old.isLiked,
+                likes_count: old.isLiked ? old.likes_count - 1 : old.likes_count + 1,
+            }
+        })
+
         try {
             const result = post.isLiked ? await postService.unlikePost({ id: post.id }) : await postService.likePost({ id: post.id })
             if (!result.success) {
@@ -53,32 +61,22 @@ const PostCard = ({ post }: { post: Post }) => {
             previousDataList.forEach(([queryKey, data]) => {
                 queryClient.setQueryData(queryKey, data)
             })
+            queryClient.setQueryData(['post', post.id], previousPost)
             Alert.alert('Oops!', error instanceof Error ? error.message : 'An error occurred while liking/unliking the post')
         }
     }
 
-    const handleNavigateToProfile = () => {
-        // TODO: router.push(`/profile/${post.user.id}`)
-    }
-
     return (
-        <Pressable onPress={() => router.push(`/post/${post.id}` as Href)} className='flex-row gap-3 p-4 border-b border-border dark:border-borderDark'>
-            <Pressable onPress={handleNavigateToProfile}>
-                <ProfileIcon avatarUrl={post.user.avatar_url} />
-            </Pressable>
+        <Pressable className='flex-row gap-3 p-4 border-b border-border dark:border-borderDark'>
+            <ProfileIcon avatarUrl={post.user.avatar_url} />
             <View className='flex-1 min-w-0'>
                 <View className='flex-row flex-wrap items-center gap-x-2 gap-y-1'>
-                    <Pressable onPress={handleNavigateToProfile} className='flex-row items-center gap-x-2'>
-                        <ThemedText className='text-lg font-sans-bold' numberOfLines={1}>
-                            {post.user.name}
-                        </ThemedText>
-                        {post.user.major && (
-                            <Tag label={abbreviateMajor(post.user.major)} />
-                        )}
-                    </Pressable>
-                    <ThemedText className='text-sm text-muted dark:text-mutedDark font-sans' numberOfLines={1}>
-                        • {formatRelativeDate(post.createdAt)}
+                    <ThemedText className='text-lg font-sans-bold' numberOfLines={1}>
+                        {post.user.name}
                     </ThemedText>
+                    {post.user.major && (
+                        <Tag label={abbreviateMajor(post.user.major)} />
+                    )}
                     <Pressable className='ml-auto p-1 -m-1' hitSlop={8}>
                         <IconSymbol name='ellipsis' size={20} color={Colors[colorScheme].muted} />
                     </Pressable>
@@ -89,7 +87,7 @@ const PostCard = ({ post }: { post: Post }) => {
                     </ThemedText>
                 )}
                 {post.content.trim().length > 0 && (
-                    <ThemedText className='text-lg font-sans mt-2'>{post.content}</ThemedText>
+                    <ThemedText className='text-xl font-sans mt-2'>{post.content}</ThemedText>
                 )}
                 {post.media.length > 0 && (
                     <View className='flex-row flex-wrap gap-2 mt-2'>
@@ -112,6 +110,9 @@ const PostCard = ({ post }: { post: Post }) => {
                         })}
                     </View>
                 )}
+                <ThemedText className='text-sm text-muted dark:text-mutedDark font-sans mt-2' numberOfLines={1}>
+                    {new Date(post.createdAt).toLocaleString()}
+                </ThemedText>
                 <View className='flex-row items-center gap-6 mt-5'>
                     <Pressable onPress={handleLikePost} className='flex-row items-center gap-1.5' hitSlop={8}>
                         <IconSymbol name={post.isLiked ? 'heart.fill' : 'heart'} size={20} color={post.isLiked ? Colors[colorScheme].accent : Colors[colorScheme].muted} />
@@ -146,4 +147,4 @@ const PostCard = ({ post }: { post: Post }) => {
     )
 }
 
-export default PostCard
+export default PostDetailsCard
