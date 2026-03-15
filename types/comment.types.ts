@@ -23,9 +23,11 @@ export interface Comment {
     replies_count: number;
     createdAt: Date;
     updatedAt: Date;   
-    user: CommentAuthor
-    media: CommentMedia[]
-    isLiked: boolean
+    user: CommentAuthor;
+    media: CommentMedia[];
+    isLiked: boolean;
+    is_deleted: boolean;
+    isBookmarked: boolean;
 };
 
 export interface GetCommentsQuery {

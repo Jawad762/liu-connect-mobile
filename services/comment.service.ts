@@ -1,3 +1,4 @@
+import { GetPostsQuery } from "@/types/post.types"
 import { ApiResponse } from "../types/api.types"
 import {
     Comment,
@@ -43,6 +44,21 @@ export const commentService = {
 
     unlikeComment: async (id: string): Promise<ApiResponse<undefined>> => {
         const response = await apiClient.patch(`/comments/${id}/unlike`)
+        return response.data
+    },
+
+    getBookmarkedComments: async (query: Omit<GetCommentsQuery, "postId">): Promise<ApiResponse<Comment[]>> => {
+        const response = await apiClient.get("/comments/bookmarks", { params: query })
+        return response.data
+    },
+
+    bookmarkComment: async (id: string): Promise<ApiResponse<undefined>> => {
+        const response = await apiClient.post(`/comments/${id}/bookmark`)
+        return response.data
+    },
+
+    unbookmarkComment: async (id: string): Promise<ApiResponse<undefined>> => {
+        const response = await apiClient.delete(`/comments/${id}/unbookmark`)
         return response.data
     },
 }

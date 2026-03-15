@@ -9,7 +9,7 @@ import { cn } from '@/utils/cn.utils'
 import ProfileIcon from '../reusable/profile-icon'
 import { DrawerActions } from '@react-navigation/native'
 
-const HomeHeader = () => {
+const HomeHeader = ({ selectedTab, setSelectedTab }: { selectedTab: string, setSelectedTab: (tab: string) => void }) => {
     const user = useAuthStore((state) => state.user);
     const navigation = useNavigation();
 
@@ -18,8 +18,8 @@ const HomeHeader = () => {
     };
 
     // TODO: Get user'scommunities from API
-    const communities = ["CSCI300", "Basketball", "Art Club"]
-    const tabs = ["For you", "Following"]
+    const communities = [{ name: "CSCI300", id: "1" }, { name: "Basketball", id: "2" }, { name: "Art Club", id: "3" }]
+    const tabs = [{ name: "For you", id: "for-you" }, { name: "Following", id: "following" }]
 
     if (!user) {
         return <Redirect href="/(auth)/login" />;
@@ -35,8 +35,15 @@ const HomeHeader = () => {
                 <View className='w-6'></View>
             </View>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName='flex-row gap-3'>
-                {[...tabs, ...communities].map((tab, i) => (
-                    <ThemedText key={tab} className={cn(i === 0 ? "font-sans-medium border-accent" : "border-transparent text-muted dark:text-mutedDark", "text-lg border-b-4 p-2")}>{tab}</ThemedText>
+                {tabs.map((tab, i) => (
+                    <Pressable key={tab.id} onPress={() => setSelectedTab(tab.id)}>
+                        <ThemedText key={tab.id} className={cn(tab.id === selectedTab ? "font-sans-medium border-accent" : "border-transparent text-muted dark:text-mutedDark", "text-lg border-b-4 p-2")}>{tab.name}</ThemedText>
+                    </Pressable>
+                ))}
+                {communities.map((tab, i) => (
+                    <Pressable key={tab.id} onPress={() => setSelectedTab(tab.id)}>
+                        <ThemedText key={tab.id} className={cn(tab.id === selectedTab ? "font-sans-medium border-accent" : "border-transparent text-muted dark:text-mutedDark", "text-lg border-b-4 p-2")}>{tab.name}</ThemedText>
+                    </Pressable>
                 ))}
             </ScrollView>
         </ThemedView>

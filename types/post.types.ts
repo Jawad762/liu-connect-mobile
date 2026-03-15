@@ -26,6 +26,7 @@ export interface Post {
     community: PostCommunity | null
     media: MediaItem[]
     isLiked: boolean
+    isBookmarked: boolean
 }
 
 export interface GetPostsQuery {
@@ -50,8 +51,4 @@ export interface CreatePostPayload {
 export interface UpdatePostPayload {
     content: string
     media: CreatePostMedia[]
-}
-
-export interface LikePostPayload {
-    id: string
 }

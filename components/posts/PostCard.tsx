@@ -15,6 +15,10 @@ import { InfiniteData, useQueryClient } from '@tanstack/react-query'
 import { Href, router } from 'expo-router'
 import MediaItem from '../reusable/MediaItem'
 import { ImageViewerModal } from '../reusable/ImageViewerModal'
+import PostContextMenu from './PostContextMenu'
+import UpdatePostModal from './UpdatePostModal'
+import * as Clipboard from 'expo-clipboard';
+import LoadingOverlay from '../reusable/loading-overlay'
 
 type PostsQueryData = InfiniteData<{ data: Post[] }>
 
@@ -22,6 +26,8 @@ const PostCard = ({ post }: { post: Post }) => {
     const { colorScheme: colorScheme = "light" } = useColorScheme();
     const queryClient = useQueryClient();
     const [fullScreenImageUri, setFullScreenImageUri] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [updatePostModalVisible, setUpdatePostModalVisible] = useState(false);
 
     const handleLikePost = async () => {
         const previousDataList = queryClient.getQueriesData<PostsQueryData>({ queryKey: ['posts'] })
@@ -45,7 +51,7 @@ const PostCard = ({ post }: { post: Post }) => {
         )
 
         try {
-            const result = post.isLiked ? await postService.unlikePost({ id: post.id }) : await postService.likePost({ id: post.id })
+            const result = post.isLiked ? await postService.unlikePost(post.id) : await postService.likePost(post.id)
             if (!result.success) {
                 throw new Error(result.message)
             }
@@ -61,8 +67,62 @@ const PostCard = ({ post }: { post: Post }) => {
         // TODO: router.push(`/profile/${post.user.id}`)
     }
 
+    const handleDeletePost = async () => {
+        try {
+            setIsDeleting(true)
+            const result = await postService.deletePost(post.id)
+            if (!result.success) {
+                throw new Error(result.message)
+            }
+            queryClient.invalidateQueries({ queryKey: ['posts'] })
+            Alert.alert('Success!', 'Post deleted successfully')
+        } catch (error) {
+            Alert.alert('Oops!', error instanceof Error ? error.message : 'An error occurred while deleting the post')
+        } finally {
+            setIsDeleting(false)
+        }
+    }
+
+    const handleCopyText = async () => {
+        await Clipboard.setStringAsync(post.content)
+        Alert.alert('Success!', 'Text copied to clipboard')
+    }
+
+    const handleBookmarkPost = async () => {
+        const previousDataList = queryClient.getQueriesData<PostsQueryData>({ queryKey: ['posts'] })
+        queryClient.setQueriesData<PostsQueryData>(
+            { queryKey: ['posts'] },
+            (old) => {
+                if (!old) return old
+                return {
+                    ...old,
+                    pages: old.pages.map((page) => ({
+                        ...page,
+                        data: page.data.map((p) =>
+                            p.id === post.id
+                                ? { ...p, isBookmarked: !p.isBookmarked }
+                                : p
+                        ),
+                    })),
+                }
+            }
+        )
+        try {
+            const result = post.isBookmarked ? await postService.unbookmarkPost(post.id) : await postService.bookmarkPost(post.id)
+            if (!result.success) {
+                throw new Error(result.message)
+            }
+            queryClient.invalidateQueries({ queryKey: ['post-bookmarks'] })
+        } catch (error) {
+            previousDataList.forEach(([queryKey, data]) => {
+                queryClient.setQueryData(queryKey, data)
+            })
+            Alert.alert('Oops!', error instanceof Error ? error.message : 'An error occurred while bookmarking the post')
+        }
+    }
+
     return (
-        <Pressable onPress={() => router.push(`/post/${post.id}` as Href)} className='flex-row gap-3 p-4 border-b border-border dark:border-borderDark'>
+        <Pressable onPress={() => router.push(`/post/${post.id}` as Href)} className='flex-row items-start gap-3 p-4 border-b border-border dark:border-borderDark'>
             <Pressable onPress={handleNavigateToProfile}>
                 <ProfileIcon avatarUrl={post.user.avatar_url} />
             </Pressable>
@@ -79,9 +139,7 @@ const PostCard = ({ post }: { post: Post }) => {
                     <ThemedText className='text-sm text-muted dark:text-mutedDark font-sans' numberOfLines={1}>
                         • {formatRelativeDate(post.createdAt)}
                     </ThemedText>
-                    <Pressable className='ml-auto p-1 -m-1' hitSlop={8}>
-                        <IconSymbol name='ellipsis' size={20} color={Colors[colorScheme].muted} />
-                    </Pressable>
+                    <PostContextMenu post={post} onEdit={() => setUpdatePostModalVisible(true)} onDelete={handleDeletePost} onCopyText={handleCopyText} />
                 </View>
                 {post.community && (
                     <ThemedText className='text-sm text-muted dark:text-mutedDark font-sans mt-0.5'>
@@ -119,18 +177,18 @@ const PostCard = ({ post }: { post: Post }) => {
                             {post.likes_count}
                         </ThemedText>
                     </Pressable>
-                    <Pressable className='flex-row items-center gap-1.5' hitSlop={8}>
+                    <View className='flex-row items-center gap-1.5' hitSlop={8}>
                         <IconSymbol name='message' size={20} color={Colors[colorScheme].muted} />
                         <ThemedText className='text-sm font-sans text-muted dark:text-mutedDark'>
                             {post.comments_count}
                         </ThemedText>
-                    </Pressable>
+                    </View>
                     <Pressable className='flex-row items-center gap-1.5 opacity-50' hitSlop={8}>
                         <IconSymbol name='chart.bar' size={20} color={Colors[colorScheme].muted} />
                     </Pressable>
                     <View className='flex-1' />
-                    <Pressable hitSlop={8}>
-                        <IconSymbol name='bookmark' size={20} color={Colors[colorScheme].muted} />
+                    <Pressable onPress={handleBookmarkPost} hitSlop={8}>
+                        <IconSymbol name={post.isBookmarked ? 'bookmark.fill' : 'bookmark'} size={20} color={post.isBookmarked ? Colors[colorScheme].accent : Colors[colorScheme].muted} />
                     </Pressable>
                     <Pressable hitSlop={8}>
                         <IconSymbol name='square.and.arrow.up' size={20} color={Colors[colorScheme].muted} />
@@ -141,6 +199,8 @@ const PostCard = ({ post }: { post: Post }) => {
                     imageUri={fullScreenImageUri}
                     onClose={() => setFullScreenImageUri(null)}
                 />
+                <LoadingOverlay visible={isDeleting} />
+                <UpdatePostModal visible={updatePostModalVisible} onRequestClose={() => setUpdatePostModalVisible(false)} post={post} />
             </View>
         </Pressable>
     )

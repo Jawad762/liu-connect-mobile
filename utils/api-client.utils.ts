@@ -6,8 +6,6 @@ import { Href, router } from 'expo-router'
 export const apiClient = axios.create({
     baseURL: `${API_URL}/api`,
     timeout: 10000,
-    // Don't throw on 4xx/5xx
-    validateStatus: (status) => status >= 200 && status < 600,
 })
 
 apiClient.interceptors.request.use((config) => {
@@ -28,43 +26,50 @@ const UNAUTHENTICATED_ENDPOINTS = [
 ]
 
 apiClient.interceptors.response.use(
-    async (response) => {
-        if (response.status === 429) {
+    (response) => response,
+    async (error) => {
+        const response = error.response
+        const status = response?.status
+
+        if (status === 429) {
             router.navigate('/rate-limited' as Href)
-            return Promise.reject(response)
+            return Promise.reject(error)
         }
 
-        if (response.status !== 401) return response
+        // For all non-auth errors, surface backend message (if any)
+        if (status !== 401) {
+            const serverMessage = response?.data?.message
+            if (typeof serverMessage === 'string' && serverMessage.trim().length > 0) {
+                error.message = serverMessage
+            }
+            return Promise.reject(error)
+        }
 
         const originalRequest = response.config as typeof response.config & { _retry?: boolean }
-        const url = originalRequest.url ?? ''
+        const url = originalRequest?.url ?? ''
 
-        // Auth endpoints: 401 means invalid credentials - return response for caller to handle
-        if (UNAUTHENTICATED_ENDPOINTS.some((ep) => url.includes(ep))) return response
+        // Auth endpoints: 401 means invalid credentials - let caller handle
+        if (UNAUTHENTICATED_ENDPOINTS.some((ep) => url.includes(ep))) return Promise.reject(error)
 
         // Refresh-token failed - redirect to login
         if (url.includes('/auth/refresh-token')) {
             router.navigate('/(auth)/login' as Href)
-            return Promise.reject(response)
+            return Promise.reject(error)
         }
 
         // Already retried - redirect to login
         if (originalRequest._retry) {
             router.navigate('/(auth)/login' as Href)
-            return Promise.reject(response)
+            return Promise.reject(error)
         }
 
         const refreshSuccess = await useAuthStore.getState().refreshAccessToken()
         if (!refreshSuccess) {
             router.navigate('/(auth)/login' as Href)
-            return Promise.reject(response)
+            return Promise.reject(error)
         }
 
         originalRequest._retry = true
         return apiClient.request(originalRequest)
-    },
-    (error) => {
-        // Network errors, timeouts, etc.
-        return Promise.reject(error)
     }
 )

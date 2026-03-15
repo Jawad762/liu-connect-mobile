@@ -3,7 +3,7 @@ import type { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { ThemedView } from '../reusable/themed-view'
 import { ThemedText } from '../reusable/themed-text'
 import useAuthStore from '@/stores/auth.store'
-import { Redirect, router } from 'expo-router'
+import { Href, Redirect, router } from 'expo-router'
 import { Alert, Pressable, ScrollView, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { IconSymbol } from '../reusable/icon-symbol'
@@ -75,7 +75,7 @@ const DrawerContent = (_props: DrawerContentComponentProps) => {
 
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerClassName='gap-2 mt-12'>
                     {menus.map((menu) => (
-                        <Pressable key={menu.name} className='p-4 flex-row items-center gap-6 active:bg-border active:dark:bg-borderDark'>
+                        <Pressable onPress={() => router.push(menu.href as Href)} key={menu.name} className='p-4 flex-row items-center gap-6 active:bg-border active:dark:bg-borderDark'>
                             <IconSymbol name={menu.icon as SymbolViewProps['name']} size={24} color={Colors[colorScheme].icon} />
                             <ThemedText className='text-2xl font-sans-bold'>{menu.name}</ThemedText>
                         </Pressable>

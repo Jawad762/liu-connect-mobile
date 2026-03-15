@@ -1,15 +1,23 @@
-import usePosts from '@/hooks/usePosts';
 import React from 'react'
 import { ActivityIndicator, RefreshControl, View } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler'
 import PostCard from './PostCard';
 import PostListSkeleton from '../skeletons/PostListSkeleton';
+import ErrorState from '../reusable/error-state';
+import { Post } from '@/types/post.types';
+import EmptyState from '../reusable/empty-state';
 
-const PostList = () => {
-    const { posts, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage, refetch, isFetching } = usePosts({ size: 10 });
-
-    if (isLoading) {
+const PostList = ({ posts, isFetching, error, refetch, fetchNextPage, hasNextPage, isFetchingNextPage }: { posts: Post[], isFetching: boolean, error: Error | null | undefined, refetch: () => void, fetchNextPage: () => void, hasNextPage: boolean, isFetchingNextPage: boolean }) => {
+    if (isFetching) {
         return <PostListSkeleton />
+    }
+
+    if (error) {
+        return <ErrorState message={error.message} onRetry={refetch} />
+    }
+
+    if (posts.length === 0) {
+        return <EmptyState message="No posts found" />
     }
 
     return (

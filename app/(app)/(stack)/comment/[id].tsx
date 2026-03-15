@@ -28,7 +28,7 @@ const CommentScreen = () => {
     }
 
     return (
-        <ThemedView className='flex-1' style={{ paddingTop: insets.top, paddingBottom: 100 }}>
+        <ThemedView className='flex-1' style={{ paddingTop: insets.top, paddingBottom: comment?.is_deleted ? 0 : 100 }}>
             <CommentList
                 comments={comments}
                 fetchNextPage={fetchNextPage}
@@ -45,12 +45,16 @@ const CommentScreen = () => {
                     </>
                 }
             />
-            <View style={{ paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }} className='absolute bottom-0 left-6 right-6'>
-                <Pressable className='rounded-full bg-surface dark:bg-surfaceDark p-4' onPress={() => setCreateCommentModalVisible(true)}> 
-                    <ThemedText className='text-muted dark:text-mutedDark'>Post your reply</ThemedText>
-                </Pressable>
-            </View>
-            <CreateCommentModal visible={createCommentModalVisible} onRequestClose={() => setCreateCommentModalVisible(false)} postId={comment?.postId ?? ''} parentId={id as string} />
+            {!comment?.is_deleted && (
+                <>
+                    <View style={{ paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }} className='absolute bottom-0 left-6 right-6'>
+                        <Pressable className='rounded-full bg-surface dark:bg-surfaceDark p-4' onPress={() => setCreateCommentModalVisible(true)}>
+                            <ThemedText className='text-muted dark:text-mutedDark'>Post your reply</ThemedText>
+                        </Pressable>
+                    </View>
+                    <CreateCommentModal visible={createCommentModalVisible} onRequestClose={() => setCreateCommentModalVisible(false)} postId={comment?.postId ?? ''} parentId={id as string} />
+                </>
+            )}
         </ThemedView>
     )
 }

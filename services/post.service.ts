@@ -2,7 +2,6 @@ import { ApiResponse } from "../types/api.types"
 import {
     CreatePostPayload,
     GetPostsQuery,
-    LikePostPayload,
     Post,
     UpdatePostPayload,
 } from "../types/post.types"
@@ -37,13 +36,28 @@ export const postService = {
         return response.data
     },
 
-    likePost: async (payload: LikePostPayload): Promise<ApiResponse<undefined>> => {
-        const response = await apiClient.patch("/posts/like", payload)
+    likePost: async (id: string): Promise<ApiResponse<undefined>> => {
+        const response = await apiClient.patch(`/posts/${id}/like`)
         return response.data
     },
 
-    unlikePost: async (payload: LikePostPayload): Promise<ApiResponse<undefined>> => {
-        const response = await apiClient.patch("/posts/unlike", payload)
+    unlikePost: async (id: string): Promise<ApiResponse<undefined>> => {
+        const response = await apiClient.patch(`/posts/${id}/unlike`)
+        return response.data
+    },
+
+    getBookmarkedPosts: async (query: GetPostsQuery = {}): Promise<ApiResponse<Post[]>> => {
+        const response = await apiClient.get("/posts/bookmarks", { params: query })
+        return response.data
+    },
+
+    bookmarkPost: async (id: string): Promise<ApiResponse<undefined>> => {
+        const response = await apiClient.post(`/posts/${id}/bookmark`)
+        return response.data
+    },
+
+    unbookmarkPost: async (id: string): Promise<ApiResponse<undefined>> => {
+        const response = await apiClient.delete(`/posts/${id}/unbookmark`)
         return response.data
     },
 }

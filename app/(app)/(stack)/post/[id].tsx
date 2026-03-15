@@ -46,7 +46,7 @@ const PostScreen = () => {
                 }
             />
             <View style={{ paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }} className='absolute bottom-0 left-6 right-6'>
-                <Pressable className='rounded-full bg-surface dark:bg-surfaceDark p-4' onPress={() => setCreateCommentModalVisible(true)}> 
+                <Pressable className='rounded-full bg-surface dark:bg-surfaceDark p-4' onPress={() => setCreateCommentModalVisible(true)}>
                     <ThemedText className='text-muted dark:text-mutedDark'>Post your reply</ThemedText>
                 </Pressable>
             </View>

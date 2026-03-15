@@ -4,6 +4,7 @@ import { ActivityIndicator, RefreshControl, View } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler'
 import CommentCard from './CommentCard';
 import CommentListSkeleton from '../skeletons/CommentListSkeleton';
+import ErrorState from '../reusable/error-state';
 
 interface CommentListProps {
     comments: Comment[]
@@ -15,9 +16,14 @@ interface CommentListProps {
     isRefreshing?: boolean
     onRefresh?: () => void
     ListHeaderComponent?: ReactNode
+    error?: Error | null
 }
 
-const CommentList = ({ comments, fetchNextPage, hasNextPage, isFetchingNextPage, refetch, isFetching, isRefreshing, onRefresh, ListHeaderComponent }: CommentListProps) => {
+const CommentList = ({ comments, fetchNextPage, hasNextPage, isFetchingNextPage, refetch, isFetching, isRefreshing, onRefresh, ListHeaderComponent, error }: CommentListProps) => {
+    if (error) {
+        return <ErrorState message={error.message} onRetry={onRefresh ?? refetch} />
+    }
+
     return (
         <View className='flex-1'>
             <FlatList
