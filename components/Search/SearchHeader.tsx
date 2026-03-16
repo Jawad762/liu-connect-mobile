@@ -3,14 +3,13 @@ import { Pressable, TextInput, View } from 'react-native'
 import { ThemedView } from '../reusable/themed-view'
 import useAuthStore from '@/stores/auth.store'
 import { Redirect, useNavigation } from 'expo-router'
-import { screens } from '@/utils/screens'
-import { IconSymbol } from '@/components/reusable/icon-symbol'
+import { IconSymbol } from '../reusable/icon-symbol'
 import ProfileIcon from '../reusable/profile-icon'
 import { Colors } from '@/constants/theme-colors'
 import { useColorScheme } from 'nativewind'
 import { DrawerActions } from '@react-navigation/native'
 
-const SearchHeader = () => {
+const SearchHeader = ({ searchQuery, setSearchQuery }: { searchQuery: string, setSearchQuery: (query: string) => void }) => {
     const user = useAuthStore((state) => state.user);
     const { colorScheme: colorScheme = "light" } = useColorScheme();
 
@@ -21,7 +20,7 @@ const SearchHeader = () => {
     };
 
     if (!user) {
-        return <Redirect href={screens.auth.login} />;
+        return <Redirect href="/(auth)/login" />;
     }
 
     return (
@@ -32,9 +31,10 @@ const SearchHeader = () => {
             <View style={{ backgroundColor: Colors[colorScheme].surface }} className='flex-1 flex-row items-center gap-2 p-3 rounded-full'>
                 <IconSymbol name="magnifyingglass" size={16} color={Colors[colorScheme].muted} />
                 <TextInput
+                    value={searchQuery}
+                    onChangeText={text => setSearchQuery(text)}
                     className="flex-1 min-w-0 text-foreground dark:text-foregroundDark font-sans-medium"
                     placeholder="Search"
-                    placeholderClassName='text-muted dark:text-mutedDark font-sans-medium'
                 />
             </View>
         </ThemedView>

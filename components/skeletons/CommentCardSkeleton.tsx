@@ -1,31 +1,6 @@
 import React from 'react'
 import { View } from 'react-native'
-import Animated from 'react-native-reanimated'
-import { useColorScheme } from 'nativewind'
-
-const SkeletonBlock = ({
-    width,
-    height = 16,
-    borderRadius = 4,
-    style,
-}: {
-    width?: number | string
-    height?: number
-    borderRadius?: number
-    style?: object
-}) => {
-    const { colorScheme = 'light' } = useColorScheme()
-    const bgColor = colorScheme === 'dark' ? 'rgba(113, 118, 123, 0.4)' : 'rgba(83, 100, 113, 0.35)'
-
-    return (
-        <Animated.View
-            style={[
-                { width, height, borderRadius, backgroundColor: bgColor },
-                style,
-            ]}
-        />
-    )
-}
+import SkeletonBlock from './SkeletonBlock'
 
 const CommentCardSkeleton = () => {
     return (

@@ -52,3 +52,9 @@ export interface UpdatePostPayload {
     content: string
     media: CreatePostMedia[]
 }
+
+export interface SearchPostsQuery {
+    query: string
+    page?: number
+    size?: number
+}

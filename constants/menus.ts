@@ -1,13 +1,15 @@
-export const menus = [
+import { screens } from "@/utils/screens";
+
+export const menus = (userId: string) => [
     {
         name: 'Profile',
         icon: 'person',
-        href: '/profile',
+        href: screens.user.details(userId),
     },
     {
         name: "Bookmarks",
         icon: 'bookmark',
-        href: '/bookmarks',
+        href: screens.bookmarks,
     },
     {
         name: 'Settings',

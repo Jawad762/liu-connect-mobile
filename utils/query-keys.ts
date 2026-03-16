@@ -7,6 +7,7 @@ export const postKeys = {
     ['posts', filters.communityId, filters.authorId, filters.followingOnly, filters.size] as const,
   detail: (id: string) => ['post', id] as const,
   bookmarks: (size?: number) => ['post-bookmarks', size] as const,
+  search: (query: string, size?: number) => ['posts-search', query, size] as const,
 }
 
 export const commentKeys = {
@@ -17,3 +18,8 @@ export const commentKeys = {
   bookmarks: (size?: number) => ['comment-bookmarks', size] as const,
 }
 
+export const userKeys = {
+  all: ['users'] as const,
+  search: (query: string, size?: number) => ['users-search', query, size] as const,
+  detail: (id: string) => ['user', id] as const,
+}

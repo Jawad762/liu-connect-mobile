@@ -46,6 +46,8 @@ const DrawerContent = (_props: DrawerContentComponentProps) => {
         return <Redirect href={screens.auth.login} />;
     }
 
+    const menuItems = menus(user.id);
+
     return (
         <SafeAreaView className='bg-background dark:bg-backgroundDark flex-1 border-r-[0.25px] border-border dark:border-borderDark'>
             <ThemedView className='flex-1'>
@@ -75,7 +77,7 @@ const DrawerContent = (_props: DrawerContentComponentProps) => {
                 </View>
 
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerClassName='gap-2 mt-12'>
-                    {menus.map((menu) => (
+                    {menuItems.map((menu) => (
                         <Pressable onPress={() => router.push(menu.href as Href)} key={menu.name} className='p-4 flex-row items-center gap-6 active:bg-border active:dark:bg-borderDark'>
                             <IconSymbol name={menu.icon as SymbolViewProps['name']} size={24} color={Colors[colorScheme].icon} />
                             <ThemedText className='text-2xl font-sans-bold'>{menu.name}</ThemedText>

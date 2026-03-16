@@ -1,6 +1,6 @@
 export interface User {
     id: string;
-    email: string;
+    email?: string;
     name: string | null;
     avatar_url: string | null;
     bio: string | null;
@@ -11,4 +11,26 @@ export interface User {
     following_count: number;
     createdAt: Date;
     updatedAt: Date;
+    is_following?: boolean;
+}
+
+export interface SearchUsersQuery {
+    query: string
+    page?: number
+    size?: number
+}
+
+export interface UpdateProfilePayload {
+    name: string
+    avatar_url?: string | null
+    bio?: string | null
+}
+
+export interface PaginationQuery {
+    page?: number
+    size?: number
+}
+
+export interface AddPushTokenPayload {
+    token: string
 }

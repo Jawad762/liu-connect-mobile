@@ -3,6 +3,7 @@ import {
     CreatePostPayload,
     GetPostsQuery,
     Post,
+    SearchPostsQuery,
     UpdatePostPayload,
 } from "../types/post.types"
 import { apiClient } from "../utils/api-client.utils"
@@ -58,6 +59,11 @@ export const postService = {
 
     unbookmarkPost: async (id: string): Promise<ApiResponse<undefined>> => {
         const response = await apiClient.delete(`/posts/${id}/unbookmark`)
+        return response.data
+    },
+
+    search: async (query: SearchPostsQuery): Promise<ApiResponse<Post[]>> => {
+        const response = await apiClient.get(`/posts/search`, { params: query })
         return response.data
     },
 }

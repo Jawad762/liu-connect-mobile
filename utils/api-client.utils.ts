@@ -2,6 +2,7 @@ import { API_URL } from '@/constants/api'
 import useAuthStore from '@/stores/auth.store'
 import axios from 'axios'
 import { Href, router } from 'expo-router'
+import { screens } from './screens'
 
 export const apiClient = axios.create({
     baseURL: `${API_URL}/api`,
@@ -32,7 +33,7 @@ apiClient.interceptors.response.use(
         const status = response?.status
 
         if (status === 429) {
-            router.navigate('/rate-limited' as Href)
+            router.navigate(screens.rateLimited as Href)
             return Promise.reject(error)
         }
 
@@ -53,19 +54,19 @@ apiClient.interceptors.response.use(
 
         // Refresh-token failed - redirect to login
         if (url.includes('/auth/refresh-token')) {
-            router.navigate('/(auth)/login' as Href)
+            router.navigate(screens.auth.login as Href)
             return Promise.reject(error)
         }
 
         // Already retried - redirect to login
         if (originalRequest._retry) {
-            router.navigate('/(auth)/login' as Href)
+            router.navigate(screens.auth.login as Href)
             return Promise.reject(error)
         }
 
         const refreshSuccess = await useAuthStore.getState().refreshAccessToken()
         if (!refreshSuccess) {
-            router.navigate('/(auth)/login' as Href)
+            router.navigate(screens.auth.login as Href)
             return Promise.reject(error)
         }
 

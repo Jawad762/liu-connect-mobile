@@ -33,7 +33,7 @@ export interface Comment {
 export interface GetCommentsQuery {
     page?: number
     size?: number
-    postId: string
+    postId?: string
     userId?: string
     parentCommentId?: string
 }

@@ -20,6 +20,8 @@ import * as Linking from 'expo-linking'
 import CommentContextMenu from './CommentContextMenu'
 import LoadingOverlay from '../reusable/loading-overlay'
 import UpdateCommentModal from './UpdateCommentModal'
+import { router } from 'expo-router'
+import { screens } from '@/utils/screens'
 
 type CommentsQueryData = InfiniteData<{ data: Comment[] }>
 
@@ -156,9 +158,15 @@ const CommentDetailsCard = ({ comment }: { comment: Comment }) => {
         }
     }
 
+    const handleNavigateToProfile = () => {
+        router.push(screens.user.details(comment.user.id))
+    }
+
     return (
         <Pressable className='flex-row items-start gap-3 p-4 border-b border-border dark:border-borderDark'>
-            <ProfileIcon avatarUrl={comment.user.avatar_url} className='h-14 w-14' />
+            <Pressable onPress={handleNavigateToProfile}>
+                <ProfileIcon avatarUrl={comment.user.avatar_url} className='h-14 w-14' />
+            </Pressable>
             <View className='flex-1 min-w-0'>
                 <View className='flex-row flex-wrap items-center gap-x-2 gap-y-1'>
                     <ThemedText className='text-xl font-sans-bold' numberOfLines={1}>

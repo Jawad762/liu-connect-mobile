@@ -21,6 +21,8 @@ import * as Clipboard from 'expo-clipboard';
 import * as Linking from 'expo-linking'
 import LoadingOverlay from '../reusable/loading-overlay'
 import { postKeys, commentKeys } from '@/utils/query-keys'
+import { router } from 'expo-router'
+import { screens } from '@/utils/screens'
 
 type PostsQueryData = InfiniteData<{ data: Post[] }>
 
@@ -164,9 +166,15 @@ const PostDetailsCard = ({ post }: { post: Post }) => {
         }
     }
 
+    const handleNavigateToProfile = () => {
+        router.push(screens.user.details(post.user.id))
+    }
+
     return (
         <Pressable className='flex-row items-start gap-3 p-4 border-b border-border dark:border-borderDark'>
-            <ProfileIcon avatarUrl={post.user.avatar_url} className='h-14 w-14' />
+            <Pressable onPress={handleNavigateToProfile}>
+                <ProfileIcon avatarUrl={post.user.avatar_url} className='h-14 w-14' />
+            </Pressable>
             <View className='flex-1 min-w-0'>
                 <View className='flex-row flex-wrap items-center gap-x-2 gap-y-1'>
                     <ThemedText className='text-xl font-sans-bold' numberOfLines={1}>

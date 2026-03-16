@@ -69,7 +69,7 @@ const PostCard = ({ post }: { post: Post }) => {
     }
 
     const handleNavigateToProfile = () => {
-        // TODO: router.push(`/profile/${post.user.id}`)
+        router.push(screens.user.details(post.user.id))
     }
 
     const handleDeletePost = async () => {

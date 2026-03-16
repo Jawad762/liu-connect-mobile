@@ -81,7 +81,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
     }
 
     const handleNavigateToProfile = () => {
-        // TODO: router.push(`/profile/${comment.user.id}`)
+        router.push(screens.user.details(comment.user.id))
     }
 
     const handleDeleteComment = async () => {

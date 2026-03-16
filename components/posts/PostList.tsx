@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { ActivityIndicator, RefreshControl, View } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler'
 import PostCard from './PostCard';
@@ -7,7 +7,19 @@ import ErrorState from '../reusable/error-state';
 import { Post } from '@/types/post.types';
 import EmptyState from '../reusable/empty-state';
 
-const PostList = ({ posts, isLoading, isFetching, error, refetch, fetchNextPage, hasNextPage, isFetchingNextPage }: { posts: Post[], isLoading: boolean, isFetching: boolean, error: Error | null | undefined, refetch: () => void, fetchNextPage: () => void, hasNextPage: boolean, isFetchingNextPage: boolean }) => {
+interface PostListProps {
+    posts: Post[]
+    isLoading: boolean
+    isFetching: boolean
+    error: Error | null | undefined
+    refetch: () => void
+    fetchNextPage: () => void
+    hasNextPage: boolean
+    isFetchingNextPage: boolean
+    ListHeaderComponent?: React.ReactElement | null
+}
+
+const PostList = ({ posts, isLoading, isFetching, error, refetch, fetchNextPage, hasNextPage, isFetchingNextPage, ListHeaderComponent }: PostListProps) => {
     if (isLoading) {
         return <PostListSkeleton />
     }
@@ -30,6 +42,7 @@ const PostList = ({ posts, isLoading, isFetching, error, refetch, fetchNextPage,
                 onEndReached={() => hasNextPage && !isFetchingNextPage && fetchNextPage()}
                 onEndReachedThreshold={0.8}
                 refreshControl={<RefreshControl refreshing={isFetching} onRefresh={() => refetch()} />}
+                ListHeaderComponent={ListHeaderComponent}
                 ListFooterComponent={
                     isFetchingNextPage ? (
                         <View className='py-4 items-center'>
