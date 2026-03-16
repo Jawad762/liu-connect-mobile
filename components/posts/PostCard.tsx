@@ -1,6 +1,6 @@
 import { Post } from '@/types/post.types'
 import React, { useState } from 'react'
-import { Alert, Pressable, View, ViewStyle } from 'react-native'
+import { Alert, Pressable, Share, View, ViewStyle } from 'react-native'
 import { ThemedText } from '../reusable/themed-text'
 import ProfileIcon from '../reusable/profile-icon'
 import { formatRelativeDate } from '@/utils/date.utils'
@@ -13,6 +13,7 @@ import { cn } from '@/utils/cn.utils'
 import { postService } from '@/services/post.service'
 import { InfiniteData, useQueryClient } from '@tanstack/react-query'
 import { Href, router } from 'expo-router'
+import * as Linking from 'expo-linking'
 import MediaItem from '../reusable/MediaItem'
 import { ImageViewerModal } from '../reusable/ImageViewerModal'
 import PostContextMenu from './PostContextMenu'
@@ -121,6 +122,17 @@ const PostCard = ({ post }: { post: Post }) => {
         }
     }
 
+    const handleSharePost = async () => {
+        try {
+            const url = Linking.createURL(`/post/${post.id}`)
+            await Share.share({
+                message: `Check out this post on Liu Connect: ${url}`,
+            })
+        } catch (error) {
+            Alert.alert('Oops!', 'An error occurred while sharing the post')
+        }
+    }
+
     return (
         <Pressable onPress={() => router.push(`/post/${post.id}` as Href)} className='flex-row items-start gap-3 p-4 border-b border-border dark:border-borderDark'>
             <Pressable onPress={handleNavigateToProfile}>
@@ -190,7 +202,7 @@ const PostCard = ({ post }: { post: Post }) => {
                     <Pressable onPress={handleBookmarkPost} hitSlop={8}>
                         <IconSymbol name={post.isBookmarked ? 'bookmark.fill' : 'bookmark'} size={20} color={post.isBookmarked ? Colors[colorScheme].accent : Colors[colorScheme].muted} />
                     </Pressable>
-                    <Pressable hitSlop={8}>
+                    <Pressable onPress={handleSharePost} hitSlop={8}>
                         <IconSymbol name='square.and.arrow.up' size={20} color={Colors[colorScheme].muted} />
                     </Pressable>
                 </View>

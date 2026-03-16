@@ -1,7 +1,7 @@
 import { ApiResponse } from '@/types/api.types'
 import { Post } from '@/types/post.types'
 import React, { useState } from 'react'
-import { Alert, Pressable, View, ViewStyle } from 'react-native'
+import { Alert, Pressable, Share, View, ViewStyle } from 'react-native'
 import MediaItem from '../reusable/MediaItem'
 import { ThemedText } from '../reusable/themed-text'
 import ProfileIcon from '../reusable/profile-icon'
@@ -17,6 +17,7 @@ import { ImageViewerModal } from '../reusable/ImageViewerModal'
 import PostContextMenu from './PostContextMenu'
 import UpdatePostModal from './UpdatePostModal'
 import * as Clipboard from 'expo-clipboard';
+import * as Linking from 'expo-linking'
 import LoadingOverlay from '../reusable/loading-overlay'
 
 type PostsQueryData = InfiniteData<{ data: Post[] }>
@@ -148,6 +149,17 @@ const PostDetailsCard = ({ post }: { post: Post }) => {
         }
     }
 
+    const handleSharePost = async () => {
+        try {
+            const url = Linking.createURL(`/post/${post.id}`)
+            await Share.share({
+                message: `Check out this post on Liu Connect: ${url}`,
+            })
+        } catch (error) {
+            Alert.alert('Oops!', 'An error occurred while sharing the post')
+        }
+    }
+
     return (
         <Pressable className='flex-row items-start gap-3 p-4 border-b border-border dark:border-borderDark'>
             <ProfileIcon avatarUrl={post.user.avatar_url} className='h-14 w-14' />
@@ -213,7 +225,7 @@ const PostDetailsCard = ({ post }: { post: Post }) => {
                     <Pressable onPress={handleBookmarkPost} hitSlop={8}>
                         <IconSymbol name={post.isBookmarked ? 'bookmark.fill' : 'bookmark'} size={20} color={post.isBookmarked ? Colors[colorScheme].accent : Colors[colorScheme].muted} />
                     </Pressable>
-                    <Pressable hitSlop={8}>
+                    <Pressable onPress={handleSharePost} hitSlop={8}>
                         <IconSymbol name='square.and.arrow.up' size={20} color={Colors[colorScheme].muted} />
                     </Pressable>
                 </View>

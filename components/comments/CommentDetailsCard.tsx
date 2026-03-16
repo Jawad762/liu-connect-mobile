@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Alert, Pressable, View, ViewStyle } from 'react-native'
+import { Alert, Pressable, Share, View, ViewStyle } from 'react-native'
 import MediaItem from '../reusable/MediaItem'
 import { ThemedText } from '../reusable/themed-text'
 import ProfileIcon from '../reusable/profile-icon'
@@ -14,6 +14,7 @@ import { ImageViewerModal } from '../reusable/ImageViewerModal'
 import { Comment } from '@/types/comment.types'
 import { commentService } from '@/services/comment.service'
 import * as Clipboard from 'expo-clipboard';
+import * as Linking from 'expo-linking'
 import CommentContextMenu from './CommentContextMenu'
 import LoadingOverlay from '../reusable/loading-overlay'
 import UpdateCommentModal from './UpdateCommentModal'
@@ -136,6 +137,17 @@ const CommentDetailsCard = ({ comment }: { comment: Comment }) => {
         }
     }
 
+    const handleShareComment = async () => {
+        try {
+            const url = Linking.createURL(`/comment/${comment.id}?postId=${comment.postId}`)
+            await Share.share({
+                message: `Check out this comment on Liu Connect: ${url}`,
+            })
+        } catch (error) {
+            Alert.alert('Oops!', 'An error occurred while sharing the comment')
+        }
+    }
+
     return (
         <Pressable className='flex-row items-start gap-3 p-4 border-b border-border dark:border-borderDark'>
             <ProfileIcon avatarUrl={comment.user.avatar_url} className='h-14 w-14' />
@@ -205,7 +217,7 @@ const CommentDetailsCard = ({ comment }: { comment: Comment }) => {
                         <Pressable onPress={handleBookmarkComment} hitSlop={8}>
                             <IconSymbol name={comment.isBookmarked ? 'bookmark.fill' : 'bookmark'} size={20} color={comment.isBookmarked ? Colors[colorScheme].accent : Colors[colorScheme].muted} />
                         </Pressable>
-                        <Pressable hitSlop={8}>
+                        <Pressable onPress={handleShareComment} hitSlop={8}>
                             <IconSymbol name='square.and.arrow.up' size={20} color={Colors[colorScheme].muted} />
                         </Pressable>
                     </View>

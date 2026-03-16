@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Alert, Pressable, View, ViewStyle } from 'react-native'
+import { Alert, Pressable, Share, View, ViewStyle } from 'react-native'
 import { ThemedText } from '../reusable/themed-text'
 import ProfileIcon from '../reusable/profile-icon'
 import Tag from '../reusable/tag'
@@ -14,6 +14,7 @@ import { Comment } from '@/types/comment.types'
 import MediaItem from '../reusable/MediaItem'
 import { ImageViewerModal } from '../reusable/ImageViewerModal'
 import { Href, router } from 'expo-router'
+import * as Linking from 'expo-linking'
 import { formatRelativeDate } from '@/utils/date.utils'
 import * as Clipboard from 'expo-clipboard';
 import CommentContextMenu from './CommentContextMenu'
@@ -135,6 +136,17 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
         }
     }
 
+    const handleShareComment = async () => {
+        try {
+            const url = Linking.createURL(`/comment/${comment.id}?postId=${comment.postId}`)
+            await Share.share({
+                message: `Check out this comment on Liu Connect: ${url}`,
+            })
+        } catch (error) {
+            Alert.alert('Oops!', 'An error occurred while sharing the comment')
+        }
+    }
+
     return (
         <Pressable onPress={() => router.push(`/comment/${comment.id}?postId=${comment.postId}` as Href)} className='flex-row items-start gap-3 p-4 border-b border-border dark:border-borderDark'>
             <Pressable onPress={handleNavigateToProfile}>
@@ -216,7 +228,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
                             <Pressable onPress={handleBookmarkComment} hitSlop={8}>
                                 <IconSymbol name={comment.isBookmarked ? 'bookmark.fill' : 'bookmark'} size={20} color={comment.isBookmarked ? Colors[colorScheme].accent : Colors[colorScheme].muted} />
                             </Pressable>
-                            <Pressable hitSlop={8}>
+                            <Pressable onPress={handleShareComment} hitSlop={8}>
                                 <IconSymbol name='square.and.arrow.up' size={20} color={Colors[colorScheme].muted} />
                             </Pressable>
                         </>
