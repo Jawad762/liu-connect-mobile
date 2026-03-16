@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useLocalSearchParams } from 'expo-router'
 import usePost from '@/hooks/usePost'
 import { ThemedText } from '@/components/reusable/themed-text'
+import ErrorState from '@/components/reusable/error-state'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { ThemedView } from '@/components/reusable/themed-view'
 import PostDetailsCard from '@/components/posts/PostDetailsCard'
@@ -24,7 +25,7 @@ const PostScreen = () => {
     }
 
     if (!isPostFetching && (error || !post)) {
-        return <ThemedText className='text-2xl font-bold'>Error: {error?.message}</ThemedText>
+        return <ErrorState message={error?.message} onRetry={handleRefresh} />
     }
 
     return (

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { View, Text, ScrollView, KeyboardAvoidingView, Platform, Alert, Image } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useRouter, useLocalSearchParams, type Href } from "expo-router";
+import { screens } from "@/utils/screens";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { authService } from "@/services/auth.service";
 import useAuthStore from "@/stores/auth.store";
@@ -70,7 +71,7 @@ export default function ResetPasswordScreen() {
         throw new Error(response.message || "Failed to reset password");
       }
       setResendPasswordResetCodeAfterDate(null);
-      router.replace("/(auth)/login" as Href);
+      router.replace(screens.auth.login);
     } catch (err: unknown) {
       console.error("Reset password error", err);
       setError(err instanceof Error ? err.message : "An error occurred. Please try again.");
@@ -101,7 +102,7 @@ export default function ResetPasswordScreen() {
 
   if (!email) {
     Alert.alert("Error", "Something went wrong. Please try again.", [
-      { text: "OK", onPress: () => router.replace("/(auth)/forgot-password" as Href) },
+      { text: "OK", onPress: () => router.replace(screens.auth.forgotPassword) },
     ]);
     return null;
   }
@@ -188,7 +189,7 @@ export default function ResetPasswordScreen() {
               <PressableText
                 text="Remember your password? Log In"
                 highlight="Log In"
-                onPress={() => router.replace("/(auth)/login" as Href)}
+                onPress={() => router.replace(screens.auth.login)}
               />
             </View>
           </ScrollView>

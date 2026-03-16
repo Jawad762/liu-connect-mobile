@@ -1,4 +1,3 @@
-import { GetPostsQuery } from "@/types/post.types"
 import { ApiResponse } from "../types/api.types"
 import {
     Comment,

@@ -1,0 +1,19 @@
+import { GetPostsQuery } from '@/types/post.types'
+import { GetCommentsQuery } from '@/types/comment.types'
+
+export const postKeys = {
+  all: ['posts'] as const,
+  list: (filters: GetPostsQuery = {}) =>
+    ['posts', filters.communityId, filters.authorId, filters.followingOnly, filters.size] as const,
+  detail: (id: string) => ['post', id] as const,
+  bookmarks: (size?: number) => ['post-bookmarks', size] as const,
+}
+
+export const commentKeys = {
+  all: ['comments'] as const,
+  list: (args: GetCommentsQuery) =>
+    ['comments', args.postId, args.parentCommentId, args.userId, args.size] as const,
+  detail: (id: string) => ['comment', id] as const,
+  bookmarks: (size?: number) => ['comment-bookmarks', size] as const,
+}
+

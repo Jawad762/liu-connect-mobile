@@ -10,6 +10,7 @@ import { IconSymbol } from '../reusable/icon-symbol'
 import { useColorScheme } from 'nativewind'
 import { Colors } from '@/constants/theme-colors'
 import { menus } from '@/constants/menus'
+import { screens } from '@/utils/screens'
 import { SymbolViewProps } from 'expo-symbols'
 import ProfileIcon from '../reusable/profile-icon'
 import { authService } from '@/services/auth.service'
@@ -32,7 +33,7 @@ const DrawerContent = (_props: DrawerContentComponentProps) => {
                 throw new Error(response.message);
             }
             logout();
-            router.replace('/(auth)/login');
+            router.replace(screens.auth.login);
         } catch (error) {
             console.error(error);
             return;
@@ -42,7 +43,7 @@ const DrawerContent = (_props: DrawerContentComponentProps) => {
     }
 
     if (!user) {
-        return <Redirect href="/(auth)/login" />;
+        return <Redirect href={screens.auth.login} />;
     }
 
     return (

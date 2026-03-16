@@ -7,8 +7,8 @@ import ErrorState from '../reusable/error-state';
 import { Post } from '@/types/post.types';
 import EmptyState from '../reusable/empty-state';
 
-const PostList = ({ posts, isFetching, error, refetch, fetchNextPage, hasNextPage, isFetchingNextPage }: { posts: Post[], isFetching: boolean, error: Error | null | undefined, refetch: () => void, fetchNextPage: () => void, hasNextPage: boolean, isFetchingNextPage: boolean }) => {
-    if (isFetching) {
+const PostList = ({ posts, isLoading, isFetching, error, refetch, fetchNextPage, hasNextPage, isFetchingNextPage }: { posts: Post[], isLoading: boolean, isFetching: boolean, error: Error | null | undefined, refetch: () => void, fetchNextPage: () => void, hasNextPage: boolean, isFetchingNextPage: boolean }) => {
+    if (isLoading) {
         return <PostListSkeleton />
     }
 

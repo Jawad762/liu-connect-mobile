@@ -1,9 +1,10 @@
 import { commentService } from '@/services/comment.service'
 import { useInfiniteQuery } from '@tanstack/react-query'
+import { commentKeys } from '@/utils/query-keys'
 
 const useCommentBookmarks = ({ size = 10 }: { size?: number }) => {
     const { data, isLoading, error, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching, refetch } = useInfiniteQuery({
-        queryKey: ['comment-bookmarks', size],
+        queryKey: commentKeys.bookmarks(size),
         queryFn: ({ pageParam = 1 }) => commentService.getBookmarkedComments({ page: pageParam, size }),
         getNextPageParam: (lastPage, allPages) =>
             lastPage.data.length === size ? allPages.length + 1 : undefined,

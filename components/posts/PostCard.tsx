@@ -1,6 +1,6 @@
 import { Post } from '@/types/post.types'
 import React, { useState } from 'react'
-import { Alert, Pressable, Share, View, ViewStyle } from 'react-native'
+import { Alert, Pressable, Share, View } from 'react-native'
 import { ThemedText } from '../reusable/themed-text'
 import ProfileIcon from '../reusable/profile-icon'
 import { formatRelativeDate } from '@/utils/date.utils'
@@ -10,9 +10,12 @@ import { IconSymbol } from '../reusable/icon-symbol'
 import { useColorScheme } from 'nativewind'
 import { Colors } from '@/constants/theme'
 import { cn } from '@/utils/cn.utils'
+import { getMediaItemStyle } from '@/utils/media-utils'
 import { postService } from '@/services/post.service'
 import { InfiniteData, useQueryClient } from '@tanstack/react-query'
-import { Href, router } from 'expo-router'
+import { postKeys } from '@/utils/query-keys'
+import { router } from 'expo-router'
+import { screens } from '@/utils/screens'
 import * as Linking from 'expo-linking'
 import MediaItem from '../reusable/MediaItem'
 import { ImageViewerModal } from '../reusable/ImageViewerModal'
@@ -31,10 +34,11 @@ const PostCard = ({ post }: { post: Post }) => {
     const [updatePostModalVisible, setUpdatePostModalVisible] = useState(false);
 
     const handleLikePost = async () => {
-        const previousDataList = queryClient.getQueriesData<PostsQueryData>({ queryKey: ['posts'] })
+        await queryClient.cancelQueries({ queryKey: postKeys.all })
+        const previousDataList = queryClient.getQueriesData<PostsQueryData>({ queryKey: postKeys.all })
 
         queryClient.setQueriesData<PostsQueryData>(
-            { queryKey: ['posts'] },
+            { queryKey: postKeys.all },
             (old) => {
                 if (!old) return old
                 return {
@@ -75,7 +79,7 @@ const PostCard = ({ post }: { post: Post }) => {
             if (!result.success) {
                 throw new Error(result.message)
             }
-            queryClient.invalidateQueries({ queryKey: ['posts'] })
+            queryClient.invalidateQueries({ queryKey: postKeys.all })
             Alert.alert('Success!', 'Post deleted successfully')
         } catch (error) {
             Alert.alert('Oops!', error instanceof Error ? error.message : 'An error occurred while deleting the post')
@@ -90,32 +94,37 @@ const PostCard = ({ post }: { post: Post }) => {
     }
 
     const handleBookmarkPost = async () => {
-        const previousDataList = queryClient.getQueriesData<PostsQueryData>({ queryKey: ['posts'] })
-        queryClient.setQueriesData<PostsQueryData>(
-            { queryKey: ['posts'] },
-            (old) => {
-                if (!old) return old
-                return {
-                    ...old,
-                    pages: old.pages.map((page) => ({
-                        ...page,
-                        data: page.data.map((p) =>
-                            p.id === post.id
-                                ? { ...p, isBookmarked: !p.isBookmarked }
-                                : p
-                        ),
-                    })),
-                }
+        await queryClient.cancelQueries({ queryKey: postKeys.all })
+        await queryClient.cancelQueries({ queryKey: postKeys.bookmarks() })
+        const previousDataList = queryClient.getQueriesData<PostsQueryData>({ queryKey: postKeys.all })
+        const previousBookmarksList = queryClient.getQueriesData<PostsQueryData>({ queryKey: postKeys.bookmarks() })
+
+        const patchPosts = (old: PostsQueryData | undefined) => {
+            if (!old) return old
+            return {
+                ...old,
+                pages: old.pages.map((page) => ({
+                    ...page,
+                    data: page.data.map((p) =>
+                        p.id === post.id ? { ...p, isBookmarked: !p.isBookmarked } : p
+                    ),
+                })),
             }
-        )
+        }
+        queryClient.setQueriesData<PostsQueryData>({ queryKey: postKeys.all }, patchPosts)
+        queryClient.setQueriesData<PostsQueryData>({ queryKey: postKeys.bookmarks() }, patchPosts)
+
         try {
             const result = post.isBookmarked ? await postService.unbookmarkPost(post.id) : await postService.bookmarkPost(post.id)
             if (!result.success) {
                 throw new Error(result.message)
             }
-            queryClient.invalidateQueries({ queryKey: ['post-bookmarks'] })
+            queryClient.invalidateQueries({ queryKey: postKeys.bookmarks() })
         } catch (error) {
             previousDataList.forEach(([queryKey, data]) => {
+                queryClient.setQueryData(queryKey, data)
+            })
+            previousBookmarksList.forEach(([queryKey, data]) => {
                 queryClient.setQueryData(queryKey, data)
             })
             Alert.alert('Oops!', error instanceof Error ? error.message : 'An error occurred while bookmarking the post')
@@ -134,7 +143,7 @@ const PostCard = ({ post }: { post: Post }) => {
     }
 
     return (
-        <Pressable onPress={() => router.push(`/post/${post.id}` as Href)} className='flex-row items-start gap-3 p-4 border-b border-border dark:border-borderDark'>
+        <Pressable onPress={() => router.push(screens.post.details(post.id))} className='flex-row items-start gap-3 p-4 border-b border-border dark:border-borderDark'>
             <Pressable onPress={handleNavigateToProfile}>
                 <ProfileIcon avatarUrl={post.user.avatar_url} />
             </Pressable>
@@ -163,23 +172,15 @@ const PostCard = ({ post }: { post: Post }) => {
                 )}
                 {post.media.length > 0 && (
                     <View className='flex-row flex-wrap gap-2 mt-2'>
-                        {post.media.map((m, index) => {
-                            const count = post.media.length;
-                            let itemStyle: ViewStyle = { width: '100%' };
-                            if (count === 2) itemStyle = { width: '48%' };
-                            else if (count === 3) itemStyle = index < 2 ? { width: '48%' } : { width: '100%' };
-                            else if (count === 4) itemStyle = { width: '48%' };
-
-                            return (
-                                <MediaItem
-                                    key={m.id}
-                                    uri={m.media_url}
-                                    type={m.type}
-                                    style={itemStyle}
-                                    onImagePress={() => m.type === 'IMAGE' && setFullScreenImageUri(m.media_url)}
-                                />
-                            )
-                        })}
+                        {post.media.map((m, index) => (
+                            <MediaItem
+                                key={m.id}
+                                uri={m.media_url}
+                                type={m.type}
+                                style={getMediaItemStyle(post.media.length, index)}
+                                onImagePress={() => m.type === 'IMAGE' && setFullScreenImageUri(m.media_url)}
+                            />
+                        ))}
                     </View>
                 )}
                 <View className='flex-row items-center gap-6 mt-5'>

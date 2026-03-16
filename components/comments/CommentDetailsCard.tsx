@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { Alert, Pressable, Share, View, ViewStyle } from 'react-native'
+import { commentKeys, postKeys } from '@/utils/query-keys'
+import { Alert, Pressable, Share, View } from 'react-native'
 import MediaItem from '../reusable/MediaItem'
 import { ThemedText } from '../reusable/themed-text'
 import ProfileIcon from '../reusable/profile-icon'
@@ -8,6 +9,7 @@ import { IconSymbol } from '../reusable/icon-symbol'
 import { useColorScheme } from 'nativewind'
 import { Colors } from '@/constants/theme'
 import { cn } from '@/utils/cn.utils'
+import { getMediaItemStyle } from '@/utils/media-utils'
 import { InfiniteData, useQueryClient } from '@tanstack/react-query'
 import { abbreviateMajor } from '@/utils/general.utils'
 import { ImageViewerModal } from '../reusable/ImageViewerModal'
@@ -29,11 +31,13 @@ const CommentDetailsCard = ({ comment }: { comment: Comment }) => {
     const [updateCommentModalVisible, setUpdateCommentModalVisible] = useState(false);
 
     const handleLikeComment = async () => {
-        const previousDataList = queryClient.getQueriesData<CommentsQueryData>({ queryKey: ['comments'] })
-        const previousComment = queryClient.getQueryData<Comment>(['comment', comment.id])
+        await queryClient.cancelQueries({ queryKey: commentKeys.all })
+        await queryClient.cancelQueries({ queryKey: commentKeys.detail(comment.id) })
+        const previousDataList = queryClient.getQueriesData<CommentsQueryData>({ queryKey: commentKeys.all })
+        const previousComment = queryClient.getQueryData<Comment>(commentKeys.detail(comment.id))
 
         queryClient.setQueriesData<CommentsQueryData>(
-            { queryKey: ['comments'] },
+            { queryKey: commentKeys.all },
             (old) => {
                 if (!old) return old
                 return {
@@ -50,7 +54,7 @@ const CommentDetailsCard = ({ comment }: { comment: Comment }) => {
             }
         )
 
-        queryClient.setQueryData(['comment', comment.id], (old: Comment | undefined) => {
+        queryClient.setQueryData(commentKeys.detail(comment.id), (old: Comment | undefined) => {
             if (!old) return old
             return {
                 ...old,
@@ -68,7 +72,7 @@ const CommentDetailsCard = ({ comment }: { comment: Comment }) => {
             previousDataList.forEach(([queryKey, data]) => {
                 queryClient.setQueryData(queryKey, data)
             })
-            queryClient.setQueryData(['comment', comment.id], previousComment)
+            queryClient.setQueryData(commentKeys.detail(comment.id), previousComment)
             Alert.alert('Oops!', error instanceof Error ? error.message : 'An error occurred while liking/unliking the comment')
         }
     }
@@ -80,10 +84,10 @@ const CommentDetailsCard = ({ comment }: { comment: Comment }) => {
             if (!result.success) {
                 throw new Error(result.message)
             }
-            queryClient.invalidateQueries({ queryKey: ['comments'] })
-            queryClient.invalidateQueries({ queryKey: ['comment', comment.id] })
-            queryClient.invalidateQueries({ queryKey: ['post', comment.postId] })
-            queryClient.invalidateQueries({ queryKey: ['posts'] })
+            queryClient.invalidateQueries({ queryKey: commentKeys.all })
+            queryClient.invalidateQueries({ queryKey: commentKeys.detail(comment.id) })
+            queryClient.invalidateQueries({ queryKey: postKeys.detail(comment.postId) })
+            queryClient.invalidateQueries({ queryKey: postKeys.all })
             Alert.alert('Success!', 'Comment deleted successfully')
         } catch (error) {
             Alert.alert('Oops!', error instanceof Error ? error.message : 'An error occurred while deleting the comment')
@@ -98,9 +102,12 @@ const CommentDetailsCard = ({ comment }: { comment: Comment }) => {
     }
 
     const handleBookmarkComment = async () => {
-        const previousDataList = queryClient.getQueriesData<CommentsQueryData>({ queryKey: ['comments'] })
+        await queryClient.cancelQueries({ queryKey: commentKeys.all })
+        await queryClient.cancelQueries({ queryKey: commentKeys.detail(comment.id) })
+        const previousDataList = queryClient.getQueriesData<CommentsQueryData>({ queryKey: commentKeys.all })
+        const previousComment = queryClient.getQueryData<Comment>(commentKeys.detail(comment.id))
         queryClient.setQueriesData<CommentsQueryData>(
-            { queryKey: ['comments'] },
+            { queryKey: commentKeys.all },
             (old) => {
                 if (!old) return old
                 return {
@@ -116,7 +123,7 @@ const CommentDetailsCard = ({ comment }: { comment: Comment }) => {
                 }
             }
         )
-        queryClient.setQueryData(['comment', comment.id], (old: Comment | undefined) => {
+        queryClient.setQueryData(commentKeys.detail(comment.id), (old: Comment | undefined) => {
             if (!old) return old
             return {
                 ...old,
@@ -128,12 +135,13 @@ const CommentDetailsCard = ({ comment }: { comment: Comment }) => {
             if (!result.success) {
                 throw new Error(result.message)
             }
-            queryClient.invalidateQueries({ queryKey: ['comment-bookmarks'] })
+            queryClient.invalidateQueries({ queryKey: commentKeys.bookmarks() })
         } catch (error) {
             previousDataList.forEach(([queryKey, data]) => {
                 queryClient.setQueryData(queryKey, data)
             })
-            Alert.alert('Oops!', error instanceof Error ? error.message : 'An error occurred while bookmarking the post')
+            queryClient.setQueryData(commentKeys.detail(comment.id), previousComment)
+            Alert.alert('Oops!', error instanceof Error ? error.message : 'An error occurred while bookmarking the comment')
         }
     }
 
@@ -172,23 +180,15 @@ const CommentDetailsCard = ({ comment }: { comment: Comment }) => {
                         )}
                         {comment.media.length > 0 && (
                             <View className='flex-row flex-wrap gap-2 mt-2'>
-                                {comment.media.map((m, index) => {
-                                    const count = comment.media.length;
-                                    let itemStyle: ViewStyle = { width: '100%' };
-                                    if (count === 2) itemStyle = { width: '48%' };
-                                    else if (count === 3) itemStyle = index < 2 ? { width: '48%' } : { width: '100%' };
-                                    else if (count === 4) itemStyle = { width: '48%' };
-
-                                    return (
-                                        <MediaItem
-                                            key={m.id}
-                                            uri={m.media_url}
-                                            type={m.type}
-                                            style={itemStyle}
-                                            onImagePress={() => m.type === 'IMAGE' && setFullScreenImageUri(m.media_url)}
-                                        />
-                                    )
-                                })}
+                                {comment.media.map((m, index) => (
+                                    <MediaItem
+                                        key={m.id}
+                                        uri={m.media_url}
+                                        type={m.type}
+                                        style={getMediaItemStyle(comment.media.length, index)}
+                                        onImagePress={() => m.type === 'IMAGE' && setFullScreenImageUri(m.media_url)}
+                                    />
+                                ))}
                             </View>
                         )}
                         <ThemedText className='text-sm text-muted dark:text-mutedDark font-sans mt-2' numberOfLines={1}>

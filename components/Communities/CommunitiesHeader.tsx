@@ -3,6 +3,7 @@ import { Pressable, View } from 'react-native'
 import { ThemedView } from '../reusable/themed-view'
 import useAuthStore from '@/stores/auth.store'
 import { Redirect, useNavigation } from 'expo-router'
+import { screens } from '@/utils/screens'
 import { ThemedText } from '../reusable/themed-text'
 import { cn } from '@/utils/cn.utils'
 import ProfileIcon from '../reusable/profile-icon'
@@ -20,7 +21,7 @@ const CommunitiesHeader = () => {
     const tabs = ["Home", "Explore"]
 
     if (!user) {
-        return <Redirect href="/(auth)/login" />;
+        return <Redirect href={screens.auth.login} />;
     }
 
     return (

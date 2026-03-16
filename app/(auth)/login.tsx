@@ -2,6 +2,7 @@ import { useState } from "react";
 import { View, Text, ScrollView, KeyboardAvoidingView, Platform, Pressable, Image } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useRouter, type Href } from "expo-router";
+import { screens } from "@/utils/screens";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { authService } from "@/services/auth.service";
 import useAuthStore from "@/stores/auth.store";
@@ -34,7 +35,7 @@ export default function LoginScreen() {
       }
       if (!response.data?.user?.is_verified) {
         router.replace({
-          pathname: "/verify-email",
+          pathname: screens.auth.verifyEmail,
           params: { email, sendCodeOnScreenLoad: "true" },
         } as Href);
         return;
@@ -44,7 +45,7 @@ export default function LoginScreen() {
         response.data.accessToken,
         response.data.refreshToken
       );
-      router.replace("/" as Href);
+      router.replace(screens.root);
     } catch (err: unknown) {
       console.error("Login error", err);
       setError(err instanceof Error ? err.message : "An error occurred. Please try again.");
@@ -111,7 +112,7 @@ export default function LoginScreen() {
 
             <View className="mb-4">
               <Pressable
-                onPress={() => router.push("/(auth)/forgot-password" as Href)}
+                onPress={() => router.push(screens.auth.forgotPassword)}
                 className="active:opacity-80"
               >
                 <Text className="text-white/90 text-sm font-sans">
@@ -128,7 +129,7 @@ export default function LoginScreen() {
               <PressableText
                 text="Don't have an account? Sign Up"
                 highlight="Sign Up"
-                onPress={() => router.push("/(auth)/register" as Href)}
+                onPress={() => router.push(screens.auth.register)}
               />
             </View>
           </ScrollView>

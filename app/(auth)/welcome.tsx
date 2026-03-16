@@ -9,7 +9,8 @@ import {
   Image,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { useRouter, type Href } from "expo-router";
+import { useRouter } from "expo-router";
+import { screens } from "@/utils/screens";
 import * as Haptics from "expo-haptics";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GradientBackground } from "@/components/reusable/gradient-background";
@@ -35,12 +36,12 @@ export default function WelcomeScreen() {
 
   const goToLogin = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.navigate("/(auth)/login" as Href);
+    router.navigate(screens.auth.login);
   };
 
   const goToRegister = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.navigate("/(auth)/register" as Href);
+    router.navigate(screens.auth.register);
   };
 
   return (

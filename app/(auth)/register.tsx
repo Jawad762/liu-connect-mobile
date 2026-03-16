@@ -2,6 +2,7 @@ import { useState } from "react";
 import { View, Text, ScrollView, KeyboardAvoidingView, Platform, Image } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useRouter, type Href } from "expo-router";
+import { screens } from "@/utils/screens";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { authService } from "@/services/auth.service";
 import { GradientBackground } from "@/components/reusable/gradient-background";
@@ -44,7 +45,7 @@ export default function RegisterScreen() {
       const response = await authService.register(email, password);
       if (response.success) {
         router.replace({
-          pathname: "/verify-email",
+          pathname: screens.auth.verifyEmail,
           params: { email },
         } as Href);
       } else {

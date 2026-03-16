@@ -1,7 +1,7 @@
 import { ApiResponse } from '@/types/api.types'
 import { Post } from '@/types/post.types'
 import React, { useState } from 'react'
-import { Alert, Pressable, Share, View, ViewStyle } from 'react-native'
+import { Alert, Pressable, Share, View } from 'react-native'
 import MediaItem from '../reusable/MediaItem'
 import { ThemedText } from '../reusable/themed-text'
 import ProfileIcon from '../reusable/profile-icon'
@@ -10,6 +10,7 @@ import { IconSymbol } from '../reusable/icon-symbol'
 import { useColorScheme } from 'nativewind'
 import { Colors } from '@/constants/theme'
 import { cn } from '@/utils/cn.utils'
+import { getMediaItemStyle } from '@/utils/media-utils'
 import { postService } from '@/services/post.service'
 import { InfiniteData, useQueryClient } from '@tanstack/react-query'
 import { abbreviateMajor } from '@/utils/general.utils'
@@ -19,6 +20,7 @@ import UpdatePostModal from './UpdatePostModal'
 import * as Clipboard from 'expo-clipboard';
 import * as Linking from 'expo-linking'
 import LoadingOverlay from '../reusable/loading-overlay'
+import { postKeys, commentKeys } from '@/utils/query-keys'
 
 type PostsQueryData = InfiniteData<{ data: Post[] }>
 
@@ -30,11 +32,13 @@ const PostDetailsCard = ({ post }: { post: Post }) => {
     const [updatePostModalVisible, setUpdatePostModalVisible] = useState(false);
 
     const handleLikePost = async () => {
-        const previousDataList = queryClient.getQueriesData<PostsQueryData>({ queryKey: ['posts'] })
-        const previousPost = queryClient.getQueryData<ApiResponse<Post>>(['post', post.id])
+        await queryClient.cancelQueries({ queryKey: postKeys.all })
+        await queryClient.cancelQueries({ queryKey: postKeys.detail(post.id) })
+        const previousDataList = queryClient.getQueriesData<PostsQueryData>({ queryKey: postKeys.all })
+        const previousPost = queryClient.getQueryData<ApiResponse<Post>>(postKeys.detail(post.id))
 
         queryClient.setQueriesData<PostsQueryData>(
-            { queryKey: ['posts'] },
+            { queryKey: postKeys.all },
             (old) => {
                 if (!old) return old
                 return {
@@ -51,7 +55,7 @@ const PostDetailsCard = ({ post }: { post: Post }) => {
             }
         )
 
-        queryClient.setQueryData<ApiResponse<Post>>(['post', post.id], (old) => {
+        queryClient.setQueryData<ApiResponse<Post>>(postKeys.detail(post.id), (old) => {
             if (!old?.data) return old
             return {
                 ...old,
@@ -72,7 +76,7 @@ const PostDetailsCard = ({ post }: { post: Post }) => {
             previousDataList.forEach(([queryKey, data]) => {
                 queryClient.setQueryData(queryKey, data)
             })
-            queryClient.setQueryData(['post', post.id], previousPost)
+            queryClient.setQueryData(postKeys.detail(post.id), previousPost)
             Alert.alert('Oops!', error instanceof Error ? error.message : 'An error occurred while liking/unliking the post')
         }
     }
@@ -84,11 +88,9 @@ const PostDetailsCard = ({ post }: { post: Post }) => {
             if (!result.success) {
                 throw new Error(result.message)
             }
-            queryClient.invalidateQueries({ queryKey: ['posts'] })
-            queryClient.invalidateQueries({ queryKey: ['post', post.id] })
-            queryClient.invalidateQueries({ queryKey: ['comments'] })
-            queryClient.invalidateQueries({ queryKey: ['comments', post.id] })
-            queryClient.invalidateQueries({ queryKey: ['posts'] })
+            queryClient.invalidateQueries({ queryKey: postKeys.all })
+            queryClient.invalidateQueries({ queryKey: postKeys.detail(post.id) })
+            queryClient.invalidateQueries({ queryKey: commentKeys.all })
             Alert.alert('Success!', 'Post deleted successfully')
         } catch (error) {
             Alert.alert('Oops!', error instanceof Error ? error.message : 'An error occurred while deleting the post')
@@ -104,10 +106,12 @@ const PostDetailsCard = ({ post }: { post: Post }) => {
 
     
     const handleBookmarkPost = async () => {
-        const previousDataList = queryClient.getQueriesData<PostsQueryData>({ queryKey: ['posts'] })
-        const previousPost = queryClient.getQueryData<ApiResponse<Post>>(['post', post.id])
+        await queryClient.cancelQueries({ queryKey: postKeys.all })
+        await queryClient.cancelQueries({ queryKey: postKeys.detail(post.id) })
+        const previousDataList = queryClient.getQueriesData<PostsQueryData>({ queryKey: postKeys.all })
+        const previousPost = queryClient.getQueryData<ApiResponse<Post>>(postKeys.detail(post.id))
         queryClient.setQueriesData<PostsQueryData>(
-            { queryKey: ['posts'] },
+            { queryKey: postKeys.all },
             (old) => {
                 if (!old) return old
                 return {
@@ -123,7 +127,7 @@ const PostDetailsCard = ({ post }: { post: Post }) => {
                 }
             }
         )
-        queryClient.setQueryData<ApiResponse<Post>>(['post', post.id], (old) => {
+        queryClient.setQueryData<ApiResponse<Post>>(postKeys.detail(post.id), (old) => {
             if (!old?.data) return old
             return {
                 ...old,
@@ -139,12 +143,12 @@ const PostDetailsCard = ({ post }: { post: Post }) => {
             if (!result.success) {
                 throw new Error(result.message)
             }
-            queryClient.invalidateQueries({ queryKey: ['post-bookmarks'] })
+            queryClient.invalidateQueries({ queryKey: postKeys.bookmarks() })
         } catch (error) {
             previousDataList.forEach(([queryKey, data]) => {
                 queryClient.setQueryData(queryKey, data)
             })
-            queryClient.setQueryData(['post', post.id], previousPost)
+            queryClient.setQueryData(postKeys.detail(post.id), previousPost)
             Alert.alert('Oops!', error instanceof Error ? error.message : 'An error occurred while bookmarking the post')
         }
     }
@@ -183,23 +187,15 @@ const PostDetailsCard = ({ post }: { post: Post }) => {
                 )}
                 {post.media.length > 0 && (
                     <View className='flex-row flex-wrap gap-2 mt-2'>
-                        {post.media.map((m, index) => {
-                            const count = post.media.length;
-                            let itemStyle: ViewStyle = { width: '100%' };
-                            if (count === 2) itemStyle = { width: '48%' };
-                            else if (count === 3) itemStyle = index < 2 ? { width: '48%' } : { width: '100%' };
-                            else if (count === 4) itemStyle = { width: '48%' };
-
-                            return (
-                                <MediaItem
-                                    key={m.id}
-                                    uri={m.media_url}
-                                    type={m.type}
-                                    style={itemStyle}
-                                    onImagePress={() => m.type === 'IMAGE' && setFullScreenImageUri(m.media_url)}
-                                />
-                            )
-                        })}
+                        {post.media.map((m, index) => (
+                            <MediaItem
+                                key={m.id}
+                                uri={m.media_url}
+                                type={m.type}
+                                style={getMediaItemStyle(post.media.length, index)}
+                                onImagePress={() => m.type === 'IMAGE' && setFullScreenImageUri(m.media_url)}
+                            />
+                        ))}
                     </View>
                 )}
                 <ThemedText className='text-sm text-muted dark:text-mutedDark font-sans mt-2' numberOfLines={1}>

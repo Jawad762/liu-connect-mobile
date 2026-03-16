@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useLocalSearchParams } from 'expo-router'
 import { ThemedText } from '@/components/reusable/themed-text'
+import ErrorState from '@/components/reusable/error-state'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { ThemedView } from '@/components/reusable/themed-view'
 import CommentList from '@/components/comments/CommentList'
@@ -24,11 +25,11 @@ const CommentScreen = () => {
     }
 
     if (!isCommentFetching && (error || !comment)) {
-        return <ThemedText className='text-2xl font-bold'>Error: {error?.message}</ThemedText>
+        return <ErrorState message={error?.message} onRetry={handleRefresh} />
     }
 
     return (
-        <ThemedView className='flex-1' style={{ paddingTop: insets.top, paddingBottom: comment?.is_deleted ? 0 : 100 }}>
+        <ThemedView className='flex-1' style={{ paddingTop: insets.top, paddingBottom: comment && !comment.is_deleted ? 100 : 0 }}>
             <CommentList
                 comments={comments}
                 fetchNextPage={fetchNextPage}
@@ -45,7 +46,7 @@ const CommentScreen = () => {
                     </>
                 }
             />
-            {!comment?.is_deleted && (
+            {comment && !comment.is_deleted && (
                 <>
                     <View style={{ paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }} className='absolute bottom-0 left-6 right-6'>
                         <Pressable className='rounded-full bg-surface dark:bg-surfaceDark p-4' onPress={() => setCreateCommentModalVisible(true)}>

@@ -12,13 +12,13 @@ export default function HomeScreen() {
   const isCommunityTab = selectedTab !== "for-you" && selectedTab !== "following";
   const isFollowingTab = selectedTab === "following";
 
-  const { posts, fetchNextPage, hasNextPage, isFetchingNextPage, refetch, isFetching, error } = usePosts({ size: 10, communityId: isCommunityTab ? selectedTab : undefined, followingOnly: isFollowingTab });
+  const { posts, fetchNextPage, hasNextPage, isFetchingNextPage, refetch, isFetching, isLoading, error } = usePosts({ size: 10, communityId: isCommunityTab ? selectedTab : undefined, followingOnly: isFollowingTab });
 
 
   return (
     <ThemedView className='flex-1' style={{ paddingTop: insets.top }}>
       <HomeHeader selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
-      <PostList posts={posts} isFetching={isFetching} error={error} refetch={refetch} fetchNextPage={fetchNextPage} hasNextPage={hasNextPage} isFetchingNextPage={isFetchingNextPage} />
+      <PostList posts={posts} isLoading={isLoading} isFetching={isFetching} error={error} refetch={refetch} fetchNextPage={fetchNextPage} hasNextPage={hasNextPage} isFetchingNextPage={isFetchingNextPage} />
     </ThemedView>
   );
 }

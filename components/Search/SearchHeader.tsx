@@ -3,6 +3,7 @@ import { Pressable, TextInput, View } from 'react-native'
 import { ThemedView } from '../reusable/themed-view'
 import useAuthStore from '@/stores/auth.store'
 import { Redirect, useNavigation } from 'expo-router'
+import { screens } from '@/utils/screens'
 import { IconSymbol } from '@/components/reusable/icon-symbol'
 import ProfileIcon from '../reusable/profile-icon'
 import { Colors } from '@/constants/theme-colors'
@@ -20,7 +21,7 @@ const SearchHeader = () => {
     };
 
     if (!user) {
-        return <Redirect href="/(auth)/login" />;
+        return <Redirect href={screens.auth.login} />;
     }
 
     return (

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { View, Text, ScrollView, KeyboardAvoidingView, Platform, Image } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useRouter, type Href } from "expo-router";
+import { screens } from "@/utils/screens";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { authService } from "@/services/auth.service";
 import useAuthStore from "@/stores/auth.store";
@@ -32,7 +33,7 @@ export default function ForgotPasswordScreen() {
       }
       setResendPasswordResetCodeAfterDate(new Date(Date.now() + 60 * 1000));
       router.replace({
-        pathname: "/reset-password",
+        pathname: screens.auth.resetPassword,
         params: { email },
       } as Href);
     } catch (err: unknown) {

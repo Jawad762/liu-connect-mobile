@@ -1,9 +1,10 @@
 import { postService } from '@/services/post.service'
 import { useInfiniteQuery } from '@tanstack/react-query'
+import { postKeys } from '@/utils/query-keys'
 
 const usePostBookmarks = ({ size = 10 }: { size?: number }) => {
     const { data, isLoading, error, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching, refetch } = useInfiniteQuery({
-        queryKey: ['post-bookmarks', size],
+        queryKey: postKeys.bookmarks(size),
         queryFn: ({ pageParam = 1 }) => postService.getBookmarkedPosts({ page: pageParam, size }),
         getNextPageParam: (lastPage, allPages) =>
             lastPage.data.length === size ? allPages.length + 1 : undefined,

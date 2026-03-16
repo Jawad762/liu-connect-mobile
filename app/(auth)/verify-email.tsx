@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useRouter, useLocalSearchParams, type Href } from "expo-router";
+import { screens } from "@/utils/screens";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { authService } from "@/services/auth.service";
 import { GradientBackground } from "@/components/reusable/gradient-background";
@@ -92,7 +93,7 @@ export default function VerifyEmailScreen() {
         throw new Error(response.message || "Verification failed");
       }
       setResendEmailVerificationCodeAfterDate(null);
-      router.replace("/(auth)/login" as Href);
+      router.replace(screens.auth.login);
     } catch (err: unknown) {
       console.error("Verify email error", err);
       setError(err instanceof Error ? err.message : "An error occurred while verifying your email");
@@ -124,7 +125,7 @@ export default function VerifyEmailScreen() {
 
   if (!email) {
     Alert.alert("Error", "Something went wrong. Please try again.", [
-      { text: "OK", onPress: () => router.replace("/(auth)/register" as Href) },
+      { text: "OK", onPress: () => router.replace(screens.auth.register) },
     ]);
     return null;
   }
@@ -187,7 +188,7 @@ export default function VerifyEmailScreen() {
               <PressableText
                 text="Already verified? Log In"
                 highlight="Log In"
-                onPress={() => router.replace("/(auth)/login" as Href)}
+                onPress={() => router.replace(screens.auth.login)}
               />
             </View>
           </ScrollView>

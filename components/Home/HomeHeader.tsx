@@ -3,6 +3,7 @@ import { Pressable, ScrollView, View } from 'react-native'
 import { ThemedView } from '../reusable/themed-view'
 import useAuthStore from '@/stores/auth.store'
 import { Redirect, useNavigation } from 'expo-router'
+import { screens } from '@/utils/screens'
 import { Image } from 'react-native'
 import { ThemedText } from '../reusable/themed-text'
 import { cn } from '@/utils/cn.utils'
@@ -22,7 +23,7 @@ const HomeHeader = ({ selectedTab, setSelectedTab }: { selectedTab: string, setS
     const tabs = [{ name: "For you", id: "for-you" }, { name: "Following", id: "following" }]
 
     if (!user) {
-        return <Redirect href="/(auth)/login" />;
+        return <Redirect href={screens.auth.login} />;
     }
 
     return (
