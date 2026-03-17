@@ -49,7 +49,7 @@ export default function WelcomeScreen() {
       <StatusBar style="light" />
       <GradientBackground>
         <View style={{ paddingTop: insets.top + 56 }} className="flex-row justify-center items-center">
-          <Image style={{ width: 80, height: 80 }} source={require("@/assets/images/icon.png")} className="rounded-full" />
+          <Image style={{ width: 80, height: 80 }} source={require("@/assets/images/logo.png")} className="rounded-full" />
         </View>
         <ScrollView
           ref={scrollViewRef}
