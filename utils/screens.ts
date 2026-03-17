@@ -21,7 +21,10 @@ export const screens = {
       `/comment/${id}?postId=${postId}` as Href,
   },
   user: {
-    details: (id: string): Href => `/user/${id}` as Href,
+    profile: (id: string): Href => `/user/${id}/profile` as Href,
+    followers: (id: string): Href => `/user/${id}/followers` as Href,
+    following: (id: string): Href => `/user/${id}/following` as Href
   },
+  settings: '/settings' as Href,
 }
 

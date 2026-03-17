@@ -11,7 +11,7 @@ const useAuthStore = create<AuthStore>()(
     persist(
         (set, get) => ({
         user: null,
-        setUser: (user: any) => set({ user }),
+        setUser: (user: User | null) => set({ user }),
         accessToken: null,
         refreshToken: null,
         setAccessToken: (accessToken: string) => set({ accessToken }),
@@ -31,7 +31,9 @@ const useAuthStore = create<AuthStore>()(
                     return true
                 }
                 return false
-            })()
+            })().finally(() => {
+                refreshTokenPromise = null
+            })
             return await refreshTokenPromise
         },
         login: (user: User, accessToken: string, refreshToken: string) => set({ user, accessToken, refreshToken }),

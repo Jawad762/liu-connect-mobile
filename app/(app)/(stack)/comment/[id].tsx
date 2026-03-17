@@ -11,13 +11,14 @@ import useComments from '@/hooks/useComments'
 import useComment from '@/hooks/useComment'
 import CommentCardSkeleton from '@/components/skeletons/CommentCardSkeleton'
 import CommentDetailsCard from '@/components/comments/CommentDetailsCard'
+import GeneralHeader from '@/components/reusable/general-header'
 
 const CommentScreen = () => {
     const { id, postId } = useLocalSearchParams()
     const insets = useSafeAreaInsets();
     const [createCommentModalVisible, setCreateCommentModalVisible] = useState(false);
     const { comment, isFetching: isCommentFetching, error, refetch: refetchComment } = useComment({ id: id as string })
-    const { comments, isFetching: isCommentsFetching, fetchNextPage, hasNextPage, isFetchingNextPage, refetch: refetchComments } = useComments({ parentCommentId: id as string, postId: postId as string })
+    const { comments, isFetching: isCommentsFetching, isLoading: isCommentsLoading, fetchNextPage, hasNextPage, isFetchingNextPage, refetch: refetchComments } = useComments({ parentCommentId: id as string, postId: postId as string })
 
     const handleRefresh = () => {
         refetchComment()
@@ -29,14 +30,17 @@ const CommentScreen = () => {
     }
 
     return (
-        <ThemedView className='flex-1' style={{ paddingTop: insets.top, paddingBottom: comment && !comment.is_deleted ? 100 : 0 }}>
+        <ThemedView className='flex-1' style={{ paddingTop: insets.top + 12, paddingBottom: comment && !comment.is_deleted ? 100 : 0 }}>
+            <View className='px-4 pb-3'>
+                <GeneralHeader title='Thread' />
+            </View>
             <CommentList
                 comments={comments}
                 fetchNextPage={fetchNextPage}
                 hasNextPage={hasNextPage}
                 isFetchingNextPage={isFetchingNextPage}
                 refetch={refetchComments}
-                isFetching={isCommentsFetching}
+                isLoading={isCommentsLoading}
                 isRefreshing={isCommentFetching || isCommentsFetching}
                 onRefresh={handleRefresh}
                 ListHeaderComponent={

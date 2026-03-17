@@ -6,11 +6,11 @@ import React from 'react'
 import ErrorState from '@/components/reusable/error-state';
 import UserProfileSkeleton from '@/components/skeletons/UserProfileSkeleton';
 
-const UserScreen = () => {
+const ProfileScreen = () => {
     const { id } = useLocalSearchParams()
-    const { user, isFetching, error, refetch } = useUser({ id: id as string })
+    const { user, isLoading, error, refetch } = useUser({ id: id as string })
 
-    if (isFetching) {
+    if (isLoading) {
       return <UserProfileSkeleton />
     }
 
@@ -25,4 +25,4 @@ const UserScreen = () => {
   )
 }
 
-export default UserScreen
+export default ProfileScreen

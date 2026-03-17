@@ -167,7 +167,7 @@ const PostDetailsCard = ({ post }: { post: Post }) => {
     }
 
     const handleNavigateToProfile = () => {
-        router.push(screens.user.details(post.user.id))
+        router.push(screens.user.profile(post.user.id))
     }
 
     return (

@@ -15,7 +15,7 @@ export default function BookmarksScreen() {
   const [selectedTab, setSelectedTab] = useState<string>("posts");
 
   const { postBookmarks, fetchNextPage, hasNextPage, isFetchingNextPage, refetch, isFetching, isLoading, error } = usePostBookmarks({ size: 10 });
-  const { commentBookmarks, fetchNextPage: fetchNextCommentPage, hasNextPage: hasNextCommentPage, isFetchingNextPage: isFetchingNextCommentPage, refetch: refetchComment, isFetching: isFetchingComment, error: commentError } = useCommentBookmarks({ size: 10 });
+  const { commentBookmarks, fetchNextPage: fetchNextCommentPage, hasNextPage: hasNextCommentPage, isFetchingNextPage: isFetchingNextCommentPage, refetch: refetchComment, isLoading: isLoadingComment, isFetching: isFetchingComments, error: commentError } = useCommentBookmarks({ size: 10 });
 
   return (
     <ThemedView className='flex-1' style={{ paddingTop: insets.top + 12 }}>
@@ -31,10 +31,10 @@ export default function BookmarksScreen() {
         </View>
       </View>
       {selectedTab === "posts" && (
-        <PostList posts={postBookmarks} isLoading={isLoading} isFetching={isFetching} error={error} refetch={refetch} fetchNextPage={fetchNextPage} hasNextPage={hasNextPage} isFetchingNextPage={isFetchingNextPage} />
+        <PostList posts={postBookmarks} isLoading={isLoading} isRefreshing={isFetching} error={error} refetch={refetch} fetchNextPage={fetchNextPage} hasNextPage={hasNextPage} isFetchingNextPage={isFetchingNextPage} />
       )}
       {selectedTab === "comments" && (
-        <CommentList comments={commentBookmarks} isFetching={isFetchingComment} error={commentError} refetch={refetchComment} fetchNextPage={fetchNextCommentPage} hasNextPage={hasNextCommentPage} isFetchingNextPage={isFetchingNextCommentPage} />
+        <CommentList comments={commentBookmarks} isLoading={isLoadingComment} isRefreshing={isFetchingComments} error={commentError} refetch={refetchComment} fetchNextPage={fetchNextCommentPage} hasNextPage={hasNextCommentPage} isFetchingNextPage={isFetchingNextCommentPage} />
       )}
     </ThemedView>
   );

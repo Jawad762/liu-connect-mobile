@@ -11,7 +11,18 @@ export interface UploadedMedia {
     type: MediaType
 }
 
-const useMediaUpload = (maxMedia: number, initialMedia: UploadedMedia[] = []) => {
+interface UseMediaUploadOptions {
+    endpoint?: 'mediaUploader' | 'imageUploader'
+    imageOnly?: boolean
+}
+
+const useMediaUpload = (
+    maxMedia: number,
+    initialMedia: UploadedMedia[] = [],
+    options: UseMediaUploadOptions = {}
+) => {
+    const { endpoint = 'mediaUploader', imageOnly = false } = options
+
     const [media, setMedia] = useState<UploadedMedia[]>(initialMedia)
     const [customUploading, setCustomUploading] = useState(false)
 
@@ -34,7 +45,7 @@ const useMediaUpload = (maxMedia: number, initialMedia: UploadedMedia[] = []) =>
             { text: 'Open Settings', onPress: openSettings },
         ])
 
-    const { openImagePicker, isUploading } = useImageUploader('mediaUploader', {
+    const { openImagePicker, isUploading } = useImageUploader(endpoint, {
         onClientUploadComplete: onUploadComplete,
         onUploadError,
     })
@@ -53,9 +64,9 @@ const useMediaUpload = (maxMedia: number, initialMedia: UploadedMedia[] = []) =>
             }
         }
         const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ['images', 'videos'],
-            allowsMultipleSelection: true,
-            selectionLimit: remainingSlots,
+            mediaTypes: imageOnly ? ['images'] : ['images', 'videos'],
+            allowsMultipleSelection: maxMedia > 1,
+            selectionLimit: maxMedia > 1 ? remainingSlots : 1,
             quality: 1,
         })
         if (result.canceled || !result.assets?.length) return
@@ -70,7 +81,7 @@ const useMediaUpload = (maxMedia: number, initialMedia: UploadedMedia[] = []) =>
                     return Object.assign(file, { uri: a.uri }) as File & { uri: string }
                 })
             )
-            const uploaded = await uploadFiles('mediaUploader', { files })
+            const uploaded = await uploadFiles(endpoint, { files })
             if (uploaded?.length) onUploadComplete(uploaded)
         } catch (err) {
             onUploadError(err instanceof Error ? err : new Error('Upload failed'))

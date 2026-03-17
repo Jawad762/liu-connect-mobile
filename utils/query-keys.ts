@@ -22,4 +22,6 @@ export const userKeys = {
   all: ['users'] as const,
   search: (query: string, size?: number) => ['users-search', query, size] as const,
   detail: (id: string) => ['user', id] as const,
+  followers: (id: string, size?: number) => ['user-followers', id, size] as const,
+  following: (id: string, size?: number) => ['user-following', id, size] as const,
 }

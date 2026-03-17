@@ -57,6 +57,8 @@ export function ImageViewerModal({ visible, imageUri, onClose }: ImageViewerModa
 
     const imageHeight = height - insets.top - insets.bottom;
 
+    if (!imageUri) return null;
+
     return (
         <Modal
             visible={visible}

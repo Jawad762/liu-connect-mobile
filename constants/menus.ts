@@ -4,7 +4,7 @@ export const menus = (userId: string) => [
     {
         name: 'Profile',
         icon: 'person',
-        href: screens.user.details(userId),
+        href: screens.user.profile(userId),
     },
     {
         name: "Bookmarks",
@@ -14,6 +14,6 @@ export const menus = (userId: string) => [
     {
         name: 'Settings',
         icon: 'gearshape',
-        href: '/settings',
+        href: screens.settings,
     },
 ]

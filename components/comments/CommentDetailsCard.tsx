@@ -159,7 +159,7 @@ const CommentDetailsCard = ({ comment }: { comment: Comment }) => {
     }
 
     const handleNavigateToProfile = () => {
-        router.push(screens.user.details(comment.user.id))
+        router.push(screens.user.profile(comment.user.id))
     }
 
     return (

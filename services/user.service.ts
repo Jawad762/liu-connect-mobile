@@ -1,5 +1,5 @@
 import { ApiResponse } from "@/types/api.types"
-import { User, SearchUsersQuery, UpdateProfilePayload, PaginationQuery, AddPushTokenPayload } from "@/types/user.types"
+import { User, SearchUsersQuery, UpdateProfilePayload, PaginationQuery, AddPushTokenPayload, FollowUserResponse } from "@/types/user.types"
 import { apiClient } from "@/utils/api-client.utils"
 
 export const userService = {
@@ -18,12 +18,12 @@ export const userService = {
         return response.data
     },
 
-    followUser: async (id: string): Promise<ApiResponse<undefined>> => {
+    followUser: async (id: string): Promise<ApiResponse<FollowUserResponse>> => {
         const response = await apiClient.post(`/users/${id}/follow`)
         return response.data
     },
 
-    unfollowUser: async (id: string): Promise<ApiResponse<undefined>> => {
+    unfollowUser: async (id: string): Promise<ApiResponse<FollowUserResponse>> => {
         const response = await apiClient.delete(`/users/${id}/follow`)
         return response.data
     },

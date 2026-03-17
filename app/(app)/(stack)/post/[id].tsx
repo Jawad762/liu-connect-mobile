@@ -11,13 +11,14 @@ import CommentList from '@/components/comments/CommentList'
 import { Pressable, View } from 'react-native'
 import CreateCommentModal from '@/components/comments/CreateCommentModal'
 import useComments from '@/hooks/useComments'
+import GeneralHeader from '@/components/reusable/general-header'
 
 const PostScreen = () => {
     const { id } = useLocalSearchParams()
     const insets = useSafeAreaInsets();
     const [createCommentModalVisible, setCreateCommentModalVisible] = useState(false);
     const { post, isFetching: isPostFetching, error, refetch: refetchPost } = usePost({ id: id as string })
-    const { comments, isFetching: isCommentsFetching, fetchNextPage, hasNextPage, isFetchingNextPage, refetch: refetchComments } = useComments({ postId: id as string })
+    const { comments, isFetching: isCommentsFetching, isLoading: isCommentsLoading, fetchNextPage, hasNextPage, isFetchingNextPage, refetch: refetchComments } = useComments({ postId: id as string })
 
     const handleRefresh = () => {
         refetchPost()
@@ -29,14 +30,17 @@ const PostScreen = () => {
     }
 
     return (
-        <ThemedView className='flex-1' style={{ paddingTop: insets.top, paddingBottom: 100 }}>
+        <ThemedView className='flex-1' style={{ paddingTop: insets.top + 12, paddingBottom: 100 }}>
+            <View className='px-4 pb-3'>
+                <GeneralHeader title='Post' />
+            </View>
             <CommentList
                 comments={comments}
                 fetchNextPage={fetchNextPage}
                 hasNextPage={hasNextPage}
                 isFetchingNextPage={isFetchingNextPage}
                 refetch={refetchComments}
-                isFetching={isCommentsFetching}
+                isLoading={isCommentsLoading}
                 isRefreshing={isPostFetching || isCommentsFetching}
                 onRefresh={handleRefresh}
                 ListHeaderComponent={

@@ -1,10 +1,11 @@
 import { Comment } from '@/types/comment.types';
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { ActivityIndicator, RefreshControl, View } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler'
 import CommentCard from './CommentCard';
 import CommentListSkeleton from '../skeletons/CommentListSkeleton';
 import ErrorState from '../reusable/error-state';
+import EmptyState from '../reusable/empty-state';
 
 interface CommentListProps {
     comments: Comment[]
@@ -12,14 +13,27 @@ interface CommentListProps {
     hasNextPage: boolean
     isFetchingNextPage: boolean
     refetch: () => void
-    isFetching: boolean
+    isLoading: boolean
     isRefreshing?: boolean
+    /** Optional override called on pull-to-refresh. Useful when the screen needs to
+     *  refresh additional data alongside the comment list (e.g. a parent comment). */
     onRefresh?: () => void
-    ListHeaderComponent?: ReactNode
+    ListHeaderComponent?: React.ReactElement | null
     error?: Error | null
 }
 
-const CommentList = ({ comments, fetchNextPage, hasNextPage, isFetchingNextPage, refetch, isFetching, isRefreshing, onRefresh, ListHeaderComponent, error }: CommentListProps) => {
+const CommentList = ({
+    comments,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+    isLoading,
+    isRefreshing,
+    onRefresh,
+    ListHeaderComponent,
+    error,
+}: CommentListProps) => {
     if (error) {
         return <ErrorState message={error.message} onRetry={onRefresh ?? refetch} />
     }
@@ -27,7 +41,7 @@ const CommentList = ({ comments, fetchNextPage, hasNextPage, isFetchingNextPage,
     return (
         <View className='flex-1'>
             <FlatList
-                data={isFetching ? [] : comments}
+                data={isLoading ? [] : comments}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => <CommentCard comment={item} />}
                 showsVerticalScrollIndicator={false}
@@ -39,11 +53,11 @@ const CommentList = ({ comments, fetchNextPage, hasNextPage, isFetchingNextPage,
                         onRefresh={onRefresh ?? refetch}
                     />
                 }
-                ListHeaderComponent={
-                    <>
-                        {ListHeaderComponent}
-                        {isFetching && <CommentListSkeleton />}
-                    </>
+                ListHeaderComponent={ListHeaderComponent}
+                ListEmptyComponent={
+                    isLoading
+                        ? <CommentListSkeleton />
+                        : <EmptyState message="No comments found" className='mt-20' />
                 }
                 ListFooterComponent={
                     isFetchingNextPage ? (

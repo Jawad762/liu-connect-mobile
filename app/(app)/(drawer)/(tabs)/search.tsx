@@ -9,7 +9,7 @@ import PostList from "@/components/posts/PostList";
 import SearchSkeleton from "@/components/skeletons/SearchSkeleton";
 import ErrorState from "@/components/reusable/error-state";
 import useDebounce from "@/hooks/useDebounce";
-import UserList from "@/components/users/UserList";
+import UserListHorizontal from "@/components/users/UserListHorizontal";
 
 export default function SearchScreen() {
   const insets = useSafeAreaInsets();
@@ -34,12 +34,12 @@ export default function SearchScreen() {
         <View className="flex-1">
           {users.length > 0 && (
             <View className="p-4">
-              <UserList users={users} isLoading={isLoadingUsers} isFetching={isFetchingUsers} error={errorUsers} refetch={refetchUsers} fetchNextPage={fetchNextPageUsers} hasNextPage={hasNextPageUsers} isFetchingNextPage={isFetchingNextPageUsers} />
+              <UserListHorizontal users={users} isLoading={isLoadingUsers} error={errorUsers} refetch={refetchUsers} fetchNextPage={fetchNextPageUsers} hasNextPage={hasNextPageUsers} isFetchingNextPage={isFetchingNextPageUsers} />
             </View>
           )}
           {posts.length > 0 && (
             <View className="flex-1 p-4">
-              <PostList posts={posts} isLoading={isLoadingPosts} isFetching={isFetchingPosts} error={errorPosts} refetch={refetchPosts} fetchNextPage={fetchNextPagePosts} hasNextPage={hasNextPagePosts} isFetchingNextPage={isFetchingNextPagePosts} />
+              <PostList posts={posts} isLoading={isLoadingPosts} isRefreshing={isFetchingPosts} error={errorPosts} refetch={refetchPosts} fetchNextPage={fetchNextPagePosts} hasNextPage={hasNextPagePosts} isFetchingNextPage={isFetchingNextPagePosts} />
             </View>
           )}
         </View>

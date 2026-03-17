@@ -9,8 +9,8 @@ export interface User {
     is_verified: boolean;
     followers_count: number;
     following_count: number;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
     is_following?: boolean;
 }
 
@@ -33,4 +33,9 @@ export interface PaginationQuery {
 
 export interface AddPushTokenPayload {
     token: string
+}
+
+export interface FollowUserResponse {
+    following_count: number
+    followers_count: number
 }

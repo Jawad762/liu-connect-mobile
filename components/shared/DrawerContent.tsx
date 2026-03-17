@@ -52,7 +52,9 @@ const DrawerContent = (_props: DrawerContentComponentProps) => {
         <SafeAreaView className='bg-background dark:bg-backgroundDark flex-1 border-r-[0.25px] border-border dark:border-borderDark'>
             <ThemedView className='flex-1'>
                 <View className='p-4 gap-2'>
-                    <ProfileIcon avatarUrl={user.avatar_url} />
+                    <Pressable onPress={() => router.push(screens.user.profile(user.id))} className='flex-row items-center gap-2'>
+                        <ProfileIcon avatarUrl={user.avatar_url} />
+                    </Pressable>
                     <ThemedText className='font-sans-bold text-lg'>{user.name}</ThemedText>
                     {(user.school || user.major) && (
                         <View className='gap-2'>
