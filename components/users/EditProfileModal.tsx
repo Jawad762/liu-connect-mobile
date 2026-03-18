@@ -75,7 +75,7 @@ const EditProfileModal = ({ visible, onRequestClose, user }: { visible: boolean;
                 style={{
                     paddingLeft: insets.left,
                     paddingRight: insets.right,
-                    paddingTop: Platform.select({ ios: insets.top, android: insets.top + 8, default: insets.top }),
+                    paddingTop: Platform.select({ ios: insets.top, android: insets.top + 12, default: insets.top }),
                 }}
             >
                 <View className='flex-row items-center justify-between px-4 pb-3'>

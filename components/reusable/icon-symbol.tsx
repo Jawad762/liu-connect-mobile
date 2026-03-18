@@ -34,6 +34,21 @@ const MAPPING = {
   // Media
   'photo.on.rectangle.angled': 'photo-library',
   'camera.fill': 'camera-alt',
+  // Playback / controls
+  'play.circle.fill': 'play-circle-filled',
+  'xmark': 'close',
+  // Actions
+  'square.and.arrow.down': 'download',
+  'square.and.arrow.up': 'ios-share',
+  // Social / status
+  'heart': 'favorite-border',
+  'heart.fill': 'favorite',
+  'message': 'mode-comment',
+  'chart.bar': 'bar-chart',
+  'ellipsis': 'more-horiz',
+  'plus': 'add',
+  // Dates
+  'calendar': 'event',
 } as IconMapping;
 
 export function IconSymbol({

@@ -29,6 +29,7 @@ const UNAUTHENTICATED_ENDPOINTS = [
 apiClient.interceptors.response.use(
     (response) => response,
     async (error) => {
+        console.log("API Client Error", error.response.config)
         const response = error.response
         const status = response?.status
 
@@ -37,20 +38,17 @@ apiClient.interceptors.response.use(
             return Promise.reject(error)
         }
 
-        // For all non-auth errors, surface backend message (if any)
-        if (status !== 401) {
+        const originalRequest = response.config as typeof response.config & { _retry?: boolean }
+        const url = originalRequest?.url ?? ''
+        
+        // Surface backend message (if any)
+        if (status !== 401 || UNAUTHENTICATED_ENDPOINTS.some((ep) => url.includes(ep))) {
             const serverMessage = response?.data?.message
             if (typeof serverMessage === 'string' && serverMessage.trim().length > 0) {
                 error.message = serverMessage
             }
             return Promise.reject(error)
         }
-
-        const originalRequest = response.config as typeof response.config & { _retry?: boolean }
-        const url = originalRequest?.url ?? ''
-
-        // Auth endpoints: 401 means invalid credentials - let caller handle
-        if (UNAUTHENTICATED_ENDPOINTS.some((ep) => url.includes(ep))) return Promise.reject(error)
 
         // Refresh-token failed - redirect to login
         if (url.includes('/auth/refresh-token')) {

@@ -6,9 +6,11 @@ import { IconSymbol } from '@/components/reusable/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from "nativewind";
 import { TAB_BAR_HEIGHT } from '@/constants/general';
+import { Platform } from 'react-native';
 
 export default function TabLayout() {
   const { colorScheme: colorScheme = "light" } = useColorScheme();
+  const realTabBarHeight = TAB_BAR_HEIGHT + (Platform.OS === 'android' ? 16 : 0);
 
   return (
       <Tabs
@@ -21,7 +23,7 @@ export default function TabLayout() {
           tabBarStyle: {
             backgroundColor: Colors[colorScheme].background,
             paddingTop: 6,
-            height: TAB_BAR_HEIGHT 
+            height: realTabBarHeight,
           },
         }}>
         <Tabs.Screen

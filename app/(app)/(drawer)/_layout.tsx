@@ -3,7 +3,7 @@ import { Drawer } from 'expo-router/drawer';
 import DrawerContent from '@/components/shared/DrawerContent';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from 'nativewind';
-import { Pressable } from 'react-native';
+import { Platform, Pressable } from 'react-native';
 import { IconSymbol } from '@/components/reusable/icon-symbol';
 import { TAB_BAR_HEIGHT } from '@/constants/general';
 import CreatePostModal from '@/components/posts/CreatePostModal';
@@ -12,6 +12,7 @@ import * as Haptics from 'expo-haptics';
 const _layout = () => {
     const { colorScheme: colorScheme = "light" } = useColorScheme();
     const [isCreatePostModalVisible, setIsCreatePostModalVisible] = useState(false);
+    const realTabBarHeight = TAB_BAR_HEIGHT + (Platform.OS === 'android' ? 16 : 0);
 
     const handleOpenCreatePostModal = () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -41,7 +42,7 @@ const _layout = () => {
             {/* Floating Button to open the create post modal */}
             <Pressable
                 className="absolute right-6 bg-accent dark:bg-accentDark rounded-full p-5"
-                style={{ bottom: TAB_BAR_HEIGHT + 12 }}
+                style={{ bottom: realTabBarHeight + 12 }}
                 onPress={handleOpenCreatePostModal}
             >
                 <IconSymbol name="plus" size={24} color={Colors[colorScheme].foreground} />

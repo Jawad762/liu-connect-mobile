@@ -84,7 +84,7 @@ export default function RegisterScreen() {
                   <BackButton />
                 </View>
               )}
-              <Image source={require("@/assets/images/logo.png")} className="w-10 h-10 rounded-full" />
+              <Image source={require("@/assets/images/logo-dark.png")} className="w-10 h-10 rounded-full" />
               <Text className="text-white text-2xl font-sans-bold text-center">
                 LIU Connect
               </Text>
