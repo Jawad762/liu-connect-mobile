@@ -24,7 +24,7 @@ export default {
       "package": "com.fyp.liuconnect",
       "adaptiveIcon": {
         "backgroundColor": "#000000",
-        "image": "./assets/icons/icon-android.png"
+        "foregroundImage": "./assets/icons/icon-android.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
