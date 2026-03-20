@@ -4,6 +4,7 @@ import { AppState, Platform, type AppStateStatus } from "react-native"
 import { userService } from "@/services/user.service"
 import { router } from "expo-router"
 import { PushNotification } from "@/types/notification.types"
+import messaging from '@react-native-firebase/messaging';
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -52,8 +53,7 @@ export async function syncPushTokenWithBackend(options?: {
         return { permissionStatus, canAskAgain, token: null, synced: false }
     }
 
-    const tokenData = await Notifications.getDevicePushTokenAsync()
-    const token = tokenData.data
+    const token = await messaging().getToken()
 
     if (token && token !== lastSyncedDevicePushToken) {
         await userService.addPushToken({ token })

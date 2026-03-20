@@ -38,6 +38,8 @@ export default {
       ]
     },
     "plugins": [
+      "@react-native-firebase/app",
+      "@react-native-firebase/messaging",
       "expo-router",
       "expo-notifications",
       [
