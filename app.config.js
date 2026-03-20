@@ -41,7 +41,12 @@ export default {
       "@react-native-firebase/app",
       "@react-native-firebase/messaging",
       "expo-router",
-      "expo-notifications",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icons/notification-android.png"
+        }
+      ],
       [
         "expo-splash-screen",
         {
