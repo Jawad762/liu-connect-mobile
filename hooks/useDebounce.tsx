@@ -1,10 +1,18 @@
-import React, { useEffect } from 'react'
+import React, { DependencyList, useEffect } from 'react'
 
-const useDebounce = ({ action, delay }: { action: () => void, delay: number }) => {
+const useDebounce = ({
+    action,
+    delay,
+    dependencies = [],
+}: {
+    action: () => void,
+    delay: number,
+    dependencies?: DependencyList
+}) => {
     useEffect(() => {
         const timer = setTimeout(action, delay);
         return () => clearTimeout(timer);
-    }, [action, delay]);
+    }, [...dependencies, delay]);
 }
 
 export default useDebounce

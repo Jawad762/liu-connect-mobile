@@ -18,7 +18,11 @@ export default function SearchScreen() {
   const { users, isLoading: isLoadingUsers, error: errorUsers, fetchNextPage: fetchNextPageUsers, hasNextPage: hasNextPageUsers, isFetchingNextPage: isFetchingNextPageUsers, isFetching: isFetchingUsers, refetch: refetchUsers } = useUserSearch({ query: searchValue, size: 10 });
   const { posts, isLoading: isLoadingPosts, error: errorPosts, fetchNextPage: fetchNextPagePosts, hasNextPage: hasNextPagePosts, isFetchingNextPage: isFetchingNextPagePosts, isFetching: isFetchingPosts, refetch: refetchPosts } = usePostSearch({ query: searchValue, size: 10 });
 
-  useDebounce({ action: () => setSearchValue(searchQuery), delay: 500 });
+  useDebounce({
+    action: () => setSearchValue(searchQuery),
+    delay: 500,
+    dependencies: [searchQuery],
+  });
 
   const isLoading = isLoadingUsers || isLoadingPosts;
   const isError = errorUsers || errorPosts;
