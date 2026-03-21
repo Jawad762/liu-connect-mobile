@@ -8,11 +8,10 @@ import messaging from '@react-native-firebase/messaging';
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
-        shouldShowAlert: true,
         shouldPlaySound: true,
         shouldSetBadge: true,
         shouldShowBanner: true,
-        shouldShowList: true,
+        shouldShowList: true
     }),
 })
 
@@ -65,7 +64,6 @@ export async function syncPushTokenWithBackend(options?: {
 }
 
 export const usePushNotifications = () => {
-    const notificationListener = useRef<Notifications.EventSubscription>(null)
     const responseListener = useRef<Notifications.EventSubscription>(null)
     const appStateListener = useRef<{ remove: () => void } | null>(null)
 
@@ -82,31 +80,52 @@ export const usePushNotifications = () => {
             },
         )
 
-        // Handle notifications in foreground
-        notificationListener.current = Notifications.addNotificationReceivedListener(
-            (notification) => {
-                console.log("[Push] Notification received:", notification)
-                // todo: invalidate notifications query
+        // Intercept foreground notifications and display them
+        const unsubscribeForeground = messaging().onMessage(async (remoteMessage) => {
+            console.log("[Push] FCM foreground message:", remoteMessage)
+            // todo: invalidate notifications query
+            await Notifications.scheduleNotificationAsync({
+                content: {
+                    title: remoteMessage.notification?.title ?? "",
+                    body: remoteMessage.notification?.body ?? "",
+                    data: remoteMessage.data,
+                    sound: "default",
+                },
+                trigger: null,
+            })
+        })
+
+        // Handle FCM notification tap when app is in background
+        const unsubscribeOpenedApp = messaging().onNotificationOpenedApp(
+            (remoteMessage) => {
+                console.log("[Push] Notification opened app from background:", remoteMessage)
+                const data = remoteMessage.data as unknown as PushNotification
+                if (data?.redirectPath) {
+                    router.push(data.redirectPath)
+                } else {
+                    console.error("Incorrect or missing redirect path in notification")
+                }
             },
         )
 
-        // Handle notification press in foreground
+        // Handle tap on locally-scheduled notifications
         responseListener.current = Notifications.addNotificationResponseReceivedListener(
             (response) => {
                 if (response?.notification.request.content.data) {
-                    const data = response.notification.request.content.data as unknown as PushNotification;
+                    const data = response.notification.request.content.data as unknown as PushNotification
                     if (data.redirectPath) {
-                      router.push(data.redirectPath);
+                        router.push(data.redirectPath)
                     } else {
-                      console.error('Incorrect or missing redirect path in notification');
+                        console.error("Incorrect or missing redirect path in notification")
                     }
-                  }
+                }
             },
         )
 
         return () => {
             appStateListener.current?.remove()
-            notificationListener.current?.remove()
+            unsubscribeForeground()
+            unsubscribeOpenedApp()
             responseListener.current?.remove()
         }
     }, [])
