@@ -25,3 +25,8 @@ export const userKeys = {
   followers: (id: string, size?: number) => ['user-followers', id, size] as const,
   following: (id: string, size?: number) => ['user-following', id, size] as const,
 }
+
+export const notificationKeys = {
+  all: ['notifications'] as const,
+  list: (size?: number) => ['notifications', size] as const,
+}

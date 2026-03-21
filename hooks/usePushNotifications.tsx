@@ -5,13 +5,16 @@ import { userService } from "@/services/user.service"
 import { router } from "expo-router"
 import { PushNotification } from "@/types/notification.types"
 import messaging from '@react-native-firebase/messaging';
+import { useQueryClient } from "@tanstack/react-query";
+import { notificationKeys } from "@/utils/query-keys";
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
         shouldPlaySound: true,
         shouldSetBadge: true,
+        shouldShowAlert: true,
         shouldShowBanner: true,
-        shouldShowList: true
+        shouldShowList: true,
     }),
 })
 
@@ -66,6 +69,7 @@ export async function syncPushTokenWithBackend(options?: {
 export const usePushNotifications = () => {
     const responseListener = useRef<Notifications.EventSubscription>(null)
     const appStateListener = useRef<{ remove: () => void } | null>(null)
+    const queryClient = useQueryClient()
 
     useEffect(() => {
         // On mount, prompt the user to enable notifications
@@ -80,19 +84,27 @@ export const usePushNotifications = () => {
             },
         )
 
-        // Intercept foreground notifications and display them
+        // Intercept foreground notifications on both platforms 
+        // Display them on Android via a local notification, and on iOS via the firebase.json file.
         const unsubscribeForeground = messaging().onMessage(async (remoteMessage) => {
             console.log("[Push] FCM foreground message:", remoteMessage)
-            // todo: invalidate notifications query
-            await Notifications.scheduleNotificationAsync({
-                content: {
-                    title: remoteMessage.notification?.title ?? "",
-                    body: remoteMessage.notification?.body ?? "",
-                    data: remoteMessage.data,
-                    sound: "default",
-                },
-                trigger: null,
-            })
+            if (Platform.OS === "android") {
+                try {
+                    await Notifications.scheduleNotificationAsync({
+                        content: {
+                            title: remoteMessage.notification?.title ?? "",
+                            body: remoteMessage.notification?.body ?? "",
+                            data: remoteMessage.data,
+                            sound: "default",
+                        },
+                        trigger: { channelId: "default" },
+                    })
+                } catch (e) {
+                    console.error("[Push] scheduleNotificationAsync failed:", e)
+                }
+            }
+
+            queryClient.invalidateQueries({ queryKey: notificationKeys.all })
         })
 
         // Handle FCM notification tap when app is in background

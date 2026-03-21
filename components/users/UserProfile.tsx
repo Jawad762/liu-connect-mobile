@@ -57,7 +57,7 @@ const ProfileHeader = memo(({
     <View>
         <View style={{ height: 150, backgroundColor: Colors[colorScheme].surface }} className='w-full relative'>
             {router.canGoBack() && (
-                <Pressable onPress={() => router.back()} style={{ top: insets.top + 12, left: 10, backgroundColor: 'black' }} className='absolute rounded-full p-2'><BackButton /></Pressable>
+                <Pressable onPress={() => router.back()} style={{ top: insets.top, left: 10, backgroundColor: 'black' }} className='absolute rounded-full p-2'><BackButton /></Pressable>
             )}
         </View>
         <View style={{ marginTop: -32 }} className='px-4 pb-4 gap-3'>

@@ -1,16 +1,19 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { HapticTab } from '@/components/reusable/haptic-tab';
 import { IconSymbol } from '@/components/reusable/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from "nativewind";
 import { TAB_BAR_HEIGHT } from '@/constants/general';
-import { Platform } from 'react-native';
+import { Platform, View } from 'react-native';
+import useNotifications from '@/hooks/useNotifications';
 
 export default function TabLayout() {
   const { colorScheme: colorScheme = "light" } = useColorScheme();
   const realTabBarHeight = TAB_BAR_HEIGHT + (Platform.OS === 'android' ? 16 : 0);
+  const { notifications } = useNotifications({ size: 10 });
+  const hasUnreadNotifications = useMemo(() => notifications.some(notification => !notification.read), [notifications]);
 
   return (
       <Tabs
@@ -51,7 +54,12 @@ export default function TabLayout() {
           name="notifications"
           options={{
             title: 'Notifications',
-            tabBarIcon: ({ color }) => <IconSymbol size={26} name="bell.fill" color={color} />,
+            tabBarIcon: ({ color }) => (
+              <View className='relative'>
+                {hasUnreadNotifications && <View className='absolute z-50 -top-1 -right-1 w-3 h-3 bg-accent dark:bg-accentDark rounded-full' />}
+                <IconSymbol size={26} name="bell.fill" color={color} />
+              </View>
+            ),
           }}
         />
       </Tabs>
