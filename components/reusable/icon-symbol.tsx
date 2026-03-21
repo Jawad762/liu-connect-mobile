@@ -18,6 +18,7 @@ const MAPPING = {
   'magnifyingglass': 'search',
   'person.2.fill': 'people',
   'bell.fill': 'notifications',
+  'bell': 'notifications',
   // Drawer icons
   'person': 'person',
   'person.fill': 'person',
@@ -26,8 +27,9 @@ const MAPPING = {
   'gearshape': 'settings',
   'gearshape.fill': 'settings',
   'rectangle.portrait.and.arrow.right': 'logout',
-  // Back button
+  // Navigation
   'chevron.left': 'arrow-back',
+  'chevron.right': 'chevron-right',
   // School & major
   'building.2': 'account-balance',
   'book.closed': 'menu-book',

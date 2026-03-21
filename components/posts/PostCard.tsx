@@ -143,7 +143,7 @@ const PostCard = ({ post }: { post: Post }) => {
     }
 
     return (
-        <Pressable onPress={() => router.push(screens.post.details(post.id))} className='flex-row items-start gap-3 p-4 border-b border-border dark:border-borderDark'>
+        <Pressable onPress={() => router.push(screens.post.details(post.id))} className='flex-row items-start gap-3 p-4 border-b border-border dark:border-borderDark active:bg-border active:dark:bg-borderDark'>
             <Pressable onPress={handleNavigateToProfile}>
                 <ProfileIcon avatarUrl={post.user.avatar_url} />
             </Pressable>

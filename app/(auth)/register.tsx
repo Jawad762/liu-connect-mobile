@@ -10,6 +10,7 @@ import { Input } from "@/components/reusable/input";
 import { Button, GradientButton } from "@/components/reusable/button";
 import { PressableText } from "@/components/reusable/pressable-text";
 import { BackButton } from "@/components/reusable/back-button";
+import { MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH } from "@/constants/general";
 
 const LIU_EMAIL_REGEX = /@students\.liu\.edu\.lb$/i;
 
@@ -33,8 +34,12 @@ export default function RegisterScreen() {
         setError("Please use your LIU student email (@students.liu.edu.lb)");
         return;
       }
-      if (password.length < 8) {
-        setError("Password must be at least 8 characters");
+      if (password.length < MIN_PASSWORD_LENGTH) {
+        setError(`Password must be at least ${MIN_PASSWORD_LENGTH} characters`);
+        return;
+      }
+      if (password.length > MAX_PASSWORD_LENGTH) {
+        setError(`Password must be at most ${MAX_PASSWORD_LENGTH} characters`);
         return;
       }
       if (password !== confirmPassword) {

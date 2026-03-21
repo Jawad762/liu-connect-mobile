@@ -24,6 +24,7 @@ const UNAUTHENTICATED_ENDPOINTS = [
     '/auth/resend-verification',
     '/auth/forgot-password',
     '/auth/reset-password',
+    '/auth/change-password',
 ]
 
 apiClient.interceptors.response.use(

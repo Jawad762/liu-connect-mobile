@@ -27,7 +27,7 @@ const NotificationCard = ({ notification }: { notification: Notification }) => {
         <Pressable
             onPress={handlePress}
             className={cn(
-                'flex-row items-start gap-3 p-4 border-b border-border dark:border-borderDark',
+                'flex-row items-start gap-3 p-4 border-b border-border dark:border-borderDark active:bg-border active:dark:bg-borderDark',
                 !notification.read && 'bg-muted/10 dark:bg-mutedDark/15'
             )}
         >

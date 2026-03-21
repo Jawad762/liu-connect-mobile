@@ -14,6 +14,6 @@ export const menus = (userId: string) => [
     {
         name: 'Settings',
         icon: 'gearshape',
-        href: screens.settings,
+        href: screens.settings.index,
     },
 ]
