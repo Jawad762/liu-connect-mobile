@@ -18,6 +18,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { PushNotification } from '@/types/notification.types';
 import messaging from '@react-native-firebase/messaging';
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -29,7 +30,7 @@ export default function RootLayout() {
   const { colorScheme } = useColorScheme();
   const isAuthenticated = useAuthStore(state => !!state.accessToken && !!state.refreshToken);
   const queryClient = new QueryClient();
-  
+
   const [fontsLoaded] = useFonts({
     DMSans_400Regular,
     DMSans_500Medium,
@@ -63,18 +64,21 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <QueryClientProvider client={queryClient}>
-          <Stack>
-            <Stack.Protected guard={!isAuthenticated}>
-              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-            </Stack.Protected>
-            <Stack.Protected guard={isAuthenticated}>
-              <Stack.Screen name="(app)" options={{ headerShown: false }} />
-            </Stack.Protected>
-            <Stack.Screen name="rate-limited" options={{ headerShown: false }} />
-          </Stack>
-          <StatusBar style="auto" />
-        </QueryClientProvider>
+        <ActionSheetProvider useCustomActionSheet>
+          <QueryClientProvider client={queryClient}>
+            <Stack>
+              <Stack.Protected guard={!isAuthenticated}>
+                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+              </Stack.Protected>
+              <Stack.Protected guard={isAuthenticated}>
+                <Stack.Screen name="(app)" options={{ headerShown: false }} />
+              </Stack.Protected>
+              <Stack.Screen name="rate-limited" options={{ headerShown: false }} />
+            </Stack>
+            <StatusBar style="auto" />
+          </QueryClientProvider>
+        </ActionSheetProvider>
+
       </ThemeProvider>
     </GestureHandlerRootView>
   );
