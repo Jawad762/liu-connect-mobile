@@ -35,6 +35,7 @@ export interface GetPostsQuery {
     communityId?: string
     authorId?: string
     followingOnly?: boolean
+    communitiesOnly?: boolean
 }
 
 export interface CreatePostMedia {

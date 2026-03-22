@@ -40,6 +40,9 @@ const MAPPING = {
   'play.circle.fill': 'play-circle-filled',
   'xmark': 'close',
   // Actions
+  'plus.circle.fill': 'add-circle',
+  'pencil': 'edit',
+  'trash': 'delete',
   'square.and.arrow.down': 'download',
   'square.and.arrow.up': 'ios-share',
   // Social / status
@@ -51,6 +54,8 @@ const MAPPING = {
   'plus': 'add',
   // Dates
   'calendar': 'event',
+  // Status
+  'checkmark.circle.fill': 'check-circle',
 } as IconMapping;
 
 export function IconSymbol({

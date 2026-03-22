@@ -14,7 +14,6 @@ export default function HomeScreen() {
 
   const { posts, fetchNextPage, hasNextPage, isFetchingNextPage, refetch, isLoading, error, isFetching } = usePosts({ size: 10, communityId: isCommunityTab ? selectedTab : undefined, followingOnly: isFollowingTab });
 
-
   return (
     <ThemedView className='flex-1' style={{ paddingTop: insets.top }}>
       <HomeHeader selectedTab={selectedTab} setSelectedTab={setSelectedTab} />

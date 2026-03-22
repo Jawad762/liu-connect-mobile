@@ -17,9 +17,10 @@ interface PostListProps {
     isFetchingNextPage: boolean
     ListHeaderComponent?: React.ReactElement | null
     isRefreshing?: boolean
+    showCommunityName?: boolean
 }
 
-const PostList = ({ posts, isLoading, error, refetch, fetchNextPage, hasNextPage, isFetchingNextPage, ListHeaderComponent, isRefreshing }: PostListProps) => {
+const PostList = ({ posts, isLoading, error, refetch, fetchNextPage, hasNextPage, isFetchingNextPage, ListHeaderComponent, isRefreshing, showCommunityName = true }: PostListProps) => {
     if (error) {
         return <ErrorState message={error.message} onRetry={refetch} />
     }
@@ -29,14 +30,14 @@ const PostList = ({ posts, isLoading, error, refetch, fetchNextPage, hasNextPage
             <FlatList
                 data={isLoading ? [] : posts}
                 keyExtractor={(item) => item.id}
-                renderItem={({ item }) => <PostCard post={item} />}
+                renderItem={({ item }) => <PostCard post={item} showCommunityName={showCommunityName} />}
                 showsVerticalScrollIndicator={false}
                 onEndReached={() => hasNextPage && !isFetchingNextPage && fetchNextPage()}
                 onEndReachedThreshold={0.8}
                 ListHeaderComponent={ListHeaderComponent}
                 refreshControl={<RefreshControl refreshing={isRefreshing ?? false} onRefresh={() => refetch()} />}
                 ListEmptyComponent={
-                    isLoading ? <PostListSkeleton /> : <EmptyState message="No posts found" />
+                    isLoading ? <PostListSkeleton /> : <EmptyState className='mt-20' message="No posts found" />
                 }
                 ListFooterComponent={
                     isFetchingNextPage ? (

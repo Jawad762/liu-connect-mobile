@@ -25,6 +25,10 @@ export const screens = {
     followers: (id: string): Href => `/user/${id}/followers` as Href,
     following: (id: string): Href => `/user/${id}/following` as Href
   },
+  communities: {
+    index: '/communities' as Href,
+    details: (id: string): Href => `/community/${id}` as Href,
+  },
   notifications: '/notifications' as Href,
   settings: {
     index: '/settings' as Href,

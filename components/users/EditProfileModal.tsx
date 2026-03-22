@@ -100,7 +100,7 @@ const EditProfileModal = ({ visible, onRequestClose, user }: { visible: boolean;
                         Save
                     </GradientButton>
                 </View>
-                <View style={{ height: 130, backgroundColor: Colors[colorScheme].surface }} className='w-full relative'/>
+                <View style={{ height: 130, backgroundColor: Colors[colorScheme].surface }} className='w-full relative' />
                 <View style={{ marginTop: -32 }} className='px-4 pb-4 gap-1'>
                     <Pressable onPress={handlePickFromLibrary} className='relative w-20 h-20 mb-2'>
                         <ProfileIcon avatarUrl={avatarUrl} className='w-full h-full' />
@@ -122,6 +122,9 @@ const EditProfileModal = ({ visible, onRequestClose, user }: { visible: boolean;
                             placeholder='Your name'
                             placeholderTextColor={Colors[colorScheme].muted}
                         />
+                        <ThemedText className='text-xs text-right mt-1' style={{ color: Colors[colorScheme].muted }}>
+                            {name.length}/{NAME_MAX_LENGTH}
+                        </ThemedText>
                     </View>
                     <View
                         className='flex-row border-b border-border dark:border-borderDark items-start'

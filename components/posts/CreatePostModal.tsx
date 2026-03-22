@@ -20,17 +20,32 @@ import { ImageViewerModal } from '../reusable/ImageViewerModal';
 import { useQueryClient } from '@tanstack/react-query';
 import { screens } from '@/utils/screens';
 import { postKeys } from '@/utils/query-keys';
+import CommunityPickerModal from '../communities/CommunityPickerModal';
 
-const CreatePostModal = ({ visible, onRequestClose }: { visible: boolean; onRequestClose: () => void }) => {
+interface InitialCommunity {
+    id: string
+    name: string
+}
+
+const CreatePostModal = ({
+    visible,
+    onRequestClose,
+    initialCommunity,
+}: {
+    visible: boolean
+    onRequestClose: () => void
+    initialCommunity?: InitialCommunity | null
+}) => {
     const { colorScheme: colorScheme = 'light' } = useColorScheme();
     const [content, setContent] = useState('');
     const [postCreationLoading, setPostCreationLoading] = useState(false);
-    const [communityId, setCommunityId] = useState<string | null>(null);
+    const [selectedCommunity, setSelectedCommunity] = useState<{ id: string, name: string } | null>(initialCommunity ?? null);
     const insets = useSafeAreaInsets();
     const user = useAuthStore((state) => state.user);
     const textInputRef = useRef<TextInput>(null);
     const queryClient = useQueryClient();
     const [fullScreenImageUri, setFullScreenImageUri] = useState<string | null>(null);
+    const [communityPickerVisible, setCommunityPickerVisible] = useState(false);
 
     const { media, resetMedia, isUploading, atLimit, remainingSlots, handlePickFromLibrary, handlePickFromCamera, handleRemoveMedia } = useMediaUpload(MAX_MEDIA);
 
@@ -41,7 +56,7 @@ const CreatePostModal = ({ visible, onRequestClose }: { visible: boolean; onRequ
             setPostCreationLoading(true);
             const contentValidation = validatePost(content, media);
             if (!contentValidation.success) throw new Error(contentValidation.message);
-            const result = await postService.createPost({ content, communityId, media });
+            const result = await postService.createPost({ content, communityId: selectedCommunity?.id ?? null, media });
             if (!result.success) throw new Error(result.message);
             queryClient.invalidateQueries({ queryKey: postKeys.all });
             setContent('');
@@ -62,12 +77,14 @@ const CreatePostModal = ({ visible, onRequestClose }: { visible: boolean; onRequ
     }, [visible]);
 
     useEffect(() => {
-        if (!visible) {
+        if (visible) {
+            setSelectedCommunity(initialCommunity ?? null);
+        } else {
             setContent('');
             resetMedia();
-            setCommunityId(null);
+            setSelectedCommunity(null);
         }
-    }, [visible]);
+    }, [visible, initialCommunity]);
 
     if (!user) {
         return <Redirect href={screens.auth.login} />;
@@ -115,6 +132,16 @@ const CreatePostModal = ({ visible, onRequestClose }: { visible: boolean; onRequ
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerClassName='flex-1 flex-row items-start px-4'>
                     <ProfileIcon avatarUrl={user.avatar_url} className='w-10 h-10' />
                     <View className='flex-1'>
+                        <Pressable
+                            onPress={() => setCommunityPickerVisible(true)}
+                            style={{ marginLeft: 16, alignSelf: 'flex-start' }}
+                            className='flex-row items-center gap-2 mb-3 py-2 px-3 rounded-full border border-border dark:border-borderDark'
+                        >
+                            <ThemedText className='text-sm font-sans-medium text-accent dark:text-accentDark'>
+                                {selectedCommunity?.name ? `${selectedCommunity.name}` : 'Everyone'}
+                            </ThemedText>
+                            <IconSymbol name='chevron.down' size={16} color={Colors[colorScheme].accent} />
+                        </Pressable>
                         <TextInput
                             ref={textInputRef}
                             onChangeText={setContent}
@@ -167,6 +194,14 @@ const CreatePostModal = ({ visible, onRequestClose }: { visible: boolean; onRequ
                     </View>
                 </ScrollView>
 
+                <CommunityPickerModal
+                    visible={communityPickerVisible}
+                    onRequestClose={() => setCommunityPickerVisible(false)}
+                    currentCommunity={selectedCommunity}
+                    setCurrentCommunity={(community) => {
+                        setSelectedCommunity(community ?? null);
+                    }}
+                />
                 <LoadingOverlay visible={isUploading} />
                 <ImageViewerModal
                     visible={!!fullScreenImageUri}
