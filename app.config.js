@@ -8,6 +8,12 @@ export default {
     scheme: "liuconnect",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
+    updates: {
+      url: "https://u.expo.dev/54f8b19d-0442-4df7-b956-6254b302cfb9"
+    },
+    runtimeVersion: {
+      policy: "appVersion"
+    },
     ios: {
       supportsTablet: true,
       googleServicesFile: process.env.GOOGLE_SERVICE_INFO_PLIST,
