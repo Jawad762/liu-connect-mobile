@@ -53,4 +53,9 @@ export const userService = {
         const response = await apiClient.get("/users/search", { params: query })
         return response.data
     },
+
+    deleteAccount: async (password: string): Promise<ApiResponse<undefined>> => {
+        const response = await apiClient.delete("/users/me", { data: { password } })
+        return response.data
+    },
 }
