@@ -15,7 +15,7 @@ import * as Haptics from "expo-haptics";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GradientBackground } from "@/components/reusable/gradient-background";
 import { Button, GradientButton } from "@/components/reusable/button";
-import { ONBOARDING_SCREENS } from "@/constants/onboarding";
+import { WELCOME_SCREENS } from "@/constants/general";
 
 export default function WelcomeScreen() {
   const router = useRouter();
@@ -63,7 +63,7 @@ export default function WelcomeScreen() {
           bounces={false}
           contentContainerStyle={{ flexGrow: 1 }}
         >
-          {ONBOARDING_SCREENS.map((screen) => (
+          {WELCOME_SCREENS.map((screen) => (
             <View
               key={screen.id}
               className="flex-1 px-7"
@@ -97,7 +97,7 @@ export default function WelcomeScreen() {
             style={{ paddingBottom: insets.bottom + 32 }}
           >
           <View className="flex-row justify-center items-center gap-2 mb-7">
-            {ONBOARDING_SCREENS.map((_, index) => (
+            {WELCOME_SCREENS.map((_, index) => (
               <View
                 key={index}
                 className="h-1.5 rounded-full"

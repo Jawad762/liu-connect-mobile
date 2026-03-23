@@ -172,9 +172,6 @@ const CommentDetailsCard = ({ comment }: { comment: Comment }) => {
                     <ThemedText className='text-xl font-sans-bold' numberOfLines={1}>
                         {comment.user.name}
                     </ThemedText>
-                    {comment.user.major && (
-                        <Tag label={abbreviateMajor(comment.user.major)} />
-                    )}
                     <CommentContextMenu comment={comment} onDelete={handleDeleteComment} onCopyText={handleCopyText} onEdit={() => setUpdateCommentModalVisible(true)} />
                 </View>
                 {comment.is_deleted ? (

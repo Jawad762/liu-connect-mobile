@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { Alert, Pressable, Share, View } from 'react-native'
 import { ThemedText } from '../reusable/themed-text'
 import ProfileIcon from '../reusable/profile-icon'
-import Tag from '../reusable/tag'
 import { IconSymbol } from '../reusable/icon-symbol'
 import { useColorScheme } from 'nativewind'
 import { Colors } from '@/constants/theme'
@@ -11,7 +10,6 @@ import { getMediaItemStyle } from '@/utils/media-utils'
 import { InfiniteData, useQueryClient } from '@tanstack/react-query'
 import { commentKeys, postKeys } from '@/utils/query-keys'
 import { commentService } from '@/services/comment.service'
-import { abbreviateMajor } from '@/utils/general.utils'
 import { Comment } from '@/types/comment.types'
 import MediaItem from '../reusable/MediaItem'
 import { ImageViewerModal } from '../reusable/ImageViewerModal'
@@ -168,9 +166,6 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
                         <ThemedText className='text-lg font-sans-bold' numberOfLines={1}>
                             {comment.user.name}
                         </ThemedText>
-                        {comment.user.major && (
-                            <Tag label={abbreviateMajor(comment.user.major)} />
-                        )}
                     </Pressable>
                     <ThemedText className='text-sm text-muted dark:text-mutedDark font-sans' numberOfLines={1}>
                         • {formatRelativeDate(comment.createdAt)}

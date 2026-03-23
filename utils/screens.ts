@@ -35,5 +35,6 @@ export const screens = {
     notifications: '/settings/notifications' as Href,
     account: '/settings/account' as Href,
   },
+  onboarding: '/onboarding' as Href,
 }
 

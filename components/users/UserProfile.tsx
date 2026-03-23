@@ -1,6 +1,6 @@
 import React, { memo, useMemo, useState } from 'react'
 import { User } from '@/types/user.types'
-import { Alert, Pressable, View } from 'react-native'
+import { Alert, Image, Pressable, View } from 'react-native'
 import ProfileIcon from '../reusable/profile-icon'
 import { ThemedText } from '../reusable/themed-text'
 import { Colors } from '@/constants/theme-colors'
@@ -37,6 +37,7 @@ interface ProfileHeaderProps {
     onFollowPress: () => void
     onTabChange: (tab: 'posts' | 'replies') => void
     onEditProfilePress: () => void
+    onCoverPress: () => void
     onAvatarPress: () => void
 }
 
@@ -52,14 +53,18 @@ const ProfileHeader = memo(({
     onFollowPress,
     onTabChange,
     onEditProfilePress,
+    onCoverPress,
     onAvatarPress,
 }: ProfileHeaderProps) => (
     <View>
-        <View style={{ height: 150, backgroundColor: Colors[colorScheme].surface }} className='w-full relative'>
+        <Pressable style={{ height: 150, backgroundColor: Colors[colorScheme].surface }} className='w-full relative' onPress={onCoverPress}>
+            {user.cover_url && (
+                <Image source={{ uri: user.cover_url }} resizeMode='cover' style={{ width: '100%', height: '100%' }} />
+            )}
             {router.canGoBack() && (
                 <Pressable onPress={() => router.back()} style={{ top: insets.top, left: 10, backgroundColor: 'black' }} className='absolute rounded-full p-2'><BackButton /></Pressable>
             )}
-        </View>
+        </Pressable>
         <View style={{ marginTop: -32 }} className='px-4 pb-4 gap-3'>
             <Pressable onPress={onAvatarPress}>
                 <ProfileIcon avatarUrl={user.avatar_url} className='w-20 h-20' />
@@ -157,7 +162,8 @@ const UserProfile = ({ user }: { user: User }) => {
     const { user: authUser, setUser } = useAuthStore();
     const isOwnProfile = authUser?.id === user.id;
     const [selectedTab, setSelectedTab] = useState<'posts' | 'replies'>('posts');
-    const [imageViewerModalVisible, setImageViewerModalVisible] = useState(false);
+    const [avatarViewerVisible, setAvatarViewerVisible] = useState(false);
+    const [coverViewerVisible, setCoverViewerVisible] = useState(false);
     const queryClient = useQueryClient();
     const [editProfileModalVisible, setEditProfileModalVisible] = useState(false);
 
@@ -202,7 +208,13 @@ const UserProfile = ({ user }: { user: User }) => {
             onFollowPress={() => followMutation.mutate()}
             onTabChange={setSelectedTab}
             onEditProfilePress={() => setEditProfileModalVisible(true)}
-            onAvatarPress={() => setImageViewerModalVisible(true)}
+            onCoverPress={() => {
+                if (!user.cover_url) return;
+                setCoverViewerVisible(true);
+            }}
+            onAvatarPress={() => {
+                setAvatarViewerVisible(true);
+            }}
         />
     ), [user, colorScheme, insets, isOwnProfile, isFollowing, followMutation.isPending, joinedText, selectedTab]);
 
@@ -234,9 +246,14 @@ const UserProfile = ({ user }: { user: User }) => {
                 />
             )}
             <ImageViewerModal
-                visible={imageViewerModalVisible}
+                visible={avatarViewerVisible}
                 imageUri={user.avatar_url}
-                onClose={() => setImageViewerModalVisible(false)}
+                onClose={() => setAvatarViewerVisible(false)}
+            />
+            <ImageViewerModal
+                visible={coverViewerVisible}
+                imageUri={user.cover_url}
+                onClose={() => setCoverViewerVisible(false)}
             />
             {isOwnProfile && (
                 <EditProfileModal

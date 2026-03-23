@@ -18,6 +18,7 @@ import useAuthStore from '@/stores/auth.store'
 import { router } from 'expo-router'
 import { screens } from '@/utils/screens'
 import { MAX_PASSWORD_LENGTH } from '@/constants/general'
+import { resetPushTokenSyncCache } from '@/hooks/usePushNotifications'
 
 const DeleteAccountModal = ({
     visible,
@@ -48,6 +49,7 @@ const DeleteAccountModal = ({
             const result = await userService.deleteAccount(password)
             if (!result.success) throw new Error(result.message)
             onRequestClose()
+            resetPushTokenSyncCache()
             logout()
             router.replace(screens.auth.welcome)
             Alert.alert('Account deleted', 'Your account has been permanently deleted.')

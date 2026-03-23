@@ -51,4 +51,14 @@ export const communityService = {
         const response = await apiClient.delete(`/communities/${id}/join`)
         return response.data
     },
+
+    getSuggestedCommunities: async (courseCodes: string[]): Promise<ApiResponse<Community[]>> => {
+        const response = await apiClient.post("/communities/suggestions", { courseCodes })
+        return response.data
+    },
+
+    joinMultipleCommunities: async (communityIds: string[]): Promise<ApiResponse<undefined>> => {
+        const response = await apiClient.post("/communities/join-multiple", { communityIds })
+        return response.data
+    },
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, TextInput, View } from 'react-native'
+import { Alert, Image, KeyboardAvoidingView, Modal, Platform, Pressable, TextInput, View } from 'react-native'
 import { Button, GradientButton } from '../reusable/button'
 import { ThemedText } from '../reusable/themed-text';
 import { Colors } from '@/constants/theme-colors';
@@ -23,8 +23,20 @@ const EditProfileModal = ({ visible, onRequestClose, user }: { visible: boolean;
     const { colorScheme = 'light' } = useColorScheme();
     const { user: authUser, setUser } = useAuthStore()
     const insets = useSafeAreaInsets();
-    const { media, resetMedia, isUploading, handlePickFromLibrary } = useImageUpload();
-    const avatarUrl = media.length > 0 ? media[0].url : user.avatar_url;
+    const {
+        media: avatarMedia,
+        resetMedia: resetAvatarMedia,
+        isUploading: isUploadingAvatar,
+        handlePickFromLibrary: pickAvatarFromLibrary
+    } = useImageUpload();
+    const {
+        media: coverMedia,
+        resetMedia: resetCoverMedia,
+        isUploading: isUploadingCover,
+        handlePickFromLibrary: pickCoverFromLibrary
+    } = useImageUpload();
+    const avatarUrl = avatarMedia.length > 0 ? avatarMedia[0].url : user.avatar_url;
+    const coverUrl = coverMedia.length > 0 ? coverMedia[0].url : user.cover_url;
     const queryClient = useQueryClient();
     const [profileUpdateLoading, setProfileUpdateLoading] = useState(false);
 
@@ -32,7 +44,8 @@ const EditProfileModal = ({ visible, onRequestClose, user }: { visible: boolean;
         if (visible) {
             setName(user.name ?? '');
             setBio(user.bio ?? '');
-            resetMedia();
+            resetAvatarMedia();
+            resetCoverMedia();
         }
     }, [visible]);
 
@@ -43,12 +56,12 @@ const EditProfileModal = ({ visible, onRequestClose, user }: { visible: boolean;
         }
         try {
             setProfileUpdateLoading(true);
-            const result = await userService.updateProfile({ name, bio, avatar_url: avatarUrl });
+            const result = await userService.updateProfile({ name, bio, avatar_url: avatarUrl, cover_url: coverUrl });
             if (!result.success) throw new Error(result.message);
             queryClient.invalidateQueries({ queryKey: userKeys.all });
             queryClient.invalidateQueries({ queryKey: userKeys.detail(user.id) });
             if (authUser) {
-                setUser({ ...authUser, name, bio, avatar_url: avatarUrl });
+                setUser({ ...authUser, name, bio, avatar_url: avatarUrl, cover_url: coverUrl, school: authUser.school, major: authUser.major });
             }
             onRequestClose();
             Alert.alert('Success', 'Profile updated successfully');
@@ -63,9 +76,10 @@ const EditProfileModal = ({ visible, onRequestClose, user }: { visible: boolean;
         return (
             name === (user.name ?? '') &&
             bio === (user.bio ?? '') &&
-            avatarUrl === user.avatar_url
+            avatarUrl === user.avatar_url &&
+            coverUrl === user.cover_url
         );
-    }, [name, bio, avatarUrl, user.name, user.bio, user.avatar_url]);
+    }, [name, bio, avatarUrl, coverUrl, user.name, user.bio, user.avatar_url, user.cover_url]);
 
     return (
         <Modal visible={visible} onRequestClose={onRequestClose} animationType="slide" backdropColor={Colors[colorScheme].background}>
@@ -82,7 +96,7 @@ const EditProfileModal = ({ visible, onRequestClose, user }: { visible: boolean;
                     <Button
                         variant='outline'
                         size='sm'
-                        onPress={() => { resetMedia(); onRequestClose(); }}
+                        onPress={() => { resetAvatarMedia(); resetCoverMedia(); onRequestClose(); }}
                         className='min-w-20'
                         textClassName='text-sm'
                     >
@@ -100,9 +114,16 @@ const EditProfileModal = ({ visible, onRequestClose, user }: { visible: boolean;
                         Save
                     </GradientButton>
                 </View>
-                <View style={{ height: 130, backgroundColor: Colors[colorScheme].surface }} className='w-full relative' />
+                <Pressable style={{ height: 130, backgroundColor: Colors[colorScheme].surface }} className='w-full relative' onPress={pickCoverFromLibrary}>
+                    {coverUrl && (
+                        <Image source={{ uri: coverUrl }} resizeMode='cover' style={{ width: '100%', height: '100%' }} />
+                    )}
+                    <View style={{ top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center' }} className='absolute'>
+                        <IconSymbol name='photo.on.rectangle.angled' size={32} color='white' />
+                    </View>
+                </Pressable>
                 <View style={{ marginTop: -32 }} className='px-4 pb-4 gap-1'>
-                    <Pressable onPress={handlePickFromLibrary} className='relative w-20 h-20 mb-2'>
+                    <Pressable onPress={pickAvatarFromLibrary} className='relative w-20 h-20 mb-2'>
                         <ProfileIcon avatarUrl={avatarUrl} className='w-full h-full' />
                         <View style={{ top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center' }} className='absolute'>
                             <IconSymbol name='photo.on.rectangle.angled' size={32} color='white' />
@@ -160,7 +181,7 @@ const EditProfileModal = ({ visible, onRequestClose, user }: { visible: boolean;
                     </View>
                 </View>
             </KeyboardAvoidingView>
-            <LoadingOverlay visible={isUploading} />
+            <LoadingOverlay visible={isUploadingAvatar || isUploadingCover} />
         </Modal>
     )
 }

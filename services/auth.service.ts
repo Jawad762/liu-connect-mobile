@@ -15,8 +15,8 @@ export const authService = {
         const response = await apiClient.post('/auth/signup', { email, password })
         return response.data
     },
-    logout: async (refreshToken: string): Promise<ApiResponse<undefined>> => {
-        const response = await apiClient.post('/auth/signout', { refreshToken })
+    logout: async (): Promise<ApiResponse<undefined>> => {
+        const response = await apiClient.post('/auth/signout')
         return response.data
     },
     refreshToken: async (refreshToken: string): Promise<ApiResponse<RefreshTokenResponse>> => {

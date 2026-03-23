@@ -19,7 +19,8 @@ interface UseMediaUploadOptions {
 const useMediaUpload = (
     maxMedia: number,
     initialMedia: UploadedMedia[] = [],
-    options: UseMediaUploadOptions = {}
+    options: UseMediaUploadOptions = {},
+    onSuccess?: (data: { media: UploadedMedia[] }) => void
 ) => {
     const { endpoint = 'mediaUploader', imageOnly = false } = options
 
@@ -29,10 +30,14 @@ const useMediaUpload = (
     const remainingSlots = maxMedia - media.length
     const atLimit = media.length >= maxMedia
 
-    const onUploadComplete = (res: { ufsUrl?: string; url?: string; name?: string; key?: string }[]) =>
-        setMedia((m) =>
-            [...m, ...res.map((r) => ({ url: r.ufsUrl ?? r.url ?? '', type: inferMediaType(r.name ?? r.key ?? '') }))].slice(0, maxMedia)
+    const onUploadComplete = (res: { ufsUrl?: string; url?: string; name?: string; key?: string }[]) => {
+        setMedia((m) => {
+            const newMedia = [...m, ...res.map((r) => ({ url: r.ufsUrl ?? r.url ?? '', type: inferMediaType(r.name ?? r.key ?? '') }))].slice(0, maxMedia)
+            onSuccess?.({ media: newMedia })
+            return newMedia
+        }
         )
+    }
 
     const onUploadError = (e: Error) => {
         Alert.alert('Upload failed', e.message)

@@ -20,6 +20,10 @@ Notifications.setNotificationHandler({
 
 let lastSyncedDevicePushToken: string | null = null
 
+export function resetPushTokenSyncCache() {
+    lastSyncedDevicePushToken = null
+}
+
 async function ensureAndroidChannelAsync() {
     if (Platform.OS === "android") {
         await Notifications.setNotificationChannelAsync("default", {

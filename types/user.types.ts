@@ -3,6 +3,7 @@ export interface User {
     email?: string;
     name: string | null;
     avatar_url: string | null;
+    cover_url: string | null;
     bio: string | null;
     school: string | null;
     major: string | null;
@@ -23,7 +24,10 @@ export interface SearchUsersQuery {
 export interface UpdateProfilePayload {
     name: string
     avatar_url?: string | null
+    cover_url?: string | null
     bio?: string | null
+    major?: string | null
+    school?: string | null
 }
 
 export interface PaginationQuery {

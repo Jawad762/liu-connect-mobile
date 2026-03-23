@@ -37,4 +37,5 @@ export const communityKeys = {
   list: (query: GetCommunitiesQuery = {}) =>
     ['communities', query.page, query.size, query.search, query.userOnly] as const,
   detail: (id: string) => ['community', id] as const,
+  suggested: (courseCodes: string[]) => ['suggested-communities', courseCodes] as const,
 }

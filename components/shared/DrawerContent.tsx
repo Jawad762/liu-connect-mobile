@@ -15,23 +15,24 @@ import { SymbolViewProps } from 'expo-symbols'
 import ProfileIcon from '../reusable/profile-icon'
 import { authService } from '@/services/auth.service'
 import ConfirmationDialog from '../reusable/confirmation-dialog'
+import { resetPushTokenSyncCache } from '@/hooks/usePushNotifications'
 
 const DrawerContent = (_props: DrawerContentComponentProps) => {
     const { colorScheme: colorScheme = "light" } = useColorScheme();
     const [confirmationDialogVisible, setConfirmationDialogVisible] = useState(false);
     const user = useAuthStore((state) => state.user);
     const [logoutLoading, setLogoutLoading] = useState(false);
-    const refreshToken = useAuthStore((state) => state.refreshToken);
     const logout = useAuthStore((state) => state.logout);
 
     const handleLogout = async () => {
         try {
             setLogoutLoading(true);
-            const response = await authService.logout(refreshToken!);
+            const response = await authService.logout();
             if (!response.success) {
                 Alert.alert('Error', response.message);
                 throw new Error(response.message);
             }
+            resetPushTokenSyncCache();
             logout();
             router.replace(screens.auth.login);
         } catch (error) {

@@ -4,6 +4,7 @@ export interface LoginResponse {
     accessToken: string;
     refreshToken: string;
     user: User;
+    onboardingComplete: boolean;
 }
 
 export interface SignUpResponse {

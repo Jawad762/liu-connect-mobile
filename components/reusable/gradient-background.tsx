@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 
-const GRADIENT_COLORS = ["#1e3a5f", "#0f172a", "#000000"] as const;
+const GRADIENT_COLORS = ["#000000", "#000000", "#0f172a"] as const;
 
 interface GradientBackgroundProps {
   children: React.ReactNode;

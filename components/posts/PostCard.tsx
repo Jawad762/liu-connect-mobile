@@ -162,9 +162,6 @@ const PostCard = ({ post, showCommunityName = true }: { post: Post, showCommunit
                             <ThemedText className='text-lg font-sans-bold' numberOfLines={1}>
                                 {post.user.name}
                             </ThemedText>
-                            {/* {post.user.major && (
-                                <Tag label={abbreviateMajor(post.user.major)} />
-                            )} */}
                         </Pressable>
                         <ThemedText className='text-sm text-muted dark:text-mutedDark font-sans' numberOfLines={1}>
                             • {formatRelativeDate(post.createdAt)}

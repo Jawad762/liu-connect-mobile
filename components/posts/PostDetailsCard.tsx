@@ -5,7 +5,6 @@ import { Alert, Pressable, Share, View } from 'react-native'
 import MediaItem from '../reusable/MediaItem'
 import { ThemedText } from '../reusable/themed-text'
 import ProfileIcon from '../reusable/profile-icon'
-import Tag from '../reusable/tag'
 import { IconSymbol } from '../reusable/icon-symbol'
 import { useColorScheme } from 'nativewind'
 import { Colors } from '@/constants/theme'
@@ -13,7 +12,6 @@ import { cn } from '@/utils/cn.utils'
 import { getMediaItemStyle } from '@/utils/media-utils'
 import { postService } from '@/services/post.service'
 import { InfiniteData, useQueryClient } from '@tanstack/react-query'
-import { abbreviateMajor } from '@/utils/general.utils'
 import { ImageViewerModal } from '../reusable/ImageViewerModal'
 import PostContextMenu from './PostContextMenu'
 import UpdatePostModal from './UpdatePostModal'
@@ -180,9 +178,6 @@ const PostDetailsCard = ({ post }: { post: Post }) => {
                     <ThemedText className='text-xl font-sans-bold' numberOfLines={1}>
                         {post.user.name}
                     </ThemedText>
-                    {post.user.major && (
-                        <Tag label={abbreviateMajor(post.user.major)} />
-                    )}
                     <PostContextMenu post={post} onEdit={() => setUpdatePostModalVisible(true)} onDelete={handleDeletePost} onCopyText={handleCopyText} />
                 </View>
                 {post.community && (

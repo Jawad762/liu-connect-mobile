@@ -45,7 +45,11 @@ export default function LoginScreen() {
         response.data.accessToken,
         response.data.refreshToken
       );
-      router.replace(screens.home);
+      if (response.data.onboardingComplete) {
+        router.replace(screens.home);
+      } else {
+        router.replace(screens.onboarding);
+      }
     } catch (err: unknown) {
       console.error("Login error", err);
       setError(err instanceof Error ? err.message : "An error occurred. Please try again.");
