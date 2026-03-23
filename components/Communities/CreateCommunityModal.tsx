@@ -1,7 +1,7 @@
 import { Colors } from '@/constants/theme'
 import { useColorScheme } from 'nativewind'
 import React, { useEffect, useState } from 'react'
-import { Alert, KeyboardAvoidingView, Modal, Platform, ScrollView, TextInput, View } from 'react-native'
+import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, TextInput, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Button, GradientButton } from '../reusable/button'
 import useAuthStore from '@/stores/auth.store'
@@ -15,6 +15,7 @@ import useImageUpload from '@/hooks/useImageUpload'
 import LoadingOverlay from '../reusable/loading-overlay'
 import CommunityBanner from './CommunityBanner'
 import { BIO_MAX_LENGTH, NAME_MAX_LENGTH, NAME_MIN_LENGTH } from '@/constants/general'
+import { IconSymbol } from '../reusable/icon-symbol'
 
 const CreateCommunityModal = ({
     visible,
@@ -30,7 +31,7 @@ const CreateCommunityModal = ({
     const insets = useSafeAreaInsets()
     const user = useAuthStore((state) => state.user)
     const queryClient = useQueryClient()
-    const { media, resetMedia, isUploading, handlePickFromLibrary } = useImageUpload()
+    const { media, resetMedia, isUploading, handlePickFromLibrary, handleRemoveMedia } = useImageUpload()
     const avatarUrl = media.length > 0 ? media[0].url : null
 
     const handleCreate = async () => {
@@ -116,11 +117,19 @@ const CreateCommunityModal = ({
                 </GradientButton>
             </View>
 
-            <CommunityBanner
-                avatarUrl={avatarUrl}
-                name={name.trim() || undefined}
-                onPress={() => !loading && !isUploading && handlePickFromLibrary()}
-            />
+
+            <View className='relative'>
+                <CommunityBanner
+                    avatarUrl={avatarUrl}
+                    name={name.trim() || undefined}
+                    onPress={() => !loading && !isUploading && handlePickFromLibrary()}
+                />
+                {avatarUrl && (
+                    <Pressable style={{ top: 16, right: 16 }} className='absolute' onPress={() => handleRemoveMedia(0)} disabled={loading}>
+                        <IconSymbol name="trash" size={24} color={Colors[colorScheme].foreground} />
+                    </Pressable>
+                )}
+            </View>
 
             <KeyboardAvoidingView
                 className="flex-1 mt-4"
