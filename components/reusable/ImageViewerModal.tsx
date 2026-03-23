@@ -1,10 +1,10 @@
 import { Colors } from '@/constants/theme';
 import * as FileSystem from 'expo-file-system/legacy';
-import { Image } from 'expo-image';
 import * as MediaLibrary from 'expo-media-library';
 import { useColorScheme } from 'nativewind';
 import React, { useState } from 'react';
 import { ActivityIndicator, Alert, Modal, Pressable, useWindowDimensions, View } from 'react-native';
+import { ImageZoom } from '@likashefqet/react-native-image-zoom';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IconSymbol } from '../reusable/icon-symbol';
 import { ThemedText } from '../reusable/themed-text';
@@ -74,10 +74,14 @@ export function ImageViewerModal({ visible, imageUri, onClose }: ImageViewerModa
                 <Pressable className="absolute inset-0" onPress={onClose} />
                 {imageUri && (
                     <View className="absolute inset-0 justify-center items-center" pointerEvents="box-none">
-                        <Image
-                            source={{ uri: imageUri }}
+                        <ImageZoom
+                            uri={imageUri}
                             style={{ width, height: imageHeight }}
-                            contentFit="contain"
+                            minScale={1}
+                            maxScale={4}
+                            doubleTapScale={2}
+                            isSingleTapEnabled={false}
+                            resizeMode="contain"
                         />
                     </View>
                 )}

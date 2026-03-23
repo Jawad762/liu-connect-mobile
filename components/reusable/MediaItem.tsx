@@ -3,7 +3,7 @@ import { Image } from 'expo-image';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import type { PlayingChangeEventPayload } from 'expo-video';
 import { useColorScheme } from 'nativewind';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Pressable, View, ViewStyle } from 'react-native';
 import { IconSymbol } from './icon-symbol';
 import { MediaType } from '@/types/media.types';
@@ -20,6 +20,7 @@ function InlineVideo({ uri }: { uri: string }) {
     const { colorScheme = 'light' } = useColorScheme();
     const [isPlaying, setIsPlaying] = useState(false);
     const player = useVideoPlayer(uri, () => {});
+    const videoRef = useRef<VideoView>(null);
 
     useEffect(() => {
         setIsPlaying(player.playing);
@@ -29,9 +30,14 @@ function InlineVideo({ uri }: { uri: string }) {
         return () => sub.remove();
     }, [player]);
 
+    const onVideoPress = () => {
+        videoRef.current?.enterFullscreen();
+    }
+
     return (
-        <View style={{ width: '100%', aspectRatio: 1, position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
+        <Pressable onPress={onVideoPress} style={{ width: '100%', aspectRatio: 1, position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
             <VideoView
+                ref={videoRef}
                 player={player}
                 contentFit="cover"
                 nativeControls
@@ -64,7 +70,7 @@ function InlineVideo({ uri }: { uri: string }) {
                     </View>
                 </View>
             )}
-        </View>
+        </Pressable>
     );
 }
 
@@ -74,7 +80,7 @@ const MediaItem = ({ uri, type, style, onRemove, onImagePress }: MediaItemProps)
     return (
         <View style={[style, { position: 'relative' }]}>
             {type === 'VIDEO' ? (
-                <InlineVideo uri={uri} />
+                    <InlineVideo uri={uri} />
             ) : (
                 <Pressable onPress={onImagePress} style={{ width: '100%' }}>
                     <Image

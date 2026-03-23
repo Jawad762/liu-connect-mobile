@@ -1,25 +1,53 @@
 import React from 'react'
-import { Pressable, View } from 'react-native'
+import { Image, Pressable, View } from 'react-native'
 import { User } from '@/types/user.types'
 import { router } from 'expo-router'
 import { screens } from '@/utils/screens'
 import ProfileIcon from '../reusable/profile-icon'
 import { ThemedText } from '../reusable/themed-text'
+import { IconSymbol } from '../reusable/icon-symbol'
+import { useColorScheme } from 'nativewind'
+import { Colors } from '@/constants/theme-colors'
 
 const UserCardVertical = ({ user }: { user: User }) => {
+    const { colorScheme = 'light' } = useColorScheme()
+
     return (
         <Pressable
             onPress={() => router.push(screens.user.profile(user.id))}
-            className="flex-row items-center gap-3 px-4 py-3"
+            className="mx-4 my-2 overflow-hidden rounded-3xl border border-border dark:border-borderDark"
         >
-            <ProfileIcon avatarUrl={user.avatar_url} className="w-12 h-12" />
-            <View className="flex-1">
-                <ThemedText className="text-base font-semibold">{user.name}</ThemedText>
-                {user.bio && (
-                    <ThemedText className="text-sm text-muted dark:text-mutedDark" numberOfLines={1}>
-                        {user.bio}
-                    </ThemedText>
-                )}
+            <View className="w-full">
+                <View className="h-24 w-full bg-background dark:bg-backgroundDark">
+                    {user.cover_url && (
+                        <Image
+                            source={{ uri: user.cover_url }}
+                            resizeMode="cover"
+                            className="h-full w-full"
+                        />
+                    )}
+                </View>
+
+                <View className="px-4 pb-4">
+                    <View className="-mt-8 mb-2">
+                        <ProfileIcon avatarUrl={user.avatar_url} className="w-16 h-16 border-4 border-black" />
+                    </View>
+
+                    <View className="flex-row items-center gap-1.5">
+                        <ThemedText className="text-lg font-bold flex-shrink" numberOfLines={1}>
+                            {user.name || 'Unknown User'}
+                        </ThemedText>
+                        {user.is_verified && (
+                            <IconSymbol name="checkmark.circle.fill" size={18} color={Colors[colorScheme].accent} />
+                        )}
+                    </View>
+
+                    {user.bio && (
+                        <ThemedText className="text-base mt-2" numberOfLines={2}>
+                            {user.bio}
+                        </ThemedText>
+                    )}
+                </View>
             </View>
         </Pressable>
     )

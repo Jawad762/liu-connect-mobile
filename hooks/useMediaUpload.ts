@@ -72,7 +72,9 @@ const useMediaUpload = (
             mediaTypes: imageOnly ? ['images'] : ['images', 'videos'],
             allowsMultipleSelection: maxMedia > 1,
             selectionLimit: maxMedia > 1 ? remainingSlots : 1,
-            quality: 1,
+            quality: 0.6,
+            videoQuality: ImagePicker.UIImagePickerControllerQualityType.Medium,
+            videoExportPreset: ImagePicker.VideoExportPreset.MediumQuality,
         })
         if (result.canceled || !result.assets?.length) return
         setCustomUploading(true)
