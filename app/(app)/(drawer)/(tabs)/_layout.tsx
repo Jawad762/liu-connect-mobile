@@ -2,6 +2,7 @@ import { Tabs } from 'expo-router';
 import React, { useMemo } from 'react';
 
 import { HapticTab } from '@/components/reusable/haptic-tab';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { IconSymbol } from '@/components/reusable/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from "nativewind";
@@ -33,7 +34,7 @@ export default function TabLayout() {
           name="index"
           options={{
             title: 'Home',
-            tabBarIcon: ({ color }) => <IconSymbol size={30} name="house.fill" color={color} />,
+            tabBarIcon: ({ color }) => <MaterialCommunityIcons name="home-variant" size={28} color={color} />,
           }}
         />
         <Tabs.Screen

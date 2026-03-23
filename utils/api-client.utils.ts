@@ -30,7 +30,6 @@ const UNAUTHENTICATED_ENDPOINTS = [
 apiClient.interceptors.response.use(
     (response) => response,
     async (error) => {
-        console.log("API Client Error", error.response.config)
         const response = error.response
         const status = response?.status
 

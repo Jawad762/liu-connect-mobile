@@ -1,6 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useRouter } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import { ThemedText } from './themed-text';
 import { Button } from './button';
@@ -12,40 +13,52 @@ interface ErrorStateProps {
 }
 
 export default function ErrorState({ message, onRetry }: ErrorStateProps) {
+    const router = useRouter();
     const { colorScheme = 'light' } = useColorScheme();
-    const mutedColor = Colors[colorScheme].muted;
+    const accentColor = Colors[colorScheme].accent;
+    const canGoBack = router.canGoBack();
+    const displayMessage = message || 'Something went wrong';
 
     return (
-        <View className='flex-1 items-center justify-center px-8 gap-4'>
-            <View className='w-20 h-20 rounded-full bg-surface dark:bg-surfaceDark items-center justify-center'>
-                <MaterialIcons
-                    name='wifi-off'
-                    size={36}
-                    color={mutedColor}
-                />
-            </View>
+        <View style={{ paddingHorizontal: 16 }} className='flex-1 items-center justify-center'>
+            <View className='items-center w-full max-w-sm'>
+                <View className='bg-surface dark:bg-surfaceDark rounded-full p-6 mb-4'>
+                    <MaterialIcons
+                        name='error-outline'
+                        size={48}
+                        color={accentColor}
+                    />
+                </View>
 
-            <View className='items-center gap-1'>
-                <ThemedText className='text-lg font-sans-bold text-center'>
-                    Something went wrong
+                <ThemedText className='text-xl font-sans-bold text-center leading-7 mb-8'>
+                    {displayMessage}
                 </ThemedText>
-                {message && (
-                    <ThemedText className='text-sm text-center text-muted dark:text-mutedDark leading-5'>
-                        {message}
-                    </ThemedText>
-                )}
-            </View>
 
-            {onRetry && (
-                <Button
-                    variant='outline'
-                    size='sm'
-                    onPress={onRetry}
-                    className='mb-0 mt-2'
-                >
-                    Try again
-                </Button>
-            )}
+                <View className='w-full gap-3'>
+                    {onRetry && (
+                        <Button
+                            variant='primary'
+                            size='lg'
+                            fullWidth
+                            onPress={onRetry}
+                            className='mb-0'
+                        >
+                            Try again
+                        </Button>
+                    )}
+                    {canGoBack && (
+                        <Button
+                            variant='outline'
+                            size='lg'
+                            fullWidth
+                            onPress={() => router.back()}
+                            className='mb-0'
+                        >
+                            Go back
+                        </Button>
+                    )}
+                </View>
+            </View>
         </View>
     );
 }

@@ -170,7 +170,7 @@ const CommunityDetailsHeader = ({
                 visible={deleteDialogVisible}
                 onRequestClose={() => !deleteLoading && setDeleteDialogVisible(false)}
                 title="Delete community"
-                message="Are you sure? This cannot be undone. You can only delete communities with no posts."
+                message="Are you sure? This cannot be undone."
                 onConfirm={handleDelete}
                 onCancel={() => setDeleteDialogVisible(false)}
                 loading={deleteLoading}
