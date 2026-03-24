@@ -10,6 +10,7 @@ import SearchSkeleton from "@/components/skeletons/SearchSkeleton";
 import ErrorState from "@/components/reusable/error-state";
 import useDebounce from "@/hooks/useDebounce";
 import UserListHorizontal from "@/components/users/UserListHorizontal";
+import { ThemedText } from "@/components/reusable/themed-text";
 
 export default function SearchScreen() {
   const insets = useSafeAreaInsets();
@@ -36,16 +37,14 @@ export default function SearchScreen() {
         <ErrorState message={errorUsers?.message || errorPosts?.message} onRetry={refetchUsers || refetchPosts} />
       ) : searchValue.length > 0 ? (
         <View className="flex-1">
-          {users.length > 0 && (
-            <View className="p-4">
-              <UserListHorizontal users={users} isLoading={isLoadingUsers} error={errorUsers} refetch={refetchUsers} fetchNextPage={fetchNextPageUsers} hasNextPage={hasNextPageUsers} isFetchingNextPage={isFetchingNextPageUsers} />
-            </View>
-          )}
-          {posts.length > 0 && (
-            <View className="flex-1 p-4">
-              <PostList posts={posts} isLoading={isLoadingPosts} isRefreshing={isFetchingPosts} error={errorPosts} refetch={refetchPosts} fetchNextPage={fetchNextPagePosts} hasNextPage={hasNextPagePosts} isFetchingNextPage={isFetchingNextPagePosts} />
-            </View>
-          )}
+          <View className="gap-1 p-4">
+            <ThemedText className="text-xl font-sans-medium">Users</ThemedText>
+            <UserListHorizontal users={users} isLoading={isLoadingUsers} error={errorUsers} refetch={refetchUsers} fetchNextPage={fetchNextPageUsers} hasNextPage={hasNextPageUsers} isFetchingNextPage={isFetchingNextPageUsers} />
+          </View>
+          <View className="flex-1 gap-1 p-4">
+            <ThemedText className="text-xl font-sans-medium">Posts</ThemedText>
+            <PostList posts={posts} isLoading={isLoadingPosts} isRefreshing={isFetchingPosts} error={errorPosts} refetch={refetchPosts} fetchNextPage={fetchNextPagePosts} hasNextPage={hasNextPagePosts} isFetchingNextPage={isFetchingNextPagePosts} />
+          </View>
         </View>
       ) : null}
     </ThemedView>
