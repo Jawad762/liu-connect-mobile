@@ -13,10 +13,10 @@ import { getMediaItemStyle } from '@/utils/media-utils'
 import { postService } from '@/services/post.service'
 import { InfiniteData, useQueryClient } from '@tanstack/react-query'
 import { ImageViewerModal } from '../reusable/ImageViewerModal'
+import { APP_WEB_URL } from '@/constants/links'
 import PostContextMenu from './PostContextMenu'
 import UpdatePostModal from './UpdatePostModal'
 import * as Clipboard from 'expo-clipboard';
-import * as Linking from 'expo-linking'
 import LoadingOverlay from '../reusable/loading-overlay'
 import { postKeys, commentKeys } from '@/utils/query-keys'
 import { router } from 'expo-router'
@@ -155,9 +155,9 @@ const PostDetailsCard = ({ post }: { post: Post }) => {
 
     const handleSharePost = async () => {
         try {
-            const url = Linking.createURL(`/post/${post.id}`)
+            const url = `${APP_WEB_URL}/post/${post.id}`
             await Share.share({
-                message: `Check out this post on Liu Connect: ${url}`,
+                message: url,
             })
         } catch (error) {
             Alert.alert('Oops!', 'An error occurred while sharing the post')

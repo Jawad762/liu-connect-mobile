@@ -15,7 +15,8 @@ export default {
       policy: "appVersion"
     },
     ios: {
-      supportsTablet: true,
+      associatedDomains: ["applinks:liuconnect.mjawadzaiter.dev"],
+      supportsTablet: false,
       googleServicesFile: process.env.GOOGLE_SERVICE_INFO_PLIST,
       bundleIdentifier: "com.fyp.liuconnect",
       infoPlist: {
@@ -39,6 +40,14 @@ export default {
         "android.permission.READ_MEDIA_IMAGES",
         "android.permission.READ_MEDIA_VIDEO",
         "android.permission.READ_MEDIA_AUDIO",
+      ],
+      intentFilters: [
+        {
+          action: "VIEW",
+          autoVerify: true,
+          data: [{ scheme: "https", host: "liuconnect.mjawadzaiter.dev", pathPrefix: "/" }],
+          category: ["BROWSABLE", "DEFAULT"],
+        },
       ],
     },
     plugins: [

@@ -12,9 +12,9 @@ import { getMediaItemStyle } from '@/utils/media-utils'
 import { postService } from '@/services/post.service'
 import { InfiniteData, useQueryClient } from '@tanstack/react-query'
 import { postKeys } from '@/utils/query-keys'
+import { APP_WEB_URL } from '@/constants/links'
 import { router } from 'expo-router'
 import { screens } from '@/utils/screens'
-import * as Linking from 'expo-linking'
 import MediaItem from '../reusable/MediaItem'
 import { ImageViewerModal } from '../reusable/ImageViewerModal'
 import PostContextMenu from './PostContextMenu'
@@ -131,9 +131,9 @@ const PostCard = ({ post, showCommunityName = true }: { post: Post, showCommunit
 
     const handleSharePost = async () => {
         try {
-            const url = Linking.createURL(`/post/${post.id}`)
+            const url = `${APP_WEB_URL}/post/${post.id}`
             await Share.share({
-                message: `Check out this post on Liu Connect: ${url}`,
+                message: url,
             })
         } catch (error) {
             Alert.alert('Oops!', 'An error occurred while sharing the post')

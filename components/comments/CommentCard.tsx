@@ -10,12 +10,12 @@ import { getMediaItemStyle } from '@/utils/media-utils'
 import { InfiniteData, useQueryClient } from '@tanstack/react-query'
 import { commentKeys, postKeys } from '@/utils/query-keys'
 import { commentService } from '@/services/comment.service'
+import { APP_WEB_URL } from '@/constants/links'
 import { Comment } from '@/types/comment.types'
 import MediaItem from '../reusable/MediaItem'
 import { ImageViewerModal } from '../reusable/ImageViewerModal'
 import { router } from 'expo-router'
 import { screens } from '@/utils/screens'
-import * as Linking from 'expo-linking'
 import { formatRelativeDate } from '@/utils/date.utils'
 import * as Clipboard from 'expo-clipboard';
 import CommentContextMenu from './CommentContextMenu'
@@ -146,9 +146,9 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 
     const handleShareComment = async () => {
         try {
-            const url = Linking.createURL(`/comment/${comment.id}?postId=${comment.postId}`)
+            const url = `${APP_WEB_URL}/comment/${comment.id}?postId=${comment.postId}`
             await Share.share({
-                message: `Check out this comment on Liu Connect: ${url}`,
+                message: url,
             })
         } catch (error) {
             Alert.alert('Oops!', 'An error occurred while sharing the comment')
