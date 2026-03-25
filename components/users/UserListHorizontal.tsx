@@ -28,7 +28,7 @@ const UserListHorizontal = ({
 }: UserListHorizontalProps) => {
     if (isLoading) return <UserListSkeleton />
     if (error) return <ErrorState message={error.message} onRetry={refetch} />
-    if (users.length === 0) return <EmptyState message="No users found" />
+    if (users.length === 0) return <EmptyState  className='mt-10 w-full flex-0' title="Nothing to see here!" message="No users found" />
 
     return (
         <FlatList

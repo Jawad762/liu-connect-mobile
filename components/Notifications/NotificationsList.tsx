@@ -43,7 +43,7 @@ const NotificationsList = () => {
                 onEndReachedThreshold={0.8}
                 refreshControl={<RefreshControl refreshing={isFetching ?? false} onRefresh={() => refetch()} />}
                 ListEmptyComponent={
-                    isLoading ? <NotificationListSkeleton /> : <EmptyState message="No notifications found" />
+                    isLoading ? <NotificationListSkeleton /> : <EmptyState className='mt-20' message="No notifications found" />
                 }
                 ListFooterComponent={
                     isFetchingNextPage ? <View className='py-4 items-center'><ActivityIndicator /></View> : null

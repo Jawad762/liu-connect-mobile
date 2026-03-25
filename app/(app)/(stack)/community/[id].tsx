@@ -84,7 +84,7 @@ const CommunityScreen = () => {
                             }
                         }}
                     >
-                        <IconSymbol name="plus" size={24} color={Colors[colorScheme].foreground} />
+                        <IconSymbol name="plus" size={24} color={"white"} />
                     </Pressable>
                     <CreatePostModal
                         visible={createPostModalVisible}

@@ -13,7 +13,7 @@ const GeneralHeader = ({ title }: { title: string }) => {
                     <BackButton />
                 </View>
             )}
-            <ThemedText className="text-white text-2xl font-sans-bold text-center">
+            <ThemedText className="text-foreground dark:text-foregroundDark text-2xl font-sans-bold text-center">
                 {title}
             </ThemedText>
         </View>

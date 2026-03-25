@@ -68,7 +68,7 @@ const Notifications = () => {
 
     return (
         <ThemedView className='flex-1' style={{ paddingTop: insets.top + 12 }}>
-            <View className="p-4 border-b">
+            <View className="p-4 border-b border-border dark:border-borderDark">
                 <GeneralHeader title="Settings > Notifications" />
             </View>
             <View className='p-4 flex-row justify-between items-center'>

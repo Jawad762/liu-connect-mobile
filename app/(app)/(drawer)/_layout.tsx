@@ -45,7 +45,7 @@ const _layout = () => {
                 style={{ bottom: realTabBarHeight + 12 }}
                 onPress={handleOpenCreatePostModal}
             >
-                <IconSymbol name="plus" size={24} color={Colors[colorScheme].foreground} />
+                <IconSymbol name="plus" size={24} color={"white"} />
             </Pressable>
 
             {/* Create Post Modal */}

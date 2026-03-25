@@ -72,7 +72,7 @@ const useMediaUpload = (
             mediaTypes: imageOnly ? ['images'] : ['images', 'videos'],
             allowsMultipleSelection: maxMedia > 1,
             selectionLimit: maxMedia > 1 ? remainingSlots : 1,
-            quality: 0.6,
+            quality: 0.3,
             videoQuality: ImagePicker.UIImagePickerControllerQualityType.Medium,
             videoExportPreset: ImagePicker.VideoExportPreset.MediumQuality,
         })

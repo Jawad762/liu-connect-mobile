@@ -62,7 +62,7 @@ const ProfileHeader = memo(({
                 <Image source={{ uri: user.cover_url }} resizeMode='cover' style={{ width: '100%', height: '100%' }} />
             )}
             {router.canGoBack() && (
-                <Pressable onPress={() => router.back()} style={{ top: insets.top, left: 10, backgroundColor: 'black' }} className='absolute rounded-full p-2'><BackButton /></Pressable>
+                <Pressable onPress={() => router.back()} style={{ top: insets.top, left: 10, backgroundColor: 'black' }} className='absolute rounded-full p-2'><BackButton color={"white"}/></Pressable>
             )}
         </Pressable>
         <View style={{ marginTop: -32 }} className='px-4 pb-4 gap-3'>

@@ -31,8 +31,6 @@ const Onboarding = () => {
         scrollViewRef.current?.scrollTo({ x: step * width, y: 0, animated: true })
     }
 
-    console.log(aiResponse)
-
     return (
         <ThemedView className="flex-1" style={{ paddingTop: insets.top }}>
             <View className="px-5 pt-3 pb-4">

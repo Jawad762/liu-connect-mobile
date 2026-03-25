@@ -31,7 +31,11 @@ apiClient.interceptors.response.use(
     (response) => response,
     async (error) => {
         const response = error.response
-        const status = response?.status
+        if (!response) {
+            error.message = 'Network error. Please check your connection and try again.'
+            return Promise.reject(error)
+        }
+        const status = response.status
 
         if (status === 429) {
             router.navigate(screens.rateLimited as Href)
@@ -43,7 +47,7 @@ apiClient.interceptors.response.use(
         
         // Surface backend message (if any)
         if (status !== 401 || UNAUTHENTICATED_ENDPOINTS.some((ep) => url.includes(ep))) {
-            const serverMessage = response?.data?.message
+            const serverMessage = response.data?.message
             if (typeof serverMessage === 'string' && serverMessage.trim().length > 0) {
                 error.message = serverMessage
             }
