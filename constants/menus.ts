@@ -1,4 +1,4 @@
-import { screens } from "@/utils/screens";
+import { screens } from "@/utils/screens.utils";
 
 export const menus = (userId: string) => [
     {

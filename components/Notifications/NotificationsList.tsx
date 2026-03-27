@@ -8,7 +8,7 @@ import NotificationListSkeleton from './NotificationListSkeleton'
 import ErrorState from '../reusable/error-state'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { notificationService } from '@/services/notification.service'
-import { notificationKeys } from '@/utils/query-keys'
+import { notificationKeys } from '@/utils/query-keys.utils'
 
 const NotificationsList = () => {
     const queryClient = useQueryClient()

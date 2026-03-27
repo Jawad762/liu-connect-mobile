@@ -1,5 +1,5 @@
 import { userService } from "@/services/user.service"
-import { userKeys } from "@/utils/query-keys"
+import { userKeys } from "@/utils/query-keys.utils"
 import { useQuery } from "@tanstack/react-query"
 
 export const useUser = ({ id }: { id: string }) => {

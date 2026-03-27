@@ -8,19 +8,20 @@ import { IconSymbol } from '../reusable/icon-symbol'
 import { useColorScheme } from 'nativewind'
 import { Colors } from '@/constants/theme'
 import { cn } from '@/utils/cn.utils'
-import { getMediaItemStyle } from '@/utils/media-utils'
+import { getMediaItemStyle } from '@/utils/media.utils'
 import { postService } from '@/services/post.service'
 import { InfiniteData, useQueryClient } from '@tanstack/react-query'
-import { postKeys } from '@/utils/query-keys'
+import { postKeys } from '@/utils/query-keys.utils'
 import { APP_WEB_URL } from '@/constants/links'
 import { router } from 'expo-router'
-import { screens } from '@/utils/screens'
+import { screens } from '@/utils/screens.utils'
 import MediaItem from '../reusable/MediaItem'
 import { ImageViewerModal } from '../reusable/ImageViewerModal'
 import PostContextMenu from './PostContextMenu'
 import UpdatePostModal from './UpdatePostModal'
 import * as Clipboard from 'expo-clipboard';
 import LoadingOverlay from '../reusable/loading-overlay'
+import ReportPostModal from './ReportPostModal'
 
 type PostsQueryData = InfiniteData<{ data: Post[] }>
 
@@ -30,6 +31,8 @@ const PostCard = ({ post, showCommunityName = true }: { post: Post, showCommunit
     const [fullScreenImageUri, setFullScreenImageUri] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const [updatePostModalVisible, setUpdatePostModalVisible] = useState(false);
+    const [reportPostModalVisible, setReportPostModalVisible] = useState(false);
+    const [contextMenuVisible, setContextMenuVisible] = useState(false);
 
     const handleLikePost = async () => {
         await queryClient.cancelQueries({ queryKey: postKeys.all })
@@ -166,7 +169,9 @@ const PostCard = ({ post, showCommunityName = true }: { post: Post, showCommunit
                         <ThemedText className='text-sm text-muted dark:text-mutedDark font-sans' numberOfLines={1}>
                             • {formatRelativeDate(post.createdAt)}
                         </ThemedText>
-                        <PostContextMenu post={post} onEdit={() => setUpdatePostModalVisible(true)} onDelete={handleDeletePost} onCopyText={handleCopyText} />
+                        <Pressable onPress={() => setContextMenuVisible(true)} className="ml-auto p-1 -m-1" hitSlop={8}>
+                            <IconSymbol name="ellipsis" size={20} color={Colors[colorScheme].muted} />
+                        </Pressable>
                     </View>
                     {post.content.trim().length > 0 && (
                         <ThemedText className='text-lg font-sans'>{post.content}</ThemedText>
@@ -215,6 +220,8 @@ const PostCard = ({ post, showCommunityName = true }: { post: Post, showCommunit
                     />
                     <LoadingOverlay visible={isDeleting} />
                     <UpdatePostModal visible={updatePostModalVisible} onRequestClose={() => setUpdatePostModalVisible(false)} post={post} />
+                    <ReportPostModal visible={reportPostModalVisible} onRequestClose={() => setReportPostModalVisible(false)} post={post} />
+                    <PostContextMenu post={post} visible={contextMenuVisible} onRequestClose={() => setContextMenuVisible(false)} onEdit={() => setUpdatePostModalVisible(true)} onDelete={handleDeletePost} onCopyText={handleCopyText} onReport={() => setReportPostModalVisible(true)} />
                 </View>
             </View>
 

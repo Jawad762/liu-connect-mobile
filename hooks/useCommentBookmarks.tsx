@@ -1,6 +1,6 @@
 import { commentService } from '@/services/comment.service'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { commentKeys } from '@/utils/query-keys'
+import { commentKeys } from '@/utils/query-keys.utils'
 
 const useCommentBookmarks = ({ size = 10 }: { size?: number }) => {
     const { data, isLoading, error, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching, refetch } = useInfiniteQuery({

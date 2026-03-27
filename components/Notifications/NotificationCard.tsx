@@ -1,6 +1,6 @@
 import { Notification } from '@/types/notification.types'
 import { formatRelativeDate } from '@/utils/date.utils'
-import { screens } from '@/utils/screens'
+import { screens } from '@/utils/screens.utils'
 import { cn } from '@/utils/cn.utils'
 import { Href, router } from 'expo-router'
 import React from 'react'
@@ -8,7 +8,7 @@ import { Pressable, View } from 'react-native'
 import ProfileIcon from '../reusable/profile-icon'
 import { ThemedText } from '../reusable/themed-text'
 import MediaItem from '../reusable/MediaItem'
-import { inferMediaType } from '@/utils/media-utils'
+import { inferMediaType } from '@/utils/media.utils'
 
 const NotificationCard = ({ notification }: { notification: Notification }) => {
     const handleNavigateToActor = () => {

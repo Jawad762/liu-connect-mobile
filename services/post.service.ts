@@ -1,3 +1,4 @@
+import { ReportReason } from "@/types/report.types"
 import { ApiResponse } from "../types/api.types"
 import {
     CreatePostPayload,
@@ -38,12 +39,12 @@ export const postService = {
     },
 
     likePost: async (id: string): Promise<ApiResponse<undefined>> => {
-        const response = await apiClient.patch(`/posts/${id}/like`)
+        const response = await apiClient.post(`/posts/${id}/like`)
         return response.data
     },
 
     unlikePost: async (id: string): Promise<ApiResponse<undefined>> => {
-        const response = await apiClient.patch(`/posts/${id}/unlike`)
+        const response = await apiClient.delete(`/posts/${id}/unlike`)
         return response.data
     },
 
@@ -64,6 +65,11 @@ export const postService = {
 
     search: async (query: SearchPostsQuery): Promise<ApiResponse<Post[]>> => {
         const response = await apiClient.get(`/posts/search`, { params: query })
+        return response.data
+    },
+
+    reportPost: async (id: string, reason: ReportReason, details?: string): Promise<ApiResponse<undefined>> => {
+        const response = await apiClient.post(`/posts/${id}/report`, { reason, details })
         return response.data
     },
 }

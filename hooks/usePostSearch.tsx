@@ -1,6 +1,6 @@
 import { postService } from '@/services/post.service'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { postKeys } from '@/utils/query-keys'
+import { postKeys } from '@/utils/query-keys.utils'
 import { SearchPostsQuery } from '@/types/post.types'
 
 const usePostSearch = ({ query, size = 10 }: SearchPostsQuery) => {

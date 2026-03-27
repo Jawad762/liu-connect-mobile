@@ -1,6 +1,6 @@
 import { postService } from '@/services/post.service'
 import { useQuery } from '@tanstack/react-query'
-import { postKeys } from '@/utils/query-keys'
+import { postKeys } from '@/utils/query-keys.utils'
 
 const usePost = ({ id }: { id: string }) => {
     const { data, isLoading, error, refetch, isFetching } = useQuery({

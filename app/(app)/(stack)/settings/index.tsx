@@ -8,7 +8,7 @@ import { IconSymbol } from '@/components/reusable/icon-symbol'
 import { Colors } from '@/constants/theme'
 import { useColorScheme } from 'nativewind'
 import { router } from 'expo-router'
-import { screens } from '@/utils/screens'
+import { screens } from '@/utils/screens.utils'
 
 const settings = () => {
     const insets = useSafeAreaInsets();

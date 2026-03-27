@@ -1,6 +1,6 @@
 import { commentService } from '@/services/comment.service'
 import { useQuery } from '@tanstack/react-query'
-import { commentKeys } from '@/utils/query-keys'
+import { commentKeys } from '@/utils/query-keys.utils'
 
 const useComment = ({ id }: { id: string }) => {
     const { data, isLoading, error, refetch, isFetching } = useQuery({

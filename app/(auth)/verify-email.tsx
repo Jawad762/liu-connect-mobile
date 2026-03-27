@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useRouter, useLocalSearchParams, type Href } from "expo-router";
-import { screens } from "@/utils/screens";
+import { screens } from "@/utils/screens.utils";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { authService } from "@/services/auth.service";
 import { GradientBackground } from "@/components/reusable/gradient-background";

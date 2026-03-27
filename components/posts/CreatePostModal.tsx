@@ -10,7 +10,7 @@ import useAuthStore from '@/stores/auth.store';
 import { Redirect } from 'expo-router';
 import { postService } from '@/services/post.service';
 import { validatePost } from '@/utils/post.utils';
-import { getMediaItemStyle } from '@/utils/media-utils';
+import { getMediaItemStyle } from '@/utils/media.utils';
 import useMediaUpload from '@/hooks/useMediaUpload';
 import LoadingOverlay from '../reusable/loading-overlay';
 import { ThemedText } from '../reusable/themed-text';
@@ -18,8 +18,8 @@ import MediaItem from '../reusable/MediaItem';
 import { POST_CONTENT_MAX_LENGTH, POST_MEDIA_MAX_COUNT } from '@/constants/general';
 import { ImageViewerModal } from '../reusable/ImageViewerModal';
 import { useQueryClient } from '@tanstack/react-query';
-import { screens } from '@/utils/screens';
-import { postKeys } from '@/utils/query-keys';
+import { screens } from '@/utils/screens.utils';
+import { postKeys } from '@/utils/query-keys.utils';
 import CommunityPickerModal from '../communities/CommunityPickerModal';
 
 interface InitialCommunity {

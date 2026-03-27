@@ -37,3 +37,36 @@ export const WELCOME_SCREENS = [
             "Follow classmates, interact with posts, and be part of the campus conversation.",
     },
 ];
+
+export const REPORT_REASONS = [
+    {
+        id: "SPAM",
+        label: "Spam",
+        description: "Contains spam or unwanted promotional content.",
+    },
+    {
+        id: "HARASSMENT",
+        label: "Harassment",
+        description: "Targets someone with harassment or bullying.",
+    },
+    {
+        id: "SEXUAL_CONTENT",
+        label: "Sexual Content",
+        description: "Contains explicit or sexual content.",
+    },
+    {
+        id: "HATE_SPEECH",
+        label: "Hate Speech",
+        description: "Contains hate speech or calls for violence.",
+    },
+    {
+        id: "DISCRIMINATION",
+        label: "Discrimination",
+        description: "Contains discriminatory language or behavior.",
+    },
+    {
+        id: "OTHER",
+        label: "Other",
+        description: "Violates community guidelines in another way.",
+    },
+];

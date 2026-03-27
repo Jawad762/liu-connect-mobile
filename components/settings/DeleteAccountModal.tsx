@@ -16,7 +16,7 @@ import { useColorScheme } from 'nativewind'
 import { userService } from '@/services/user.service'
 import useAuthStore from '@/stores/auth.store'
 import { router } from 'expo-router'
-import { screens } from '@/utils/screens'
+import { screens } from '@/utils/screens.utils'
 import { PASSWORD_MAX_LENGTH } from '@/constants/general'
 import { resetPushTokenSyncCache } from '@/hooks/usePushNotifications'
 

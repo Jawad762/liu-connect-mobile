@@ -2,7 +2,7 @@ import { API_URL } from '@/constants/api'
 import useAuthStore from '@/stores/auth.store'
 import axios from 'axios'
 import { Href, router } from 'expo-router'
-import { screens } from './screens'
+import { screens } from './screens.utils'
 
 export const apiClient = axios.create({
     baseURL: `${API_URL}/api`,

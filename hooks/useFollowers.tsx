@@ -1,5 +1,5 @@
 import { userService } from "@/services/user.service"
-import { userKeys } from "@/utils/query-keys"
+import { userKeys } from "@/utils/query-keys.utils"
 import { useInfiniteQuery } from "@tanstack/react-query"
 
 export const useFollowers = ({ id, size }: { id: string, size?: number }) => {

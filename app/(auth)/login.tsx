@@ -2,7 +2,7 @@ import { useState } from "react";
 import { View, Text, ScrollView, KeyboardAvoidingView, Platform, Pressable, Image } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useRouter, type Href } from "expo-router";
-import { screens } from "@/utils/screens";
+import { screens } from "@/utils/screens.utils";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { authService } from "@/services/auth.service";
 import useAuthStore from "@/stores/auth.store";

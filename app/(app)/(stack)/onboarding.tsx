@@ -9,7 +9,7 @@ import Schedule from '@/components/onboarding/Schedule'
 import SuggestedCommunities from '@/components/onboarding/SuggestedCommunities'
 import useAuthStore from '@/stores/auth.store'
 import { Redirect } from 'expo-router'
-import { screens } from '@/utils/screens'
+import { screens } from '@/utils/screens.utils'
 import { useColorScheme } from 'nativewind'
 import { Colors } from '@/constants/theme'
 

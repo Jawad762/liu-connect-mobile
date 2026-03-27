@@ -1,5 +1,5 @@
 import React from 'react'
-import { communityKeys } from '@/utils/query-keys'
+import { communityKeys } from '@/utils/query-keys.utils'
 import { communityService } from '@/services/community.service'
 import { useQuery } from '@tanstack/react-query'
 

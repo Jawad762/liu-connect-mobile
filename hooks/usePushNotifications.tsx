@@ -6,7 +6,7 @@ import { router } from "expo-router"
 import { PushNotification } from "@/types/notification.types"
 import messaging from '@react-native-firebase/messaging';
 import { useQueryClient } from "@tanstack/react-query";
-import { notificationKeys } from "@/utils/query-keys";
+import { notificationKeys } from "@/utils/query-keys.utils";
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({

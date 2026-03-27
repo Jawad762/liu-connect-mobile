@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { userKeys } from '@/utils/query-keys'
+import { userKeys } from '@/utils/query-keys.utils'
 import { SearchUsersQuery } from '@/types/user.types'
 import { userService } from '@/services/user.service'
 

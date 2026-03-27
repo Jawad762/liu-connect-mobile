@@ -1,106 +1,139 @@
-import useAuthStore from '@/stores/auth.store'
-import { useActionSheet } from '@expo/react-native-action-sheet'
-import { useRef } from 'react'
-import { Alert, findNodeHandle, Platform, Pressable, View } from 'react-native'
-import { useColorScheme } from 'nativewind'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { Colors } from '@/constants/theme'
-import { IconSymbol } from '../reusable/icon-symbol'
-import * as Haptics from 'expo-haptics'
 import { Comment } from '@/types/comment.types'
+import useAuthStore from '@/stores/auth.store'
+import { useEffect } from 'react'
+import { Dimensions, Modal, Pressable, View } from 'react-native'
+import { useColorScheme } from 'nativewind'
+import { Gesture, GestureDetector } from 'react-native-gesture-handler'
+import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
+import { Colors } from '@/constants/theme'
+import { ThemedText } from '../reusable/themed-text'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { IconSymbol } from '../reusable/icon-symbol'
 
 type CommentContextMenuProps = {
     comment: Comment
+    visible: boolean
+    onRequestClose: () => void
     onEdit?: () => void
     onDelete?: () => void
     onCopyText?: () => void
+    onReport?: () => void
 }
 
-const CommentContextMenu = ({ comment, onEdit, onDelete, onCopyText }: CommentContextMenuProps) => {
+const SCREEN_HEIGHT = Dimensions.get('window').height
+
+const CommentContextMenu = ({ comment, visible, onRequestClose, onEdit, onDelete, onCopyText, onReport }: CommentContextMenuProps) => {
     const { colorScheme = 'light' } = useColorScheme()
-    const { showActionSheetWithOptions } = useActionSheet()
     const insets = useSafeAreaInsets()
-    const buttonRef = useRef<View>(null)
     const currentUserId = useAuthStore(state => state.user?.id)
     const isOwnComment = currentUserId === comment.userId
+    const translateY = useSharedValue(SCREEN_HEIGHT)
+    const colors = Colors[colorScheme]
 
-    const open = () => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
-
-        const options = isOwnComment
-            ? ['Copy Text', 'Edit Comment', 'Delete Comment', 'Cancel']
-            : ['Copy Text', 'Cancel']
-
-        const cancelButtonIndex = options.length - 1
-        const destructiveButtonIndex = isOwnComment ? 2 : undefined
-
-        const anchor =
-            Platform.OS === 'ios' && buttonRef.current
-                ? findNodeHandle(buttonRef.current) ?? undefined
-                : undefined
-
-        const theme = Colors[colorScheme]
-
-        showActionSheetWithOptions(
-            {
-                options,
-                cancelButtonIndex,
-                destructiveButtonIndex,
-                anchor,
-                useModal: true,
-                tintColor: theme.foreground,
-                cancelButtonTintColor: theme.accent,
-                destructiveColor: '#ff3b30',
-                showSeparators: true,
-                containerStyle: {
-                    backgroundColor: theme.surface,
-                    borderRadius: 16,
-                    overflow: 'hidden',
-                    paddingBottom: insets.bottom + 8,
-                },
-                separatorStyle: {
-                    backgroundColor: theme.border,
-                },
-                textStyle: {
-                    color: theme.foreground,
-                    fontSize: 17,
-                },
-            },
-            selectedIndex => {
-                if (selectedIndex === undefined || selectedIndex === cancelButtonIndex) return
-
-                switch (selectedIndex) {
-                    case 0:
-                        onCopyText?.()
-                        break
-                    case 1:
-                        if (isOwnComment) {
-                            onEdit?.()
-                        }
-                        break
-                    case 2:
-                        if (isOwnComment) {
-                            Alert.alert(
-                                'Delete Comment',
-                                'Are you sure you want to delete this comment? This action cannot be undone.',
-                                [
-                                    { text: 'Cancel', style: 'cancel' },
-                                    { text: 'Delete', style: 'destructive', onPress: onDelete },
-                                ]
-                            )
-                        }
-                        break
-                }
-            }
-        )
+    const dismiss = (action?: () => void) => {
+        translateY.value = withTiming(SCREEN_HEIGHT, { duration: 220 }, () => {
+            runOnJS(onRequestClose)()
+            if (action) runOnJS(action)()
+        })
     }
 
-    const mutedColor = Colors[colorScheme].muted
+    const gesture = Gesture.Pan()
+        .activeOffsetY(5)
+        .onUpdate((e) => {
+            translateY.value = Math.max(0, e.translationY)
+        })
+        .onEnd((e) => {
+            if (e.translationY > 120 || e.velocityY > 700) {
+                translateY.value = withTiming(SCREEN_HEIGHT, { duration: 220 }, () => {
+                    runOnJS(onRequestClose)()
+                })
+            } else {
+                translateY.value = withTiming(0, { duration: 200 })
+            }
+        })
+
+    useEffect(() => {
+        if (visible) {
+            translateY.value = withTiming(0, { duration: 280 })
+        }
+    }, [visible])
+
+    const sheetStyle = useAnimatedStyle(() => ({
+        transform: [{ translateY: translateY.value }],
+    }))
 
     return (
-        <Pressable ref={buttonRef} onPress={open} className="ml-auto p-1 -m-1" hitSlop={8}>
-            <IconSymbol name="ellipsis" size={20} color={mutedColor} />
-        </Pressable>
+        <Modal animationType="none" transparent visible={visible} onRequestClose={() => dismiss()}>
+            <View style={{ flex: 1 }}>
+                <Pressable
+                    style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.45)' }}
+                    onPress={() => dismiss()}
+                />
+                <Animated.View
+                    style={[
+                        sheetStyle,
+                        {
+                            position: 'absolute',
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            backgroundColor: colors.background,
+                            borderTopLeftRadius: 20,
+                            borderTopRightRadius: 20,
+                            paddingBottom: Math.max(insets.bottom, 16),
+                        },
+                    ]}
+                >
+                    <GestureDetector gesture={gesture}>
+                        <View style={{ alignItems: 'center', paddingTop: 12, paddingBottom: 12 }}>
+                            <View style={{ width: 36, height: 4, borderRadius: 2, backgroundColor: colors.border }} />
+                        </View>
+                    </GestureDetector>
+
+                    <View>
+                        {comment.content.trim().length > 0 && (
+                            <Pressable
+                                className='flex-row items-center gap-3 px-6 border-b border-border dark:border-borderDark active:bg-surface dark:active:bg-surfaceDark'
+                                style={{ minHeight: 58 }}
+                                onPress={() => dismiss(onCopyText)}
+                            >
+                                <IconSymbol name='doc.on.doc' size={20} color={colors.foreground} />
+                                <ThemedText className='text-lg font-sans-medium'>Copy Text</ThemedText>
+                            </Pressable>
+                        )}
+                        {isOwnComment ? (
+                            <>
+                                <Pressable
+                                    className='flex-row items-center gap-3 px-6 border-b border-border dark:border-borderDark active:bg-surface dark:active:bg-surfaceDark'
+                                    style={{ minHeight: 58 }}
+                                    onPress={() => dismiss(onEdit)}
+                                >
+                                    <IconSymbol name='pencil' size={20} color={colors.foreground} />
+                                    <ThemedText className='text-lg font-sans-medium'>Edit Comment</ThemedText>
+                                </Pressable>
+                                <Pressable
+                                    className='flex-row items-center gap-3 px-6 border-b border-border dark:border-borderDark active:bg-surface dark:active:bg-surfaceDark'
+                                    style={{ minHeight: 58 }}
+                                    onPress={() => dismiss(onDelete)}
+                                >
+                                    <IconSymbol name='trash' size={20} color='#ef4444' />
+                                    <ThemedText className='text-lg font-sans-medium text-red-500'>Delete Comment</ThemedText>
+                                </Pressable>
+                            </>
+                        ) : (
+                            <Pressable
+                                className='flex-row items-center gap-3 px-6 border-b border-border dark:border-borderDark active:bg-surface dark:active:bg-surfaceDark'
+                                style={{ minHeight: 58 }}
+                                onPress={() => dismiss(onReport)}
+                            >
+                                <IconSymbol name='flag' size={20} color='#ef4444' />
+                                <ThemedText className='text-lg font-sans-medium text-red-500'>Report Comment</ThemedText>
+                            </Pressable>
+                        )}
+                    </View>
+                </Animated.View>
+            </View>
+        </Modal>
     )
 }
 

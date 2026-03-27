@@ -45,6 +45,8 @@ const MAPPING = {
   'trash': 'delete',
   'square.and.arrow.down': 'download',
   'square.and.arrow.up': 'ios-share',
+  'doc.on.doc': 'content-copy',
+  'flag': 'flag',
   // Social / status
   'heart': 'favorite-border',
   'heart.fill': 'favorite',

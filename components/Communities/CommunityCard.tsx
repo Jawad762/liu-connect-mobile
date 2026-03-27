@@ -2,7 +2,7 @@ import React from 'react'
 import { Image, Pressable, View } from 'react-native'
 import { Community } from '@/types/community.types'
 import { router } from 'expo-router'
-import { screens } from '@/utils/screens'
+import { screens } from '@/utils/screens.utils'
 import { ThemedText } from '../reusable/themed-text'
 import { getInitials } from '@/utils/string.utils'
 

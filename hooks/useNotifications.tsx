@@ -1,5 +1,5 @@
 import { notificationService } from '@/services/notification.service'
-import { notificationKeys } from '@/utils/query-keys'
+import { notificationKeys } from '@/utils/query-keys.utils'
 import { useInfiniteQuery } from '@tanstack/react-query'
 
 const useNotifications = ({ size = 10 }: { size?: number }) => {

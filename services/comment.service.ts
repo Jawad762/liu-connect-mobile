@@ -1,3 +1,4 @@
+import { ReportReason } from "@/types/report.types"
 import { ApiResponse } from "../types/api.types"
 import {
     Comment,
@@ -37,12 +38,12 @@ export const commentService = {
     },
 
     likeComment: async (id: string): Promise<ApiResponse<undefined>> => {
-        const response = await apiClient.patch(`/comments/${id}/like`)
+        const response = await apiClient.post(`/comments/${id}/like`)
         return response.data
     },
 
     unlikeComment: async (id: string): Promise<ApiResponse<undefined>> => {
-        const response = await apiClient.patch(`/comments/${id}/unlike`)
+        const response = await apiClient.delete(`/comments/${id}/unlike`)
         return response.data
     },
 
@@ -58,6 +59,11 @@ export const commentService = {
 
     unbookmarkComment: async (id: string): Promise<ApiResponse<undefined>> => {
         const response = await apiClient.delete(`/comments/${id}/unbookmark`)
+        return response.data
+    },
+
+    reportComment: async (id: string, reason: ReportReason, details?: string): Promise<ApiResponse<undefined>> => {
+        const response = await apiClient.post(`/comments/${id}/report`, { reason, details })
         return response.data
     },
 }

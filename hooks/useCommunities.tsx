@@ -1,6 +1,6 @@
 import { communityService } from '@/services/community.service'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { communityKeys } from '@/utils/query-keys'
+import { communityKeys } from '@/utils/query-keys.utils'
 import { GetCommunitiesQuery } from '@/types/community.types'
 
 const useCommunities = (query: GetCommunitiesQuery = {}) => {

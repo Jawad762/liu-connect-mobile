@@ -10,7 +10,7 @@ import { User } from '@/types/user.types';
 import { IconSymbol } from '../reusable/icon-symbol';
 import useImageUpload from '@/hooks/useImageUpload';
 import { userService } from '@/services/user.service';
-import { userKeys } from '@/utils/query-keys';
+import { userKeys } from '@/utils/query-keys.utils';
 import { useQueryClient } from '@tanstack/react-query';
 import useAuthStore from '@/stores/auth.store';
 import LoadingOverlay from '../reusable/loading-overlay';

@@ -2,7 +2,7 @@ import { Alert } from 'react-native'
 import { useState } from 'react'
 import { openSettings } from 'expo-linking'
 import { useImageUploader, uploadFiles } from '@/lib/uploadthing'
-import { inferMediaType } from '@/utils/media-utils'
+import { inferMediaType } from '@/utils/media.utils'
 import { MediaType } from '@/types/media.types'
 import * as ImagePicker from 'expo-image-picker'
 

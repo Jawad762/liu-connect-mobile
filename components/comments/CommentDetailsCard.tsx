@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { commentKeys, postKeys } from '@/utils/query-keys'
+import { commentKeys, postKeys } from '@/utils/query-keys.utils'
 import { Alert, Pressable, Share, View } from 'react-native'
 import MediaItem from '../reusable/MediaItem'
 import { ThemedText } from '../reusable/themed-text'
@@ -9,7 +9,7 @@ import { IconSymbol } from '../reusable/icon-symbol'
 import { useColorScheme } from 'nativewind'
 import { Colors } from '@/constants/theme'
 import { cn } from '@/utils/cn.utils'
-import { getMediaItemStyle } from '@/utils/media-utils'
+import { getMediaItemStyle } from '@/utils/media.utils'
 import { InfiniteData, useQueryClient } from '@tanstack/react-query'
 import { abbreviateMajor } from '@/utils/general.utils'
 import { APP_WEB_URL } from '@/constants/links'
@@ -20,8 +20,9 @@ import * as Clipboard from 'expo-clipboard';
 import CommentContextMenu from './CommentContextMenu'
 import LoadingOverlay from '../reusable/loading-overlay'
 import UpdateCommentModal from './UpdateCommentModal'
+import ReportCommentModal from './ReportCommentModal'
 import { router } from 'expo-router'
-import { screens } from '@/utils/screens'
+import { screens } from '@/utils/screens.utils'
 
 type CommentsQueryData = InfiniteData<{ data: Comment[] }>
 
@@ -30,7 +31,9 @@ const CommentDetailsCard = ({ comment }: { comment: Comment }) => {
     const queryClient = useQueryClient();
     const [fullScreenImageUri, setFullScreenImageUri] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [contextMenuVisible, setContextMenuVisible] = useState(false);
     const [updateCommentModalVisible, setUpdateCommentModalVisible] = useState(false);
+    const [reportCommentModalVisible, setReportCommentModalVisible] = useState(false);
 
     const handleLikeComment = async () => {
         await queryClient.cancelQueries({ queryKey: commentKeys.all })
@@ -172,7 +175,9 @@ const CommentDetailsCard = ({ comment }: { comment: Comment }) => {
                     <ThemedText className='text-xl font-sans-bold' numberOfLines={1}>
                         {comment.user.name}
                     </ThemedText>
-                    <CommentContextMenu comment={comment} onDelete={handleDeleteComment} onCopyText={handleCopyText} onEdit={() => setUpdateCommentModalVisible(true)} />
+                    <Pressable onPress={() => setContextMenuVisible(true)} className="ml-auto p-1 -m-1" hitSlop={8}>
+                        <IconSymbol name="ellipsis" size={20} color={Colors[colorScheme].muted} />
+                    </Pressable>
                 </View>
                 {comment.is_deleted ? (
                     <ThemedText className='text-xl font-sans mt-2 text-muted dark:text-mutedDark'>
@@ -235,7 +240,8 @@ const CommentDetailsCard = ({ comment }: { comment: Comment }) => {
                 <LoadingOverlay visible={isDeleting} />
             </View>
             <UpdateCommentModal visible={updateCommentModalVisible} onRequestClose={() => setUpdateCommentModalVisible(false)} comment={comment} />
-
+            <ReportCommentModal visible={reportCommentModalVisible} onRequestClose={() => setReportCommentModalVisible(false)} comment={comment} />
+            <CommentContextMenu comment={comment} visible={contextMenuVisible} onRequestClose={() => setContextMenuVisible(false)} onEdit={() => setUpdateCommentModalVisible(true)} onDelete={handleDeleteComment} onCopyText={handleCopyText} onReport={() => setReportCommentModalVisible(true)} />
         </Pressable>
     )
 }

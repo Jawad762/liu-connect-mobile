@@ -1,6 +1,6 @@
 import { postService } from '@/services/post.service'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { postKeys } from '@/utils/query-keys'
+import { postKeys } from '@/utils/query-keys.utils'
 
 const usePosts = ({ communityId, authorId, size = 10, followingOnly = false, communitiesOnly = false }: { communityId?: string, authorId?: string, size?: number, followingOnly?: boolean, communitiesOnly?: boolean }) => {
     const { data, isLoading, error, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching, refetch } = useInfiniteQuery({

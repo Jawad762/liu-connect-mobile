@@ -1,6 +1,6 @@
 import { communityService } from '@/services/community.service'
 import { useQuery } from '@tanstack/react-query'
-import { communityKeys } from '@/utils/query-keys'
+import { communityKeys } from '@/utils/query-keys.utils'
 
 const useCommunity = (id: string | undefined) => {
     const { data, isLoading, error, refetch, isFetching } = useQuery({

@@ -10,8 +10,8 @@ import ProfileIcon from '../reusable/profile-icon';
 import useAuthStore from '@/stores/auth.store';
 import { Redirect } from 'expo-router';
 import { validateComment } from '@/utils/comment.utils';
-import { screens } from '@/utils/screens';
-import { getMediaItemStyle } from '@/utils/media-utils';
+import { screens } from '@/utils/screens.utils';
+import { getMediaItemStyle } from '@/utils/media.utils';
 import useMediaUpload from '@/hooks/useMediaUpload';
 import LoadingOverlay from '../reusable/loading-overlay';
 import { ThemedText } from '../reusable/themed-text';
@@ -20,7 +20,7 @@ import { COMMENT_CONTENT_MAX_LENGTH, COMMENT_MEDIA_MAX_COUNT } from '@/constants
 import { ImageViewerModal } from '../reusable/ImageViewerModal';
 import { commentService } from '@/services/comment.service';
 import { useQueryClient } from '@tanstack/react-query';
-import { postKeys, commentKeys } from '@/utils/query-keys';
+import { postKeys, commentKeys } from '@/utils/query-keys.utils';
 
 const UpdateCommentModal = ({ visible, onRequestClose, comment }: { visible: boolean; onRequestClose: () => void; comment: Comment }) => {
     const { colorScheme: colorScheme = 'light' } = useColorScheme();
