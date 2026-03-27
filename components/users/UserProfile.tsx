@@ -9,7 +9,7 @@ import useAuthStore from '@/stores/auth.store'
 import { IconSymbol } from '../reusable/icon-symbol'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { userService } from '@/services/user.service'
-import { userKeys } from '@/utils/query-keys.utils'
+import { commentKeys, postKeys, userKeys } from '@/utils/query-keys.utils'
 import usePosts from '@/hooks/usePosts'
 import useComments from '@/hooks/useComments'
 import PostList from '../posts/PostList'
@@ -23,6 +23,7 @@ import { Button } from '../reusable/button'
 import { screens } from '@/utils/screens.utils'
 import EditProfileModal from './EditProfileModal'
 import { ImageViewerModal } from '../reusable/ImageViewerModal'
+import ActionSheet from '../reusable/action-sheet'
 import { EdgeInsets } from 'react-native-safe-area-context'
 
 interface ProfileHeaderProps {
@@ -39,6 +40,7 @@ interface ProfileHeaderProps {
     onEditProfilePress: () => void
     onCoverPress: () => void
     onAvatarPress: () => void
+    onMenuPress: () => void
 }
 
 const ProfileHeader = memo(({
@@ -55,6 +57,7 @@ const ProfileHeader = memo(({
     onEditProfilePress,
     onCoverPress,
     onAvatarPress,
+    onMenuPress,
 }: ProfileHeaderProps) => (
     <View>
         <Pressable style={{ height: 150, backgroundColor: Colors[colorScheme].surface }} className='w-full relative' onPress={onCoverPress}>
@@ -63,6 +66,11 @@ const ProfileHeader = memo(({
             )}
             {router.canGoBack() && (
                 <Pressable onPress={() => router.back()} style={{ top: insets.top, left: 10, backgroundColor: 'black' }} className='absolute rounded-full p-2'><BackButton color={"white"}/></Pressable>
+            )}
+            {!isOwnProfile && (
+                <Pressable onPress={onMenuPress} style={{ top: insets.top, right: 10, backgroundColor: 'black' }} className='absolute rounded-full p-2'>
+                    <IconSymbol name="ellipsis" size={20} color="white" />
+                </Pressable>
             )}
         </Pressable>
         <View style={{ marginTop: -32 }} className='px-4 pb-4 gap-3'>
@@ -166,6 +174,7 @@ const UserProfile = ({ user }: { user: User }) => {
     const [coverViewerVisible, setCoverViewerVisible] = useState(false);
     const queryClient = useQueryClient();
     const [editProfileModalVisible, setEditProfileModalVisible] = useState(false);
+    const [menuVisible, setMenuVisible] = useState(false);
 
     const { posts, isLoading: isPostsLoading, error: postsError, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching: isPostsFetching, refetch: refetchPosts } = usePosts({ authorId: user.id, size: 10 });
     const { comments, isLoading: isCommentsLoading, error: commentsError, fetchNextPage: fetchNextCommentsPage, hasNextPage: hasMoreComments, isFetchingNextPage: isFetchingNextComments, isFetching: isCommentsFetching, refetch: refetchComments } = useComments({ userId: user.id, size: 10 });
@@ -186,6 +195,20 @@ const UserProfile = ({ user }: { user: User }) => {
         },
     });
 
+    const blockUserMutation = useMutation({
+        mutationFn: () => userService.blockUser(user.id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: userKeys.detail(user.id) });
+            queryClient.invalidateQueries({ queryKey: postKeys.all });
+            queryClient.invalidateQueries({ queryKey: commentKeys.all });
+            queryClient.invalidateQueries({ queryKey: userKeys.blocked.all });
+            router.back();
+        },
+        onError: () => {
+            Alert.alert('Oops!', 'Failed to block this user. Please try again.');
+        },
+    });
+
     const joinedText = useMemo(() => {
         const createdAt = new Date(user.createdAt);
         if (isNaN(createdAt.getTime())) return null;
@@ -194,6 +217,17 @@ const UserProfile = ({ user }: { user: User }) => {
             year: 'numeric',
         })}`;
     }, [user.createdAt]);
+
+    const handleBlockUser = () => {
+        Alert.alert(
+            'Block User',
+            `Block ${user.name || 'this user'}? They will no longer be able to see your posts or send you messages.`,
+            [
+                { text: 'Cancel', style: 'cancel' },
+                { text: 'Block', style: 'destructive', onPress: () => blockUserMutation.mutate() },
+            ]
+        );
+    }
 
     const profileHeader = useMemo(() => (
         <ProfileHeader
@@ -215,6 +249,7 @@ const UserProfile = ({ user }: { user: User }) => {
             onAvatarPress={() => {
                 setAvatarViewerVisible(true);
             }}
+            onMenuPress={() => setMenuVisible(true)}
         />
     ), [user, colorScheme, insets, isOwnProfile, isFollowing, followMutation.isPending, joinedText, selectedTab]);
 
@@ -260,6 +295,20 @@ const UserProfile = ({ user }: { user: User }) => {
                     visible={editProfileModalVisible}
                     onRequestClose={() => setEditProfileModalVisible(false)}
                     user={user}
+                />
+            )}
+            {!isOwnProfile && (
+                <ActionSheet
+                    visible={menuVisible}
+                    onClose={() => setMenuVisible(false)}
+                    actions={[
+                        {
+                            label: `Block ${user.name || 'User'}`,
+                            icon: 'slash.circle',
+                            color: '#ef4444',
+                            onPress: handleBlockUser,
+                        },
+                    ]}
                 />
             )}
         </ThemedView>

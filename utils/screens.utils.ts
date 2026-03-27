@@ -34,6 +34,7 @@ export const screens = {
     index: '/settings' as Href,
     notifications: '/settings/notifications' as Href,
     account: '/settings/account' as Href,
+    blocked: '/settings/blocked' as Href,
   },
   onboarding: '/onboarding' as Href,
 }

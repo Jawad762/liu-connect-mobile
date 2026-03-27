@@ -53,6 +53,7 @@ const MAPPING = {
   'message': 'mode-comment',
   'chart.bar': 'bar-chart',
   'ellipsis': 'more-horiz',
+  'slash.circle': 'block',
   'plus': 'add',
   // Dates
   'calendar': 'event',

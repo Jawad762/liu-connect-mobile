@@ -58,4 +58,19 @@ export const userService = {
         const response = await apiClient.delete("/users/me", { data: { password } })
         return response.data
     },
+
+    blockUser: async (id: string): Promise<ApiResponse<undefined>> => {
+        const response = await apiClient.post(`/users/${id}/block`)
+        return response.data
+    },
+
+    unblockUser: async (id: string): Promise<ApiResponse<undefined>> => {
+        const response = await apiClient.delete(`/users/${id}/block`)
+        return response.data
+    },
+
+    getBlockedUsers: async (query: PaginationQuery = {}): Promise<ApiResponse<User[]>> => {
+        const response = await apiClient.get("/users/me/blocked", { params: query })
+        return response.data
+    },
 }

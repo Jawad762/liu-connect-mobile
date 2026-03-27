@@ -1,6 +1,6 @@
 import { ApiResponse } from '@/types/api.types'
 import { Post } from '@/types/post.types'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Alert, Pressable, Share, View } from 'react-native'
 import MediaItem from '../reusable/MediaItem'
 import { ThemedText } from '../reusable/themed-text'
@@ -14,7 +14,7 @@ import { postService } from '@/services/post.service'
 import { InfiniteData, useQueryClient } from '@tanstack/react-query'
 import { ImageViewerModal } from '../reusable/ImageViewerModal'
 import { APP_WEB_URL } from '@/constants/links'
-import PostContextMenu from './PostContextMenu'
+import ActionSheet, { ActionSheetItem } from '../reusable/action-sheet'
 import UpdatePostModal from './UpdatePostModal'
 import * as Clipboard from 'expo-clipboard';
 import LoadingOverlay from '../reusable/loading-overlay'
@@ -22,12 +22,15 @@ import { postKeys, commentKeys } from '@/utils/query-keys.utils'
 import { router } from 'expo-router'
 import { screens } from '@/utils/screens.utils'
 import ReportPostModal from './ReportPostModal'
+import useAuthStore from '@/stores/auth.store'
 
 type PostsQueryData = InfiniteData<{ data: Post[] }>
 
 const PostDetailsCard = ({ post }: { post: Post }) => {
     const { colorScheme: colorScheme = "light" } = useColorScheme();
     const queryClient = useQueryClient();
+    const currentUserId = useAuthStore(state => state.user?.id)
+    const isOwnPost = currentUserId === post.userId
     const [fullScreenImageUri, setFullScreenImageUri] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const [updatePostModalVisible, setUpdatePostModalVisible] = useState(false);
@@ -156,6 +159,20 @@ const PostDetailsCard = ({ post }: { post: Post }) => {
         }
     }
 
+    const actions = useMemo<ActionSheetItem[]>(() => [
+        ...(post.content.trim().length > 0 ? [{
+            label: 'Copy Text',
+            icon: 'doc.on.doc' as const,
+            onPress: handleCopyText,
+        }] : []),
+        ...(isOwnPost ? [
+            { label: 'Edit Post', icon: 'pencil' as const, onPress: () => setUpdatePostModalVisible(true) },
+            { label: 'Delete Post', icon: 'trash' as const, color: '#ef4444', onPress: handleDeletePost },
+        ] : [
+            { label: 'Report Post', icon: 'flag' as const, color: '#ef4444', onPress: () => setReportPostModalVisible(true) },
+        ]),
+    ], [post.content, isOwnPost])
+
     const handleSharePost = async () => {
         try {
             const url = `${APP_WEB_URL}/post/${post.id}`
@@ -241,7 +258,7 @@ const PostDetailsCard = ({ post }: { post: Post }) => {
                 <LoadingOverlay visible={isDeleting} />
                 <UpdatePostModal visible={updatePostModalVisible} onRequestClose={() => setUpdatePostModalVisible(false)} post={post} />
                 <ReportPostModal visible={reportPostModalVisible} onRequestClose={() => setReportPostModalVisible(false)} post={post} />
-                <PostContextMenu post={post} visible={contextMenuVisible} onRequestClose={() => setContextMenuVisible(false)} onEdit={() => setUpdatePostModalVisible(true)} onDelete={handleDeletePost} onCopyText={handleCopyText} onReport={() => setReportPostModalVisible(true)} />
+                <ActionSheet visible={contextMenuVisible} onClose={() => setContextMenuVisible(false)} actions={actions} />
             </View>
         </Pressable>
     )

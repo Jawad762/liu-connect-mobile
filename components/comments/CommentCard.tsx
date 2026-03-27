@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Alert, Pressable, Share, View } from 'react-native'
 import { ThemedText } from '../reusable/themed-text'
 import ProfileIcon from '../reusable/profile-icon'
@@ -18,16 +18,19 @@ import { router } from 'expo-router'
 import { screens } from '@/utils/screens.utils'
 import { formatRelativeDate } from '@/utils/date.utils'
 import * as Clipboard from 'expo-clipboard';
-import CommentContextMenu from './CommentContextMenu'
+import ActionSheet, { ActionSheetItem } from '../reusable/action-sheet'
 import LoadingOverlay from '../reusable/loading-overlay'
 import UpdateCommentModal from './UpdateCommentModal'
 import ReportCommentModal from './ReportCommentModal'
+import useAuthStore from '@/stores/auth.store'
 
 type CommentsQuerData = InfiniteData<{ data: Comment[] }>
 
 const CommentCard = ({ comment }: { comment: Comment }) => {
     const { colorScheme: colorScheme = "light" } = useColorScheme();
     const queryClient = useQueryClient();
+    const currentUserId = useAuthStore(state => state.user?.id)
+    const isOwnComment = currentUserId === comment.userId
     const [fullScreenImageUri, setFullScreenImageUri] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const [contextMenuVisible, setContextMenuVisible] = useState(false);
@@ -147,6 +150,20 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
         }
     }
 
+    const actions = useMemo<ActionSheetItem[]>(() => [
+        ...(comment.content.trim().length > 0 ? [{
+            label: 'Copy Text',
+            icon: 'doc.on.doc' as const,
+            onPress: handleCopyText,
+        }] : []),
+        ...(isOwnComment ? [
+            { label: 'Edit Comment', icon: 'pencil' as const, onPress: () => setUpdateCommentModalVisible(true) },
+            { label: 'Delete Comment', icon: 'trash' as const, color: '#ef4444', onPress: handleDeleteComment },
+        ] : [
+            { label: 'Report Comment', icon: 'flag' as const, color: '#ef4444', onPress: () => setReportCommentModalVisible(true) },
+        ]),
+    ], [comment.content, isOwnComment])
+
     const handleShareComment = async () => {
         try {
             const url = `${APP_WEB_URL}/comment/${comment.id}?postId=${comment.postId}`
@@ -246,7 +263,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
             </View>
             <UpdateCommentModal visible={updateCommentModalVisible} onRequestClose={() => setUpdateCommentModalVisible(false)} comment={comment} />
             <ReportCommentModal visible={reportCommentModalVisible} onRequestClose={() => setReportCommentModalVisible(false)} comment={comment} />
-            <CommentContextMenu comment={comment} visible={contextMenuVisible} onRequestClose={() => setContextMenuVisible(false)} onEdit={() => setUpdateCommentModalVisible(true)} onDelete={handleDeleteComment} onCopyText={handleCopyText} onReport={() => setReportCommentModalVisible(true)} />
+            <ActionSheet visible={contextMenuVisible} onClose={() => setContextMenuVisible(false)} actions={actions} />
         </Pressable>
     )
 }
