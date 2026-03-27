@@ -8,13 +8,13 @@ import { IconSymbol } from '../reusable/icon-symbol';
 import ProfileIcon from '../reusable/profile-icon';
 import useAuthStore from '@/stores/auth.store';
 import { Redirect } from 'expo-router';
-import { validatePost } from '@/utils/post.utils';
+import { validateComment } from '@/utils/comment.utils';
 import { getMediaItemStyle } from '@/utils/media-utils';
 import useMediaUpload from '@/hooks/useMediaUpload';
 import LoadingOverlay from '../reusable/loading-overlay';
 import { ThemedText } from '../reusable/themed-text';
 import MediaItem from '../reusable/MediaItem';
-import { MAX_MEDIA, MAX_POST_CONTENT_LENGTH } from '@/constants/general';
+import { COMMENT_CONTENT_MAX_LENGTH, COMMENT_MEDIA_MAX_COUNT } from '@/constants/general';
 import { ImageViewerModal } from '../reusable/ImageViewerModal';
 import { commentService } from '@/services/comment.service';
 import { useQueryClient } from '@tanstack/react-query';
@@ -31,14 +31,14 @@ const CreateCommentModal = ({ visible, onRequestClose, postId, parentId }: { vis
     const queryClient = useQueryClient();
     const [fullScreenImageUri, setFullScreenImageUri] = useState<string | null>(null);
 
-    const { media, resetMedia, isUploading, atLimit, remainingSlots, handlePickFromLibrary, handlePickFromCamera, handleRemoveMedia } = useMediaUpload(MAX_MEDIA);
+    const { media, resetMedia, isUploading, atLimit, remainingSlots, handlePickFromLibrary, handlePickFromCamera, handleRemoveMedia } = useMediaUpload(COMMENT_MEDIA_MAX_COUNT);
 
     const handleClose = () => onRequestClose();
 
     const handleComment = async () => {
         try {
             setCommentCreationLoading(true);
-            const contentValidation = validatePost(content, media);
+            const contentValidation = validateComment(content, media);
             if (!contentValidation.success) throw new Error(contentValidation.message);
             const result = await commentService.createComment({ content, media, postId, parentCommentId: parentId });
             if (!result.success) throw new Error(result.message);
@@ -122,7 +122,7 @@ const CreateCommentModal = ({ visible, onRequestClose, postId, parentId }: { vis
                             value={content}
                             multiline
                             scrollEnabled={false}
-                            maxLength={MAX_POST_CONTENT_LENGTH}
+                            maxLength={COMMENT_CONTENT_MAX_LENGTH}
                             placeholder='What are you thinking?'
                             placeholderTextColor={Colors[colorScheme].muted}
                             style={{ minHeight: 48 }}
@@ -161,7 +161,7 @@ const CreateCommentModal = ({ visible, onRequestClose, postId, parentId }: { vis
                             </Pressable>
                             {media.length > 0 && (
                                 <ThemedText className='text-xs font-sans text-muted dark:text-mutedDark'>
-                                    {atLimit ? `${MAX_MEDIA}/${MAX_MEDIA} · Max reached` : `${media.length}/${MAX_MEDIA} · ${remainingSlots} left`}
+                                    {atLimit ? `${COMMENT_MEDIA_MAX_COUNT}/${COMMENT_MEDIA_MAX_COUNT} · Max reached` : `${media.length}/${COMMENT_MEDIA_MAX_COUNT} · ${remainingSlots} left`}
                                 </ThemedText>
                             )}
                         </View>

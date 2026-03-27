@@ -11,6 +11,7 @@ import { Input } from "@/components/reusable/input";
 import { Button, GradientButton } from "@/components/reusable/button";
 import { PressableText } from "@/components/reusable/pressable-text";
 import { BackButton } from "@/components/reusable/back-button";
+import { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH } from "@/constants/general";
 
 export default function ResetPasswordScreen() {
   const router = useRouter();
@@ -53,8 +54,12 @@ export default function ResetPasswordScreen() {
         setError("All fields are required");
         return;
       }
-      if (password.length < 8) {
-        setError("Password must be at least 8 characters");
+      if (password.length < PASSWORD_MIN_LENGTH) {
+        setError(`Password must be at least ${PASSWORD_MIN_LENGTH} characters`);
+        return;
+      }
+      if (password.length > PASSWORD_MAX_LENGTH) {
+        setError(`Password must be at most ${PASSWORD_MAX_LENGTH} characters`);
         return;
       }
       if (password !== confirmPassword) {
@@ -160,6 +165,7 @@ export default function ResetPasswordScreen() {
               secureTextEntry
               textContentType="newPassword"
               autoComplete="new-password"
+              maxLength={PASSWORD_MAX_LENGTH}
             />
 
             <Input
@@ -169,6 +175,7 @@ export default function ResetPasswordScreen() {
               secureTextEntry
               textContentType="newPassword"
               autoComplete="new-password"
+              maxLength={PASSWORD_MAX_LENGTH}
               error={error}
             />
 

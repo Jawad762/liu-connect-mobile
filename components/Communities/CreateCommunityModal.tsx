@@ -14,7 +14,7 @@ import { ThemedText } from '../reusable/themed-text'
 import useImageUpload from '@/hooks/useImageUpload'
 import LoadingOverlay from '../reusable/loading-overlay'
 import CommunityBanner from './CommunityBanner'
-import { BIO_MAX_LENGTH, NAME_MAX_LENGTH, NAME_MIN_LENGTH } from '@/constants/general'
+import { DESCRIPTION_MAX_LENGTH, NAME_MAX_LENGTH, NAME_MIN_LENGTH } from '@/constants/general'
 import { IconSymbol } from '../reusable/icon-symbol'
 
 const CreateCommunityModal = ({
@@ -166,11 +166,11 @@ const CreateCommunityModal = ({
                             placeholderTextColor={Colors[colorScheme].muted}
                             className="min-h-[100px] rounded-2xl border border-border dark:border-borderDark bg-surface dark:bg-surfaceDark px-6 py-4 text-white font-sans text-base"
                             multiline
-                            maxLength={BIO_MAX_LENGTH}
+                            maxLength={DESCRIPTION_MAX_LENGTH}
                             editable={!loading}
                         />
                         <ThemedText className='text-xs text-right mt-1' style={{ color: Colors[colorScheme].muted }}>
-                            {description.length}/{BIO_MAX_LENGTH}
+                            {description.length}/{DESCRIPTION_MAX_LENGTH}
                         </ThemedText>
                     </View>
                 </ScrollView>

@@ -14,7 +14,7 @@ import { Button, GradientButton } from '@/components/reusable/button'
 import { Colors } from '@/constants/theme'
 import { useColorScheme } from 'nativewind'
 import { authService } from '@/services/auth.service'
-import { MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH } from '@/constants/general'
+import { PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH } from '@/constants/general'
 
 const ChangePasswordModal = ({
     visible,
@@ -43,12 +43,12 @@ const ChangePasswordModal = ({
             Alert.alert('Missing fields', 'Please fill in all fields.')
             return
         }
-        if (newPassword.length < MIN_PASSWORD_LENGTH) {
-            Alert.alert('Invalid password', `Password must be at least ${MIN_PASSWORD_LENGTH} characters.`)
+        if (newPassword.length < PASSWORD_MIN_LENGTH) {
+            Alert.alert('Invalid password', `Password must be at least ${PASSWORD_MIN_LENGTH} characters.`)
             return
         }
-        if (newPassword.length > MAX_PASSWORD_LENGTH) {
-            Alert.alert('Invalid password', `Password must be at most ${MAX_PASSWORD_LENGTH} characters.`)
+        if (newPassword.length > PASSWORD_MAX_LENGTH) {
+            Alert.alert('Invalid password', `Password must be at most ${PASSWORD_MAX_LENGTH} characters.`)
             return
         }
         if (newPassword !== confirmPassword) {
@@ -95,7 +95,7 @@ const ChangePasswordModal = ({
                 onChangeText={onChange}
                 placeholder={placeholder}
                 secureTextEntry={secure}
-                maxLength={MAX_PASSWORD_LENGTH}
+                maxLength={PASSWORD_MAX_LENGTH}
                 autoCapitalize="none"
                 autoCorrect={false}
                 autoComplete={autoComplete}
@@ -158,7 +158,7 @@ const ChangePasswordModal = ({
                     {inputRow('New password', newPassword, setNewPassword, 'New password', true, 'new-password')}
                     {inputRow('Confirm new', confirmPassword, setConfirmPassword, 'Confirm new password', true, 'new-password')}
                     <ThemedText className="text-sm text-muted dark:text-mutedDark mt-3">
-                        Password must be {MIN_PASSWORD_LENGTH}–{MAX_PASSWORD_LENGTH} characters.
+                        Password must be {PASSWORD_MIN_LENGTH}–{PASSWORD_MAX_LENGTH} characters.
                     </ThemedText>
                 </ScrollView>
             </KeyboardAvoidingView>

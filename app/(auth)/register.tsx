@@ -10,7 +10,7 @@ import { Input } from "@/components/reusable/input";
 import { Button, GradientButton } from "@/components/reusable/button";
 import { PressableText } from "@/components/reusable/pressable-text";
 import { BackButton } from "@/components/reusable/back-button";
-import { MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH } from "@/constants/general";
+import { PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH } from "@/constants/general";
 
 const LIU_EMAIL_REGEX = /@students\.liu\.edu\.lb$/i;
 
@@ -34,12 +34,12 @@ export default function RegisterScreen() {
         setError("Please use your LIU student email (@students.liu.edu.lb)");
         return;
       }
-      if (password.length < MIN_PASSWORD_LENGTH) {
-        setError(`Password must be at least ${MIN_PASSWORD_LENGTH} characters`);
+      if (password.length < PASSWORD_MIN_LENGTH) {
+        setError(`Password must be at least ${PASSWORD_MIN_LENGTH} characters`);
         return;
       }
-      if (password.length > MAX_PASSWORD_LENGTH) {
-        setError(`Password must be at most ${MAX_PASSWORD_LENGTH} characters`);
+      if (password.length > PASSWORD_MAX_LENGTH) {
+        setError(`Password must be at most ${PASSWORD_MAX_LENGTH} characters`);
         return;
       }
       if (password !== confirmPassword) {
@@ -117,6 +117,7 @@ export default function RegisterScreen() {
               value={password}
               onChangeText={setPassword}
               secureTextEntry
+              maxLength={PASSWORD_MAX_LENGTH}
             />
 
             <Input
@@ -124,6 +125,7 @@ export default function RegisterScreen() {
               value={confirmPassword}
               onChangeText={setConfirmPassword}
               secureTextEntry
+              maxLength={PASSWORD_MAX_LENGTH}
             />
 
             <GradientButton size="lg" onPress={handleRegister} disabled={loading} loading={loading} fullWidth>

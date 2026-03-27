@@ -15,7 +15,7 @@ import useMediaUpload from '@/hooks/useMediaUpload';
 import LoadingOverlay from '../reusable/loading-overlay';
 import { ThemedText } from '../reusable/themed-text';
 import MediaItem from '../reusable/MediaItem';
-import { MAX_MEDIA, MAX_POST_CONTENT_LENGTH } from '@/constants/general';
+import { POST_CONTENT_MAX_LENGTH, POST_MEDIA_MAX_COUNT } from '@/constants/general';
 import { ImageViewerModal } from '../reusable/ImageViewerModal';
 import { useQueryClient } from '@tanstack/react-query';
 import { screens } from '@/utils/screens';
@@ -47,7 +47,7 @@ const CreatePostModal = ({
     const [fullScreenImageUri, setFullScreenImageUri] = useState<string | null>(null);
     const [communityPickerVisible, setCommunityPickerVisible] = useState(false);
 
-    const { media, resetMedia, isUploading, atLimit, remainingSlots, handlePickFromLibrary, handlePickFromCamera, handleRemoveMedia } = useMediaUpload(MAX_MEDIA);
+    const { media, resetMedia, isUploading, atLimit, remainingSlots, handlePickFromLibrary, handlePickFromCamera, handleRemoveMedia } = useMediaUpload(POST_MEDIA_MAX_COUNT);
 
     const handleClose = () => onRequestClose();
 
@@ -148,7 +148,7 @@ const CreatePostModal = ({
                             value={content}
                             multiline
                             scrollEnabled={false}
-                            maxLength={MAX_POST_CONTENT_LENGTH}
+                            maxLength={POST_CONTENT_MAX_LENGTH}
                             placeholder='What are you thinking?'
                             placeholderTextColor={Colors[colorScheme].muted}
                             style={{ minHeight: 48 }}
@@ -187,7 +187,7 @@ const CreatePostModal = ({
                             </Pressable>
                             {media.length > 0 && (
                                 <ThemedText className='text-xs font-sans text-muted dark:text-mutedDark'>
-                                    {atLimit ? `${MAX_MEDIA}/${MAX_MEDIA} · Max reached` : `${media.length}/${MAX_MEDIA} · ${remainingSlots} left`}
+                                    {atLimit ? `${POST_MEDIA_MAX_COUNT}/${POST_MEDIA_MAX_COUNT} · Max reached` : `${media.length}/${POST_MEDIA_MAX_COUNT} · ${remainingSlots} left`}
                                 </ThemedText>
                             )}
                         </View>
