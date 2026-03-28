@@ -3,7 +3,6 @@ import React, { useMemo } from 'react';
 
 import { HapticTab } from '@/components/reusable/haptic-tab';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { IconSymbol } from '@/components/reusable/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from "nativewind";
 import { TAB_BAR_HEIGHT } from '@/constants/general';
@@ -41,14 +40,14 @@ export default function TabLayout() {
           name="search"
           options={{
             title: 'Search',
-            tabBarIcon: ({ color }) => <IconSymbol size={28} name="magnifyingglass" color={color} />,
+            tabBarIcon: ({ color }) => <MaterialCommunityIcons size={32} name="magnify" color={color} />,
           }}
         />
         <Tabs.Screen
           name="communities"
           options={{
             title: 'Communities',
-            tabBarIcon: ({ color }) => <IconSymbol size={35} name="person.2.fill" color={color} />,
+            tabBarIcon: ({ color }) => <MaterialCommunityIcons size={32} name="account-multiple" color={color} />,
           }}
         />
         <Tabs.Screen
@@ -58,7 +57,7 @@ export default function TabLayout() {
             tabBarIcon: ({ color }) => (
               <View className='relative'>
                 {hasUnreadNotifications && <View className='absolute z-50 -top-1 -right-1 w-3 h-3 bg-accent dark:bg-accentDark rounded-full' />}
-                <IconSymbol size={26} name="bell.fill" color={color} />
+                <MaterialCommunityIcons size={26} name="bell" color={color} />
               </View>
             ),
           }}

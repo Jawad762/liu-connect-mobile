@@ -6,7 +6,7 @@ import { ThemedText } from '../reusable/themed-text'
 import { Colors } from '@/constants/theme-colors'
 import { useColorScheme } from 'nativewind'
 import useAuthStore from '@/stores/auth.store'
-import { IconSymbol } from '../reusable/icon-symbol'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { userService } from '@/services/user.service'
 import { commentKeys, postKeys, userKeys } from '@/utils/query-keys.utils'
@@ -69,7 +69,7 @@ const ProfileHeader = memo(({
             )}
             {!isOwnProfile && (
                 <Pressable onPress={onMenuPress} style={{ top: insets.top, right: 10, backgroundColor: 'black' }} className='absolute rounded-full p-2'>
-                    <IconSymbol name="ellipsis" size={20} color="white" />
+                    <MaterialCommunityIcons name="dots-horizontal" size={20} color="white" />
                 </Pressable>
             )}
         </Pressable>
@@ -89,13 +89,13 @@ const ProfileHeader = memo(({
                         <View className='gap-1 mt-2'>
                             {user.school && (
                                 <View className='flex-row items-center gap-2'>
-                                    <IconSymbol name="building.2" size={16} color={Colors[colorScheme].icon} />
+                                    <MaterialCommunityIcons name="office-building" size={16} color={Colors[colorScheme].icon} />
                                     <ThemedText className='text-sm'>{user.school}</ThemedText>
                                 </View>
                             )}
                             {user.major && (
                                 <View className='flex-row items-center gap-2'>
-                                    <IconSymbol name="book.closed" size={16} color={Colors[colorScheme].icon} />
+                                    <MaterialCommunityIcons name="book-open-variant" size={16} color={Colors[colorScheme].icon} />
                                     <ThemedText className='text-sm'>{user.major}</ThemedText>
                                 </View>
                             )}
@@ -103,7 +103,7 @@ const ProfileHeader = memo(({
                     )}
                     {joinedText && (
                         <View className='flex-row items-center gap-2 mt-2'>
-                            <IconSymbol name="calendar" size={16} color={Colors[colorScheme].icon} />
+                            <MaterialCommunityIcons name="calendar" size={16} color={Colors[colorScheme].icon} />
                             <ThemedText className='text-sm text-muted dark:text-mutedDark'>
                                 {joinedText}
                             </ThemedText>
@@ -304,7 +304,7 @@ const UserProfile = ({ user }: { user: User }) => {
                     actions={[
                         {
                             label: `Block ${user.name || 'User'}`,
-                            icon: 'slash.circle',
+                            icon: 'cancel',
                             color: '#ef4444',
                             onPress: handleBlockUser,
                         },

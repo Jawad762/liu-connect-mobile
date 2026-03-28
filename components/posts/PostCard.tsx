@@ -4,7 +4,6 @@ import { Alert, Pressable, Share, View } from 'react-native'
 import { ThemedText } from '../reusable/themed-text'
 import ProfileIcon from '../reusable/profile-icon'
 import { formatRelativeDate } from '@/utils/date.utils'
-import { IconSymbol } from '../reusable/icon-symbol'
 import { useColorScheme } from 'nativewind'
 import { Colors } from '@/constants/theme'
 import { cn } from '@/utils/cn.utils'
@@ -23,6 +22,7 @@ import * as Clipboard from 'expo-clipboard';
 import LoadingOverlay from '../reusable/loading-overlay'
 import ReportPostModal from './ReportPostModal'
 import useAuthStore from '@/stores/auth.store'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 
 type PostsQueryData = InfiniteData<{ data: Post[] }>
 
@@ -138,12 +138,12 @@ const PostCard = ({ post, showCommunityName = true }: { post: Post, showCommunit
     const actions = useMemo<ActionSheetItem[]>(() => [
         ...(post.content.trim().length > 0 ? [{
             label: 'Copy Text',
-            icon: 'doc.on.doc' as const,
+            icon: 'content-copy' as const,
             onPress: handleCopyText,
         }] : []),
         ...(isOwnPost ? [
             { label: 'Edit Post', icon: 'pencil' as const, onPress: () => setUpdatePostModalVisible(true) },
-            { label: 'Delete Post', icon: 'trash' as const, color: '#ef4444', onPress: handleDeletePost },
+            { label: 'Delete Post', icon: 'trash-can-outline' as const, color: '#ef4444', onPress: handleDeletePost },
         ] : [
             { label: 'Report Post', icon: 'flag' as const, color: '#ef4444', onPress: () => setReportPostModalVisible(true) },
         ]),
@@ -164,7 +164,7 @@ const PostCard = ({ post, showCommunityName = true }: { post: Post, showCommunit
         <Pressable onPress={() => router.push(screens.post.details(post.id))} className='p-4 border-b border-border dark:border-borderDark active:bg-border active:dark:bg-borderDark'>
             {post.community && showCommunityName && (
                 <Pressable style={{ marginLeft: 28 }} onPress={() => router.push(screens.communities.details(post.community!.id))} className='flex-row items-center gap-1 mb-2'>
-                    <IconSymbol name='person.2.fill' size={16} color={Colors[colorScheme].muted} />
+                    <MaterialCommunityIcons name="account-multiple" size={16} color={Colors[colorScheme].muted} />
                     <ThemedText className='text-muted dark:text-mutedDark font-sans-bold'>
                         {post.community.name}
                     </ThemedText>
@@ -187,7 +187,7 @@ const PostCard = ({ post, showCommunityName = true }: { post: Post, showCommunit
                             • {formatRelativeDate(post.createdAt)}
                         </ThemedText>
                         <Pressable onPress={() => setContextMenuVisible(true)} className="ml-auto p-1 -m-1" hitSlop={8}>
-                            <IconSymbol name="ellipsis" size={20} color={Colors[colorScheme].muted} />
+                            <MaterialCommunityIcons name="dots-horizontal" size={20} color={Colors[colorScheme].muted} />
                         </Pressable>
                     </View>
                     {post.content.trim().length > 0 && (
@@ -208,26 +208,26 @@ const PostCard = ({ post, showCommunityName = true }: { post: Post, showCommunit
                     )}
                     <View className='flex-row items-center gap-6 mt-5'>
                         <Pressable onPress={handleLikePost} className='flex-row items-center gap-1.5' hitSlop={8}>
-                            <IconSymbol name={post.isLiked ? 'heart.fill' : 'heart'} size={20} color={post.isLiked ? Colors[colorScheme].accent : Colors[colorScheme].muted} />
+                            <MaterialCommunityIcons name={post.isLiked ? 'heart' : 'heart-outline'} size={20} color={post.isLiked ? Colors[colorScheme].accent : Colors[colorScheme].muted} />
                             <ThemedText className={cn('text-sm font-sans', post.isLiked ? 'text-accent dark:text-accentDark' : 'text-muted dark:text-mutedDark')}>
                                 {post.likes_count}
                             </ThemedText>
                         </Pressable>
                         <View className='flex-row items-center gap-1.5' hitSlop={8}>
-                            <IconSymbol name='message' size={20} color={Colors[colorScheme].muted} />
+                            <MaterialCommunityIcons name='message-outline' size={18} color={Colors[colorScheme].muted} />
                             <ThemedText className='text-sm font-sans text-muted dark:text-mutedDark'>
                                 {post.comments_count}
                             </ThemedText>
                         </View>
                         <Pressable className='flex-row items-center gap-1.5 opacity-50' hitSlop={8}>
-                            <IconSymbol name='chart.bar' size={20} color={Colors[colorScheme].muted} />
+                            <MaterialCommunityIcons name='chart-line' size={18} color={Colors[colorScheme].muted} />
                         </Pressable>
                         <View className='flex-1' />
                         <Pressable onPress={handleBookmarkPost} hitSlop={8}>
-                            <IconSymbol name={post.isBookmarked ? 'bookmark.fill' : 'bookmark'} size={20} color={post.isBookmarked ? Colors[colorScheme].accent : Colors[colorScheme].muted} />
+                            <MaterialCommunityIcons name={post.isBookmarked ? 'bookmark' : 'bookmark-outline'} size={20} color={post.isBookmarked ? Colors[colorScheme].accent : Colors[colorScheme].muted} />
                         </Pressable>
                         <Pressable onPress={handleSharePost} hitSlop={8}>
-                            <IconSymbol name='square.and.arrow.up' size={20} color={Colors[colorScheme].muted} />
+                            <MaterialCommunityIcons name='tray-arrow-up' size={20} color={Colors[colorScheme].muted} />
                         </Pressable>
                     </View>
                     <ImageViewerModal

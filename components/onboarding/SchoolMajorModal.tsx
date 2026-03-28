@@ -2,7 +2,7 @@ import React from 'react'
 import { FlatList, Modal, Pressable, View } from 'react-native'
 import { ThemedText } from '../reusable/themed-text'
 import { ThemedView } from '../reusable/themed-view'
-import { IconSymbol } from '../reusable/icon-symbol'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { Colors } from '@/constants/theme'
 import { useColorScheme } from 'nativewind'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -69,8 +69,8 @@ const SchoolMajorModal = ({
                 >
                     <ThemedText className="text-lg font-sans-bold">{title}</ThemedText>
                     <Pressable onPress={onClose} hitSlop={8}>
-                        <IconSymbol
-                            name="xmark.circle.fill"
+                        <MaterialCommunityIcons
+                            name="close-circle"
                             size={28}
                             color={Colors[colorScheme].muted}
                         />
@@ -96,8 +96,8 @@ const SchoolMajorModal = ({
                                     {item}
                                 </ThemedText>
                                 {isSelected && (
-                                    <IconSymbol
-                                        name="checkmark"
+                                    <MaterialCommunityIcons
+                                        name="check"
                                         size={16}
                                         color={Colors[colorScheme].accent}
                                     />

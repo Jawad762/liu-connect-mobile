@@ -1,17 +1,18 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, type ComponentProps } from 'react'
 import { Modal, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native'
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { useColorScheme } from 'nativewind'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { Colors } from '@/constants/theme-colors'
-import { IconSymbol } from './icon-symbol'
 import { ThemedText } from './themed-text'
-import { SymbolViewProps } from 'expo-symbols'
+
+export type ActionSheetIconName = ComponentProps<typeof MaterialCommunityIcons>['name']
 
 export interface ActionSheetItem {
     label: string
-    icon: SymbolViewProps['name']
+    icon: ActionSheetIconName
     color?: string
     onPress: () => void
 }
@@ -109,7 +110,7 @@ const ActionSheet = ({ visible, onClose, actions }: ActionSheetProps) => {
                                     backgroundColor: action.color ? `${action.color}18` : `${colors.foreground}12`,
                                 }}
                             >
-                                <IconSymbol name={action.icon} size={20} color={action.color ?? colors.foreground} />
+                                <MaterialCommunityIcons name={action.icon} size={20} color={action.color ?? colors.foreground} />
                             </View>
                             <ThemedText
                                 style={action.color ? { color: action.color } : undefined}

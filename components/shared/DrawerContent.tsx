@@ -6,12 +6,11 @@ import useAuthStore from '@/stores/auth.store'
 import { Href, Redirect, router } from 'expo-router'
 import { Alert, Pressable, ScrollView, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { IconSymbol } from '../reusable/icon-symbol'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { useColorScheme } from 'nativewind'
 import { Colors } from '@/constants/theme-colors'
 import { menus } from '@/constants/menus'
 import { screens } from '@/utils/screens.utils'
-import { SymbolViewProps } from 'expo-symbols'
 import ProfileIcon from '../reusable/profile-icon'
 import { authService } from '@/services/auth.service'
 import ConfirmationDialog from '../reusable/confirmation-dialog'
@@ -61,13 +60,13 @@ const DrawerContent = (_props: DrawerContentComponentProps) => {
                         <View className='gap-2'>
                             {user.school && (
                                 <View className='flex-row items-center gap-2'>
-                                    <IconSymbol name="building.2" size={16} color={Colors[colorScheme].icon} />
+                                    <MaterialCommunityIcons name="office-building" size={16} color={Colors[colorScheme].icon} />
                                     <ThemedText className='text-sm font-sans'>{user.school}</ThemedText>
                                 </View>
                             )}
                             {user.major && (
                                 <View className='flex-row items-center gap-2'>
-                                    <IconSymbol name="book.closed" size={16} color={Colors[colorScheme].icon} />
+                                    <MaterialCommunityIcons name="book-open-variant" size={16} color={Colors[colorScheme].icon} />
                                     <ThemedText className='text-sm font-sans'>{user.major}</ThemedText>
                                 </View>
                             )}
@@ -82,14 +81,14 @@ const DrawerContent = (_props: DrawerContentComponentProps) => {
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerClassName='gap-2 mt-12'>
                     {menuItems.map((menu) => (
                         <Pressable onPress={() => router.push(menu.href as Href)} key={menu.name} className='p-4 flex-row items-center gap-6 active:bg-border active:dark:bg-borderDark'>
-                            <IconSymbol name={menu.icon as SymbolViewProps['name']} size={24} color={Colors[colorScheme].icon} />
+                            <MaterialCommunityIcons name={menu.icon} size={24} color={Colors[colorScheme].icon} />
                             <ThemedText className='text-2xl font-sans-bold'>{menu.name}</ThemedText>
                         </Pressable>
                     ))}
                 </ScrollView>
 
                 <Pressable onPress={() => setConfirmationDialogVisible(true)} className='p-4 mt-auto flex-row items-center gap-6 border-t-[0.25px] border-border dark:border-borderDark pt-4 active:bg-border active:dark:bg-borderDark'>
-                    <IconSymbol name="rectangle.portrait.and.arrow.right" size={24} color={Colors[colorScheme].icon} />
+                    <MaterialCommunityIcons name="logout" size={24} color={Colors[colorScheme].icon} />
                     <ThemedText className='text-2xl font-sans-bold'>Logout</ThemedText>
                 </Pressable>
             </ThemedView>

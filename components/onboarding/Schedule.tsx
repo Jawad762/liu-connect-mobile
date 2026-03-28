@@ -7,7 +7,7 @@ import useMediaUpload, { UploadedMedia } from '@/hooks/useMediaUpload'
 import LoadingOverlay from '../reusable/loading-overlay'
 import { aiService } from '@/services/ai.service'
 import { AnalyzeScheduleResponse } from '@/types/ai.types'
-import { IconSymbol } from '../reusable/icon-symbol'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { useColorScheme } from 'nativewind'
 import { Colors } from '@/constants/theme'
 import useImageUpload from '@/hooks/useImageUpload'
@@ -85,7 +85,7 @@ const Schedule = ({
                     size="lg"
                     onPress={handlePickFromLibrary}
                     fullWidth
-                    leftIcon={<IconSymbol name="photo.on.rectangle.angled" size={18} color="white" />}
+                    leftIcon={<MaterialCommunityIcons name="image-multiple" size={18} color="white" />}
                 >
                     Upload Schedule
                 </GradientButton>

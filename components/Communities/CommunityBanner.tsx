@@ -3,7 +3,7 @@ import { Image, Pressable, View } from 'react-native'
 import { ThemedText } from '../reusable/themed-text'
 import { Colors } from '@/constants/theme'
 import { useColorScheme } from 'nativewind'
-import { IconSymbol } from '../reusable/icon-symbol'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { getInitials } from '@/utils/string.utils'
 import { ImageViewerModal } from '../reusable/ImageViewerModal'
 
@@ -46,7 +46,7 @@ const CommunityBanner = ({ avatarUrl, name, onPress }: CommunityBannerProps) => 
                         </ThemedText>
                     )}
                     {!initials && (
-                        <IconSymbol name="photo.on.rectangle.angled" size={48} color={Colors[colorScheme].muted} />
+                        <MaterialCommunityIcons name="image-multiple" size={48} color={Colors[colorScheme].muted} />
                     )}
                 </View>
             )}

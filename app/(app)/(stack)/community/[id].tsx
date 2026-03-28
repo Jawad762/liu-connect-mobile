@@ -10,7 +10,7 @@ import ErrorState from '@/components/reusable/error-state'
 import CommunityDetailsSkeleton from '@/components/skeletons/CommunityDetailsSkeleton'
 import CreatePostModal from '@/components/posts/CreatePostModal'
 import { ThemedText } from '@/components/reusable/themed-text'
-import { IconSymbol } from '@/components/reusable/icon-symbol.ios'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { TAB_BAR_HEIGHT } from '@/constants/general'
 import { useColorScheme } from 'nativewind'
 import { Colors } from '@/constants/theme'
@@ -84,7 +84,7 @@ const CommunityScreen = () => {
                             }
                         }}
                     >
-                        <IconSymbol name="plus" size={24} color={"white"} />
+                        <MaterialCommunityIcons name="plus" size={24} color="white" />
                     </Pressable>
                     <CreatePostModal
                         visible={createPostModalVisible}

@@ -5,7 +5,7 @@ import type { PlayingChangeEventPayload } from 'expo-video';
 import { useColorScheme } from 'nativewind';
 import React, { useEffect, useRef, useState } from 'react';
 import { Pressable, View, ViewStyle } from 'react-native';
-import { IconSymbol } from './icon-symbol';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { MediaType } from '@/types/media.types';
 
 interface MediaItemProps {
@@ -66,7 +66,7 @@ function InlineVideo({ uri }: { uri: string }) {
                             padding: 12,
                         }}
                     >
-                        <IconSymbol name="play.circle.fill" size={48} color="white" />
+                        <MaterialCommunityIcons name="play-circle" size={48} color="white" />
                     </View>
                 </View>
             )}
@@ -109,7 +109,7 @@ const MediaItem = ({ uri, type, style, onRemove, onImagePress }: MediaItemProps)
                         padding: 4,
                     }}
                 >
-                    <IconSymbol name="xmark" size={12} color="white" />
+                    <MaterialCommunityIcons name="close" size={12} color="white" />
                 </Pressable>
             )}
         </View>

@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, TextInput, View, ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, GradientButton } from '../reusable/button';
-import { IconSymbol } from '../reusable/icon-symbol';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import ProfileIcon from '../reusable/profile-icon';
 import useAuthStore from '@/stores/auth.store';
 import { Redirect } from 'expo-router';
@@ -150,14 +150,14 @@ const CreateCommentModal = ({ visible, onRequestClose, postId, parentId }: { vis
                                 disabled={isUploading}
                                 style={{ padding: 8, opacity: atLimit ? 0.4 : 1 }}
                             >
-                                <IconSymbol name='photo.on.rectangle.angled' size={24} color={Colors[colorScheme].accent} />
+                                <MaterialCommunityIcons name="image-multiple" size={24} color={Colors[colorScheme].accent} />
                             </Pressable>
                             <Pressable
                                 onPress={handlePickFromCamera}
                                 disabled={isUploading}
                                 style={{ padding: 8, opacity: atLimit ? 0.4 : 1 }}
                             >
-                                <IconSymbol name='camera.fill' size={24} color={Colors[colorScheme].accent} />
+                                <MaterialCommunityIcons name="camera" size={24} color={Colors[colorScheme].accent} />
                             </Pressable>
                             {media.length > 0 && (
                                 <ThemedText className='text-xs font-sans text-muted dark:text-mutedDark'>

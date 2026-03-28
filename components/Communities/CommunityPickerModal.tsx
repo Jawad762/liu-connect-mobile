@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { FlatList, KeyboardAvoidingView, Modal, Platform, Pressable, TextInput, View } from 'react-native'
 import { ThemedText } from '../reusable/themed-text'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { IconSymbol } from '../reusable/icon-symbol'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import useCommunities from '@/hooks/useCommunities'
 import useDebounce from '@/hooks/useDebounce'
 import { cn } from '@/utils/cn.utils'
@@ -59,7 +59,7 @@ const CommunityPickerModal = ({ visible, onRequestClose, currentCommunity, setCu
                             Platform.OS === 'android' ? 'py-2' : 'py-3'
                         )}
                     >
-                        <IconSymbol name="magnifyingglass" size={18} color={Colors[colorScheme].muted} />
+                        <MaterialCommunityIcons name="magnify" size={18} color={Colors[colorScheme].muted} />
                         <TextInput
                             value={searchQuery}
                             onChangeText={setSearchQuery}
@@ -86,7 +86,7 @@ const CommunityPickerModal = ({ visible, onRequestClose, currentCommunity, setCu
                                 </View>
                                 <ThemedText className='flex-1 font-sans-medium'>{item.name}</ThemedText>
                                 {(currentCommunity?.id ?? null) === (item.id ?? null) && (
-                                    <IconSymbol name='checkmark.circle.fill' size={20} color={Colors[colorScheme].accent} />
+                                    <MaterialCommunityIcons name="check-circle" size={20} color={Colors[colorScheme].accent} />
                                 )}
                             </Pressable>
                         )}

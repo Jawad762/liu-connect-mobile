@@ -7,7 +7,7 @@ import { useColorScheme } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ProfileIcon from '../reusable/profile-icon';
 import { User } from '@/types/user.types';
-import { IconSymbol } from '../reusable/icon-symbol';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import useImageUpload from '@/hooks/useImageUpload';
 import { userService } from '@/services/user.service';
 import { userKeys } from '@/utils/query-keys.utils';
@@ -119,14 +119,14 @@ const EditProfileModal = ({ visible, onRequestClose, user }: { visible: boolean;
                         <Image source={{ uri: coverUrl }} resizeMode='cover' style={{ width: '100%', height: '100%' }} />
                     )}
                     <View style={{ top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center' }} className='absolute'>
-                        <IconSymbol name='photo.on.rectangle.angled' size={32} color='white' />
+                        <MaterialCommunityIcons name="image-multiple" size={32} color="white" />
                     </View>
                 </Pressable>
                 <View style={{ marginTop: -32 }} className='px-4 pb-4 gap-1'>
                     <Pressable onPress={pickAvatarFromLibrary} className='relative w-20 h-20 mb-2'>
                         <ProfileIcon avatarUrl={avatarUrl} className='w-full h-full' />
                         <View style={{ top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center' }} className='absolute'>
-                            <IconSymbol name='photo.on.rectangle.angled' size={32} color='white' />
+                            <MaterialCommunityIcons name="image-multiple" size={32} color="white" />
                         </View>
                     </Pressable>
                     <View

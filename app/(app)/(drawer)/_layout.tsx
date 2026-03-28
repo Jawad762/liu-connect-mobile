@@ -4,7 +4,7 @@ import DrawerContent from '@/components/shared/DrawerContent';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from 'nativewind';
 import { Platform, Pressable } from 'react-native';
-import { IconSymbol } from '@/components/reusable/icon-symbol';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { TAB_BAR_HEIGHT } from '@/constants/general';
 import CreatePostModal from '@/components/posts/CreatePostModal';
 import * as Haptics from 'expo-haptics';
@@ -45,7 +45,7 @@ const _layout = () => {
                 style={{ bottom: realTabBarHeight + 12 }}
                 onPress={handleOpenCreatePostModal}
             >
-                <IconSymbol name="plus" size={24} color={"white"} />
+                <MaterialCommunityIcons name="plus" size={24} color="white" />
             </Pressable>
 
             {/* Create Post Modal */}

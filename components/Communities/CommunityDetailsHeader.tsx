@@ -10,7 +10,7 @@ import { communityService } from '@/services/community.service'
 import { Alert } from 'react-native'
 import UpdateCommunityModal from './UpdateCommunityModal'
 import ConfirmationDialog from '../reusable/confirmation-dialog'
-import { IconSymbol } from '../reusable/icon-symbol'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { Colors } from '@/constants/theme'
 import { useColorScheme } from 'nativewind'
 import CommunityBanner from './CommunityBanner'
@@ -98,7 +98,7 @@ const CommunityDetailsHeader = ({
             <CommunityBanner avatarUrl={community.avatar_url} name={community.name} />
             {router.canGoBack() && (
                 <Pressable style={{ top: insets.top + 8, left: 16 }} onPress={() => router.back()} className='absolute  p-2 rounded-full bg-background dark:bg-backgroundDark'>
-                    <IconSymbol name="chevron.left" size={24} color={Colors[colorScheme].foreground} />
+                    <MaterialCommunityIcons name="arrow-left" size={24} color={Colors[colorScheme].foreground} />
                 </Pressable>
             )}
             <View className="px-4 pb-4 pt-4">
@@ -117,7 +117,7 @@ const CommunityDetailsHeader = ({
                             size="sm"
                             onPress={() => setEditModalVisible(true)}
                             className="flex-1"
-                            leftIcon={<IconSymbol name="pencil" size={16} color={Colors[colorScheme].foreground} />}
+                            leftIcon={<MaterialCommunityIcons name="pencil" size={16} color={Colors[colorScheme].foreground} />}
                         >
                             Edit
                         </Button>
@@ -126,7 +126,7 @@ const CommunityDetailsHeader = ({
                             size="sm"
                             onPress={() => setDeleteDialogVisible(true)}
                             className="flex-1"
-                            leftIcon={<IconSymbol name="trash" size={16} color={Colors[colorScheme].foreground} />}
+                            leftIcon={<MaterialCommunityIcons name="trash-can-outline" size={16} color={Colors[colorScheme].foreground} />}
                         >
                             Delete
                         </Button>

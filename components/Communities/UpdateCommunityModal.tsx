@@ -16,7 +16,7 @@ import useImageUpload from '@/hooks/useImageUpload'
 import LoadingOverlay from '../reusable/loading-overlay'
 import CommunityBanner from './CommunityBanner'
 import { DESCRIPTION_MAX_LENGTH, NAME_MAX_LENGTH, NAME_MIN_LENGTH } from '@/constants/general'
-import { IconSymbol } from '../reusable/icon-symbol'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 
 const UpdateCommunityModal = ({
     visible,
@@ -131,7 +131,7 @@ const UpdateCommunityModal = ({
                 />
                 {avatarUrl && (
                     <Pressable style={{ top: 16, right: 16 }} className='absolute' onPress={() => handleRemoveMedia(0)} disabled={loading}>
-                        <IconSymbol name="trash" size={24} color={Colors[colorScheme].foreground} />
+                        <MaterialCommunityIcons name="trash-can-outline" size={24} color={Colors[colorScheme].foreground} />
                     </Pressable>
                 )}
             </View>

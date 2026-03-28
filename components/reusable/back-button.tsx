@@ -1,6 +1,6 @@
 import { Pressable } from "react-native";
 import { useRouter } from "expo-router";
-import { IconSymbol } from "./icon-symbol";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useColorScheme } from "nativewind";
 import { Colors } from "@/constants/theme-colors";
 
@@ -18,7 +18,7 @@ export function BackButton({ className, color }: BackButtonProps) {
       className={className}
       style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
     >
-      <IconSymbol name="chevron.left" size={24} color={color || Colors[colorScheme].icon} />
+      <MaterialCommunityIcons name="arrow-left" size={24} color={color || Colors[colorScheme].icon} />
     </Pressable>
   );
 }

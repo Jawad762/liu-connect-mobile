@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react'
 import { Alert, Pressable, Share, View } from 'react-native'
 import { ThemedText } from '../reusable/themed-text'
 import ProfileIcon from '../reusable/profile-icon'
-import { IconSymbol } from '../reusable/icon-symbol'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { useColorScheme } from 'nativewind'
 import { Colors } from '@/constants/theme'
 import { cn } from '@/utils/cn.utils'
@@ -153,12 +153,12 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
     const actions = useMemo<ActionSheetItem[]>(() => [
         ...(comment.content.trim().length > 0 ? [{
             label: 'Copy Text',
-            icon: 'doc.on.doc' as const,
+            icon: 'content-copy' as const,
             onPress: handleCopyText,
         }] : []),
         ...(isOwnComment ? [
             { label: 'Edit Comment', icon: 'pencil' as const, onPress: () => setUpdateCommentModalVisible(true) },
-            { label: 'Delete Comment', icon: 'trash' as const, color: '#ef4444', onPress: handleDeleteComment },
+            { label: 'Delete Comment', icon: 'trash-can-outline' as const, color: '#ef4444', onPress: handleDeleteComment },
         ] : [
             { label: 'Report Comment', icon: 'flag' as const, color: '#ef4444', onPress: () => setReportCommentModalVisible(true) },
         ]),
@@ -191,7 +191,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
                         • {formatRelativeDate(comment.createdAt)}
                     </ThemedText>
                     <Pressable onPress={() => setContextMenuVisible(true)} className="ml-auto p-1 -m-1" hitSlop={8}>
-                        <IconSymbol name="ellipsis" size={20} color={Colors[colorScheme].muted} />
+                        <MaterialCommunityIcons name="dots-horizontal" size={20} color={Colors[colorScheme].muted} />
                     </Pressable>
                 </View>
                 {comment.is_deleted ? (
@@ -221,7 +221,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
                 <View className='flex-row items-center gap-6 mt-5'>
                     {comment.is_deleted ? (
                         <View className='flex-row items-center gap-1.5' hitSlop={8}>
-                            <IconSymbol name='message' size={20} color={Colors[colorScheme].muted} />
+                            <MaterialCommunityIcons name="message-outline" size={18} color={Colors[colorScheme].muted} />
                             <ThemedText className='text-sm font-sans text-muted dark:text-mutedDark'>
                                 {comment.replies_count}
                             </ThemedText>
@@ -229,26 +229,26 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
                     ) : (
                         <>
                             <Pressable onPress={handleLikeComment} className='flex-row items-center gap-1.5' hitSlop={8}>
-                                <IconSymbol name={comment.isLiked ? 'heart.fill' : 'heart'} size={20} color={comment.isLiked ? Colors[colorScheme].accent : Colors[colorScheme].muted} />
+                                <MaterialCommunityIcons name={comment.isLiked ? 'heart' : 'heart-outline'} size={20} color={comment.isLiked ? Colors[colorScheme].accent : Colors[colorScheme].muted} />
                                 <ThemedText className={cn('text-sm font-sans', comment.isLiked ? 'text-accent dark:text-accentDark' : 'text-muted dark:text-mutedDark')}>
                                     {comment.likes_count}
                                 </ThemedText>
                             </Pressable>
                             <View className='flex-row items-center gap-1.5' hitSlop={8}>
-                                <IconSymbol name='message' size={20} color={Colors[colorScheme].muted} />
+                                <MaterialCommunityIcons name="message-outline" size={18} color={Colors[colorScheme].muted} />
                                 <ThemedText className='text-sm font-sans text-muted dark:text-mutedDark'>
                                     {comment.replies_count}
                                 </ThemedText>
                             </View>
                             <Pressable className='flex-row items-center gap-1.5 opacity-50' hitSlop={8}>
-                                <IconSymbol name='chart.bar' size={20} color={Colors[colorScheme].muted} />
+                                <MaterialCommunityIcons name="chart-line" size={18} color={Colors[colorScheme].muted} />
                             </Pressable>
                             <View className='flex-1' />
                             <Pressable onPress={handleBookmarkComment} hitSlop={8}>
-                                <IconSymbol name={comment.isBookmarked ? 'bookmark.fill' : 'bookmark'} size={20} color={comment.isBookmarked ? Colors[colorScheme].accent : Colors[colorScheme].muted} />
+                                <MaterialCommunityIcons name={comment.isBookmarked ? 'bookmark' : 'bookmark-outline'} size={20} color={comment.isBookmarked ? Colors[colorScheme].accent : Colors[colorScheme].muted} />
                             </Pressable>
                             <Pressable onPress={handleShareComment} hitSlop={8}>
-                                <IconSymbol name='square.and.arrow.up' size={20} color={Colors[colorScheme].muted} />
+                                <MaterialCommunityIcons name="tray-arrow-up" size={20} color={Colors[colorScheme].muted} />
                             </Pressable>
                         </>
                     )}

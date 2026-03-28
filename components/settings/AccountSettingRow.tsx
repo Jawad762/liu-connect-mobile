@@ -1,7 +1,7 @@
 import React from 'react'
 import { Pressable, View } from 'react-native'
 import { ThemedText } from '@/components/reusable/themed-text'
-import { IconSymbol } from '@/components/reusable/icon-symbol'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { Colors } from '@/constants/theme'
 import { useColorScheme } from 'nativewind'
 
@@ -27,7 +27,7 @@ const AccountSettingRow = ({
                     {subtitle}
                 </ThemedText>
             </View>
-            <IconSymbol name="chevron.right" size={24} color={Colors[colorScheme].muted} />
+            <MaterialCommunityIcons name="chevron-right" size={24} color={Colors[colorScheme].muted} />
         </Pressable>
     )
 }

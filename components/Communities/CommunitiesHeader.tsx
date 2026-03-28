@@ -8,7 +8,7 @@ import { ThemedText } from '../reusable/themed-text'
 import { cn } from '@/utils/cn.utils'
 import ProfileIcon from '../reusable/profile-icon'
 import { DrawerActions } from '@react-navigation/native'
-import { IconSymbol } from '../reusable/icon-symbol'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { Colors } from '@/constants/theme'
 import { useColorScheme } from 'nativewind'
 
@@ -46,7 +46,7 @@ const CommunitiesHeader = ({
                 <ThemedText className='text-xl font-sans-medium'>Communities</ThemedText>
                 {onCreatePress ? (
                     <Pressable onPress={onCreatePress} className="p-1">
-                        <IconSymbol name="plus.circle.fill" size={28} color={Colors[colorScheme].accent} />
+                        <MaterialCommunityIcons name="plus-circle" size={28} color={Colors[colorScheme].accent} />
                     </Pressable>
                 ) : (
                     <View className='w-6'></View>

@@ -17,7 +17,7 @@ import { useColorScheme } from 'nativewind'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import ProfileIcon from '../reusable/profile-icon'
 import { User } from '@/types/user.types'
-import { IconSymbol } from '../reusable/icon-symbol'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import useImageUpload from '@/hooks/useImageUpload'
 import { userService } from '@/services/user.service'
 import { userKeys } from '@/utils/query-keys.utils'
@@ -166,7 +166,7 @@ const Profile = ({
                             style={{ top: 0, left: 0, right: 0, bottom: 0 }}
                             className="absolute items-center justify-center"
                         >
-                            <IconSymbol name="photo.on.rectangle.angled" size={28} color="white" />
+                            <MaterialCommunityIcons name="image-multiple" size={28} color="white" />
                         </View>
                     </Pressable>
                     <View style={{ marginTop: -36 }} className="px-4 pb-8 gap-1">
@@ -176,7 +176,7 @@ const Profile = ({
                                 style={{ top: 0, left: 0, right: 0, bottom: 0 }}
                                 className="absolute items-center justify-center"
                             >
-                                <IconSymbol name="photo.on.rectangle.angled" size={28} color="white" />
+                                <MaterialCommunityIcons name="image-multiple" size={28} color="white" />
                             </View>
                         </Pressable>
 
@@ -259,8 +259,8 @@ const Profile = ({
                             >
                                 {school ?? 'Select school'}
                             </ThemedText>
-                            <IconSymbol
-                                name="chevron.right"
+                            <MaterialCommunityIcons
+                                name="chevron-right"
                                 size={16}
                                 color={Colors[colorScheme].muted}
                             />
@@ -292,8 +292,8 @@ const Profile = ({
                             >
                                 {major ?? (school ? 'Select major' : 'Select school first')}
                             </ThemedText>
-                            <IconSymbol
-                                name="chevron.right"
+                            <MaterialCommunityIcons
+                                name="chevron-right"
                                 size={16}
                                 color={Colors[colorScheme].muted}
                             />

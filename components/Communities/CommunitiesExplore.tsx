@@ -3,7 +3,7 @@ import { Platform, TextInput, View } from 'react-native'
 import useCommunities from '@/hooks/useCommunities'
 import CommunityList from './CommunityList'
 import useDebounce from '@/hooks/useDebounce'
-import { IconSymbol } from '../reusable/icon-symbol'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { Colors } from '@/constants/theme'
 import { useColorScheme } from 'nativewind'
 import { cn } from '@/utils/cn.utils'
@@ -39,7 +39,7 @@ const CommunitiesExplore = () => {
                     Platform.OS === 'android' ? 'py-2' : 'py-3'
                 )}
             >
-                <IconSymbol name="magnifyingglass" size={18} color={Colors[colorScheme].muted} />
+                <MaterialCommunityIcons name="magnify" size={18} color={Colors[colorScheme].muted} />
                 <TextInput
                     value={searchQuery}
                     onChangeText={setSearchQuery}

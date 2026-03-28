@@ -12,7 +12,7 @@ import { cn } from '@/utils/cn.utils'
 import { Button } from '../reusable/button'
 import { commentService } from '@/services/comment.service'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { IconSymbol } from '../reusable/icon-symbol'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 
 const SCREEN_HEIGHT = Dimensions.get('window').height
 
@@ -114,7 +114,7 @@ const ReportCommentModal = ({ visible, onRequestClose, comment }: { visible: boo
                                 <View className='flex-row items-center justify-between px-4 pt-2 pb-4'>
                                     <ThemedText className='text-xl font-sans-bold'>Report Comment</ThemedText>
                                     <Pressable onPress={handleClose} hitSlop={12} className='p-1 rounded-full bg-surface dark:bg-surfaceDark'>
-                                        <IconSymbol name='xmark' size={16} color={colors.muted} />
+                                        <MaterialCommunityIcons name="close" size={16} color={colors.muted} />
                                     </Pressable>
                                 </View>
                             </View>

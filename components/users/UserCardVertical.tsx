@@ -5,7 +5,7 @@ import { router } from 'expo-router'
 import { screens } from '@/utils/screens.utils'
 import ProfileIcon from '../reusable/profile-icon'
 import { ThemedText } from '../reusable/themed-text'
-import { IconSymbol } from '../reusable/icon-symbol'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { useColorScheme } from 'nativewind'
 import { Colors } from '@/constants/theme-colors'
 
@@ -38,7 +38,7 @@ const UserCardVertical = ({ user }: { user: User }) => {
                             {user.name || 'Unknown User'}
                         </ThemedText>
                         {user.is_verified && (
-                            <IconSymbol name="checkmark.circle.fill" size={18} color={Colors[colorScheme].accent} />
+                            <MaterialCommunityIcons name="check-circle" size={18} color={Colors[colorScheme].accent} />
                         )}
                     </View>
 

@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import { ActivityIndicator, Alert, Modal, Pressable, useWindowDimensions, View } from 'react-native';
 import { ImageZoom } from '@likashefqet/react-native-image-zoom';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { IconSymbol } from '../reusable/icon-symbol';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { ThemedText } from '../reusable/themed-text';
 
 interface ImageViewerModalProps {
@@ -95,7 +95,7 @@ export function ImageViewerModal({ visible, imageUri, onClose }: ImageViewerModa
                         hitSlop={12}
                         className="w-10 h-10 rounded-full justify-center items-center bg-black/50"
                     >
-                        <IconSymbol name="xmark" size={22} color="white" />
+                        <MaterialCommunityIcons name="close" size={22} color="white" />
                     </Pressable>
                 </View>
                 <View
@@ -113,7 +113,7 @@ export function ImageViewerModal({ visible, imageUri, onClose }: ImageViewerModa
                             <ActivityIndicator color="white" size="small" />
                         ) : (
                             <>
-                                <IconSymbol name="square.and.arrow.down" size={20} color="white" />
+                                <MaterialCommunityIcons name="download" size={20} color="white" />
                                 <ThemedText className="text-white font-sans ml-2">Save to photos</ThemedText>
                             </>
                         )}
