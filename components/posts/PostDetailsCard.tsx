@@ -189,76 +189,81 @@ const PostDetailsCard = ({ post }: { post: Post }) => {
     }
 
     return (
-        <Pressable className='flex-row items-start gap-3 p-4 border-b border-border dark:border-borderDark'>
-            <Pressable onPress={handleNavigateToProfile}>
-                <ProfileIcon avatarUrl={post.user.avatar_url} className='h-14 w-14' />
-            </Pressable>
-            <View className='flex-1 min-w-0'>
-                <View className='flex-row flex-wrap items-center gap-x-2 gap-y-1'>
-                    <ThemedText className='text-xl font-sans-bold' numberOfLines={1}>
-                        {post.user.name}
+        <Pressable className=' p-4 border-b border-border dark:border-borderDark'>
+            {post.community && (
+                <Pressable style={{ marginLeft: 42 }} onPress={() => router.push(screens.communities.details(post.community!.id))} className='flex-row items-center gap-1 mb-2'>
+                    <MaterialCommunityIcons name="account-multiple" size={16} color={Colors[colorScheme].muted} />
+                    <ThemedText className='text-muted dark:text-mutedDark font-sans-bold'>
+                        {post.community.name}
                     </ThemedText>
-                    <Pressable onPress={() => setContextMenuVisible(true)} className="ml-auto p-1 -m-1" hitSlop={8}>
-                        <MaterialCommunityIcons name="dots-horizontal" size={20} color={Colors[colorScheme].muted} />
-                    </Pressable>
-                </View>
-                {post.community && (
-                    <ThemedText className='text-sm text-muted dark:text-mutedDark font-sans mt-0.5'>
-                        @{post.community.name}
-                    </ThemedText>
-                )}
-                {post.content.trim().length > 0 && (
-                    <ThemedText className='text-xl font-sans mt-2'>{post.content}</ThemedText>
-                )}
-                {post.media.length > 0 && (
-                    <View className='flex-row flex-wrap gap-2 mt-2'>
-                        {post.media.map((m, index) => (
-                            <MediaItem
-                                key={m.id}
-                                uri={m.media_url}
-                                type={m.type}
-                                style={getMediaItemStyle(post.media.length, index)}
-                                onImagePress={() => m.type === 'IMAGE' && setFullScreenImageUri(m.media_url)}
-                            />
-                        ))}
+                </Pressable>
+            )}
+            <View className='flex-1 flex-row items-start gap-3'>
+                <Pressable onPress={handleNavigateToProfile}>
+                    <ProfileIcon avatarUrl={post.user.avatar_url} className='h-14 w-14' />
+                </Pressable>
+                <View className='flex-1 min-w-0'>
+                    <View className='flex-row flex-wrap items-center gap-x-2 gap-y-1'>
+                        <ThemedText className='text-xl font-sans-bold' numberOfLines={1}>
+                            {post.user.name}
+                        </ThemedText>
+                        <Pressable onPress={() => setContextMenuVisible(true)} className="ml-auto p-1 -m-1" hitSlop={8}>
+                            <MaterialCommunityIcons name="dots-horizontal" size={20} color={Colors[colorScheme].muted} />
+                        </Pressable>
                     </View>
-                )}
-                <ThemedText className='text-sm text-muted dark:text-mutedDark font-sans mt-2' numberOfLines={1}>
-                    {new Date(post.createdAt).toLocaleString()}
-                </ThemedText>
-                <View className='flex-row items-center gap-6 mt-5'>
-                    <Pressable onPress={handleLikePost} className='flex-row items-center gap-1.5' hitSlop={8}>
-                        <MaterialCommunityIcons name={post.isLiked ? 'heart' : 'heart-outline'} size={20} color={post.isLiked ? Colors[colorScheme].accent : Colors[colorScheme].muted} />
-                        <ThemedText className={cn('text-sm font-sans', post.isLiked ? 'text-accent dark:text-accentDark' : 'text-muted dark:text-mutedDark')}>
-                            {post.likes_count}
-                        </ThemedText>
-                    </Pressable>
-                    <Pressable className='flex-row items-center gap-1.5' hitSlop={8}>
-                        <MaterialCommunityIcons name="message-outline" size={18} color={Colors[colorScheme].muted} />
-                        <ThemedText className='text-sm font-sans text-muted dark:text-mutedDark'>
-                            {post.comments_count}
-                        </ThemedText>
-                    </Pressable>
-                    <Pressable className='flex-row items-center gap-1.5 opacity-50' hitSlop={8}>
-                        <MaterialCommunityIcons name="chart-line" size={18} color={Colors[colorScheme].muted} />
-                    </Pressable>
-                    <View className='flex-1' />
-                    <Pressable onPress={handleBookmarkPost} hitSlop={8}>
-                        <MaterialCommunityIcons name={post.isBookmarked ? 'bookmark' : 'bookmark-outline'} size={20} color={post.isBookmarked ? Colors[colorScheme].accent : Colors[colorScheme].muted} />
-                    </Pressable>
-                    <Pressable onPress={handleSharePost} hitSlop={8}>
-                        <MaterialCommunityIcons name="tray-arrow-up" size={20} color={Colors[colorScheme].muted} />
-                    </Pressable>
+                    {post.content.trim().length > 0 && (
+                        <ThemedText className='text-xl font-sans'>{post.content}</ThemedText>
+                    )}
+                    {post.media.length > 0 && (
+                        <View className='flex-row flex-wrap gap-2 mt-2'>
+                            {post.media.map((m, index) => (
+                                <MediaItem
+                                    key={m.id}
+                                    uri={m.media_url}
+                                    type={m.type}
+                                    style={getMediaItemStyle(post.media.length, index)}
+                                    onImagePress={() => m.type === 'IMAGE' && setFullScreenImageUri(m.media_url)}
+                                />
+                            ))}
+                        </View>
+                    )}
+                    <ThemedText className='text-sm text-muted dark:text-mutedDark font-sans mt-2' numberOfLines={1}>
+                        {new Date(post.createdAt).toLocaleString()}
+                    </ThemedText>
+                    <View className='flex-row items-center gap-6 mt-5'>
+                        <Pressable onPress={handleLikePost} className='flex-row items-center gap-1.5' hitSlop={8}>
+                            <MaterialCommunityIcons name={post.isLiked ? 'heart' : 'heart-outline'} size={20} color={post.isLiked ? Colors[colorScheme].accent : Colors[colorScheme].muted} />
+                            <ThemedText className={cn('text-sm font-sans', post.isLiked ? 'text-accent dark:text-accentDark' : 'text-muted dark:text-mutedDark')}>
+                                {post.likes_count}
+                            </ThemedText>
+                        </Pressable>
+                        <Pressable className='flex-row items-center gap-1.5' hitSlop={8}>
+                            <MaterialCommunityIcons name="message-outline" size={18} color={Colors[colorScheme].muted} />
+                            <ThemedText className='text-sm font-sans text-muted dark:text-mutedDark'>
+                                {post.comments_count}
+                            </ThemedText>
+                        </Pressable>
+                        <Pressable className='flex-row items-center gap-1.5 opacity-50' hitSlop={8}>
+                            <MaterialCommunityIcons name="chart-line" size={18} color={Colors[colorScheme].muted} />
+                        </Pressable>
+                        <View className='flex-1' />
+                        <Pressable onPress={handleBookmarkPost} hitSlop={8}>
+                            <MaterialCommunityIcons name={post.isBookmarked ? 'bookmark' : 'bookmark-outline'} size={20} color={post.isBookmarked ? Colors[colorScheme].accent : Colors[colorScheme].muted} />
+                        </Pressable>
+                        <Pressable onPress={handleSharePost} hitSlop={8}>
+                            <MaterialCommunityIcons name="tray-arrow-up" size={20} color={Colors[colorScheme].muted} />
+                        </Pressable>
+                    </View>
+                    <ImageViewerModal
+                        visible={!!fullScreenImageUri}
+                        imageUri={fullScreenImageUri}
+                        onClose={() => setFullScreenImageUri(null)}
+                    />
+                    <LoadingOverlay visible={isDeleting} />
+                    <UpdatePostModal visible={updatePostModalVisible} onRequestClose={() => setUpdatePostModalVisible(false)} post={post} />
+                    <ReportPostModal visible={reportPostModalVisible} onRequestClose={() => setReportPostModalVisible(false)} post={post} />
+                    <ActionSheet visible={contextMenuVisible} onClose={() => setContextMenuVisible(false)} actions={actions} />
                 </View>
-                <ImageViewerModal
-                    visible={!!fullScreenImageUri}
-                    imageUri={fullScreenImageUri}
-                    onClose={() => setFullScreenImageUri(null)}
-                />
-                <LoadingOverlay visible={isDeleting} />
-                <UpdatePostModal visible={updatePostModalVisible} onRequestClose={() => setUpdatePostModalVisible(false)} post={post} />
-                <ReportPostModal visible={reportPostModalVisible} onRequestClose={() => setReportPostModalVisible(false)} post={post} />
-                <ActionSheet visible={contextMenuVisible} onClose={() => setContextMenuVisible(false)} actions={actions} />
             </View>
         </Pressable>
     )
