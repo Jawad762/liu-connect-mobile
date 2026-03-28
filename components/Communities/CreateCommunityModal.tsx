@@ -1,7 +1,7 @@
 import { Colors } from '@/constants/theme'
 import { useColorScheme } from 'nativewind'
 import React, { useEffect, useState } from 'react'
-import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, TextInput, View } from 'react-native'
+import { Alert, KeyboardAvoidingView, Modal, Platform, ScrollView, TextInput, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Button, GradientButton } from '../reusable/button'
 import useAuthStore from '@/stores/auth.store'
