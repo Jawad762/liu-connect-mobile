@@ -5,13 +5,8 @@ import { router } from 'expo-router'
 import { screens } from '@/utils/screens.utils'
 import ProfileIcon from '../reusable/profile-icon'
 import { ThemedText } from '../reusable/themed-text'
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
-import { useColorScheme } from 'nativewind'
-import { Colors } from '@/constants/theme-colors'
 
 const UserCardVertical = ({ user }: { user: User }) => {
-    const { colorScheme = 'light' } = useColorScheme()
-
     return (
         <Pressable
             onPress={() => router.push(screens.user.profile(user.id))}
@@ -37,9 +32,6 @@ const UserCardVertical = ({ user }: { user: User }) => {
                         <ThemedText className="text-lg font-bold flex-shrink" numberOfLines={1}>
                             {user.name || 'Unknown User'}
                         </ThemedText>
-                        {user.is_verified && (
-                            <MaterialCommunityIcons name="check-circle" size={18} color={Colors[colorScheme].accent} />
-                        )}
                     </View>
 
                     {user.bio && (

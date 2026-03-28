@@ -36,9 +36,6 @@ const UserCardHorizontal = ({ user }: { user: User }) => {
                     <ThemedText className="text-lg font-bold flex-shrink" numberOfLines={1}>
                         {user.name || 'Unknown User'}
                     </ThemedText>
-                    {user.is_verified && (
-                        <MaterialCommunityIcons name="check-circle" size={18} color={Colors[colorScheme].accent} />
-                    )}
                 </View>
                 {user.bio && (
                     <ThemedText className="text-base mt-2" numberOfLines={2}>
