@@ -7,7 +7,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { getInitials } from '@/utils/string.utils'
 import { ImageViewerModal } from '../reusable/ImageViewerModal'
 
-const BANNER_HEIGHT = 200
+export const BANNER_HEIGHT = 200
 
 interface CommunityBannerProps {
     avatarUrl: string | null
@@ -15,7 +15,7 @@ interface CommunityBannerProps {
     onPress?: () => void
 }
 
-const CommunityBanner = ({ avatarUrl, name, onPress }: CommunityBannerProps) => {
+export const CommunityBanner = ({ avatarUrl, name, onPress }: CommunityBannerProps) => {
     const { colorScheme = 'light' } = useColorScheme()
     const initials = name ? getInitials(name) : null
     const [imageViewerModalVisible, setImageViewerModalVisible] = useState(false)
@@ -58,6 +58,3 @@ const CommunityBanner = ({ avatarUrl, name, onPress }: CommunityBannerProps) => 
     }
     return content
 }
-
-export default CommunityBanner
-export { BANNER_HEIGHT }

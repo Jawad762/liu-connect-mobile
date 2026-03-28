@@ -32,11 +32,15 @@ const useMediaUpload = (
 
     const onUploadComplete = (res: { ufsUrl?: string; url?: string; name?: string; key?: string }[]) => {
         setMedia((m) => {
-            const newMedia = [...m, ...res.map((r) => ({ url: r.ufsUrl ?? r.url ?? '', type: inferMediaType(r.name ?? r.key ?? '') }))].slice(0, maxMedia)
+            let newMedia;
+            if (maxMedia > 1) {
+                newMedia = [...m, ...res.map((r) => ({ url: r.ufsUrl ?? r.url ?? '', type: inferMediaType(r.name ?? r.key ?? '') }))].slice(0, maxMedia)
+            } else {
+                newMedia = [...res.map((r) => ({ url: r.ufsUrl ?? r.url ?? '', type: inferMediaType(r.name ?? r.key ?? '') }))]
+            }
             onSuccess?.({ media: newMedia })
             return newMedia
-        }
-        )
+        })
     }
 
     const onUploadError = (e: Error) => {
@@ -56,7 +60,7 @@ const useMediaUpload = (
     })
 
     const handlePickFromLibrary = async () => {
-        if (remainingSlots <= 0) {
+        if (maxMedia > 1 && remainingSlots <= 0) {
             Alert.alert('Media limit reached', `You can include up to ${maxMedia} media items. Remove one to add more.`)
             return
         }
@@ -98,7 +102,7 @@ const useMediaUpload = (
     }
 
     const handlePickFromCamera = () => {
-        if (remainingSlots <= 0) {
+        if (maxMedia > 1 && remainingSlots <= 0) {
             Alert.alert('Media limit reached', `You can include up to ${maxMedia} media items. Remove one to add more.`)
             return
         }

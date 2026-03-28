@@ -13,9 +13,8 @@ import { screens } from '@/utils/screens.utils'
 import { ThemedText } from '../reusable/themed-text'
 import useImageUpload from '@/hooks/useImageUpload'
 import LoadingOverlay from '../reusable/loading-overlay'
-import CommunityBanner from './CommunityBanner'
+import { CommunityBanner } from './CommunityBanner'
 import { DESCRIPTION_MAX_LENGTH, NAME_MAX_LENGTH, NAME_MIN_LENGTH } from '@/constants/general'
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 
 const CreateCommunityModal = ({
     visible,
@@ -31,7 +30,7 @@ const CreateCommunityModal = ({
     const insets = useSafeAreaInsets()
     const user = useAuthStore((state) => state.user)
     const queryClient = useQueryClient()
-    const { media, resetMedia, isUploading, handlePickFromLibrary, handleRemoveMedia } = useImageUpload()
+    const { media, resetMedia, isUploading, handlePickFromLibrary } = useImageUpload()
     const avatarUrl = media.length > 0 ? media[0].url : null
 
     const handleCreate = async () => {
@@ -124,11 +123,6 @@ const CreateCommunityModal = ({
                     name={name.trim() || undefined}
                     onPress={() => !loading && !isUploading && handlePickFromLibrary()}
                 />
-                {avatarUrl && (
-                    <Pressable style={{ top: 16, right: 16 }} className='absolute' onPress={() => handleRemoveMedia(0)} disabled={loading}>
-                        <MaterialCommunityIcons name="trash-can-outline" size={24} color={Colors[colorScheme].foreground} />
-                    </Pressable>
-                )}
             </View>
 
             <KeyboardAvoidingView

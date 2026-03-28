@@ -14,9 +14,8 @@ import { screens } from '@/utils/screens.utils'
 import { ThemedText } from '../reusable/themed-text'
 import useImageUpload from '@/hooks/useImageUpload'
 import LoadingOverlay from '../reusable/loading-overlay'
-import CommunityBanner from './CommunityBanner'
+import { CommunityBanner } from './CommunityBanner'
 import { DESCRIPTION_MAX_LENGTH, NAME_MAX_LENGTH, NAME_MIN_LENGTH } from '@/constants/general'
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 
 const UpdateCommunityModal = ({
     visible,
@@ -35,7 +34,7 @@ const UpdateCommunityModal = ({
     const user = useAuthStore((state) => state.user)
     const queryClient = useQueryClient()
     const initialAvatar = community.avatar_url ? [{ url: community.avatar_url, type: 'IMAGE' as const }] : []
-    const { media, resetMedia, isUploading, handlePickFromLibrary, handleRemoveMedia } = useImageUpload(initialAvatar)
+    const { media, resetMedia, isUploading, handlePickFromLibrary } = useImageUpload(initialAvatar)
     const avatarUrl = media.length > 0 ? media[0].url : null
 
     const handleUpdate = async () => {
@@ -129,11 +128,6 @@ const UpdateCommunityModal = ({
                     name={name.trim() || community.name}
                     onPress={() => !loading && !isUploading && handlePickFromLibrary()}
                 />
-                {avatarUrl && (
-                    <Pressable style={{ top: 16, right: 16 }} className='absolute' onPress={() => handleRemoveMedia(0)} disabled={loading}>
-                        <MaterialCommunityIcons name="trash-can-outline" size={24} color={Colors[colorScheme].foreground} />
-                    </Pressable>
-                )}
             </View>
 
             <KeyboardAvoidingView
@@ -159,7 +153,7 @@ const UpdateCommunityModal = ({
                             editable={!loading}
                         />
                         <ThemedText className='text-xs text-right mt-1' style={{ color: Colors[colorScheme].muted }}>
-                            {name.length}/{NAME_MAX_LENGTH}
+                            {`${name.length}/${NAME_MAX_LENGTH}`}
                         </ThemedText>
                     </View>
 
@@ -176,7 +170,7 @@ const UpdateCommunityModal = ({
                             editable={!loading}
                         />
                         <ThemedText className='text-xs text-right mt-1' style={{ color: Colors[colorScheme].muted }}>
-                            {description.length}/{DESCRIPTION_MAX_LENGTH}
+                            {`${description.length}/${DESCRIPTION_MAX_LENGTH}`}
                         </ThemedText>
                     </View>
                 </ScrollView>
