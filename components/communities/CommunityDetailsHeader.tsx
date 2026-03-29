@@ -13,10 +13,10 @@ import ConfirmationDialog from '../reusable/confirmation-dialog'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { Colors } from '@/constants/theme'
 import { useColorScheme } from 'nativewind'
-import CommunityBanner from './CommunityBanner'
 import { router } from 'expo-router'
 import { screens } from '@/utils/screens.utils'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { CommunityBanner } from './CommunityBanner'
 
 const CommunityDetailsHeader = ({
     community,

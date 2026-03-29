@@ -1,5 +1,5 @@
 import React from 'react'
-import { Pressable, View, Image, FlatList, useWindowDimensions } from 'react-native'
+import { Pressable, View, Image, FlatList } from 'react-native'
 import { ThemedView } from '../reusable/themed-view'
 import useAuthStore from '@/stores/auth.store'
 import { Redirect, useNavigation } from 'expo-router'
@@ -9,21 +9,31 @@ import { cn } from '@/utils/cn.utils'
 import ProfileIcon from '../reusable/profile-icon'
 import { DrawerActions } from '@react-navigation/native'
 import { useColorScheme } from 'nativewind'
-import useCommunities from '@/hooks/useCommunities'
 
-const HomeHeader = ({ selectedTab, setSelectedTab }: { selectedTab: string, setSelectedTab: (tab: string) => void }) => {
+interface Tab {
+    name: string;
+    id: string;
+}
+
+interface HomeHeaderProps {
+    selectedTab: string;
+    setSelectedTab: (tab: string) => void;
+    tabs: Tab[];
+    hasNextCommunityPage: boolean;
+    isFetchingNextCommunityPage: boolean;
+    fetchNextCommunityPage: () => void;
+    listRef?: React.RefObject<FlatList<Tab> | null>;
+}
+
+const HomeHeader = ({ selectedTab, setSelectedTab, tabs, hasNextCommunityPage, isFetchingNextCommunityPage, fetchNextCommunityPage, listRef }: HomeHeaderProps) => {
     const user = useAuthStore((state) => state.user);
     const navigation = useNavigation();
     const { colorScheme: colorScheme = "light" } = useColorScheme();
     const logo = colorScheme === "light" ? require("@/assets/images/logo.png") : require("@/assets/images/logo-dark.png");
 
-    const { width } = useWindowDimensions();
     const openDrawer = () => {
         navigation.dispatch(DrawerActions.openDrawer());
     };
-
-    const { communities, fetchNextPage, hasNextPage, isFetchingNextPage } = useCommunities({ userOnly: true, size: 10 });
-    const tabs = [{ name: "For you", id: "for-you" }, { name: "Following", id: "following" }, ...communities.map((community) => ({ name: community.name, id: community.id }))]
 
     if (!user) {
         return <Redirect href={screens.auth.login} />;
@@ -38,8 +48,9 @@ const HomeHeader = ({ selectedTab, setSelectedTab }: { selectedTab: string, setS
                 <Image source={logo} className="w-10 h-10 rounded-full" />
                 <View className='w-6'></View>
             </View>
-            {communities.length > 0 ? (
+            {tabs.length > 2 ? (
             <FlatList
+                ref={listRef}
                 keyExtractor={(item) => item.id}
                 data={tabs}
                 horizontal
@@ -47,7 +58,7 @@ const HomeHeader = ({ selectedTab, setSelectedTab }: { selectedTab: string, setS
                 contentContainerStyle={{
                     gap: 12
                 }}
-                onEndReached={() => hasNextPage && !isFetchingNextPage && fetchNextPage()}
+                onEndReached={() => hasNextCommunityPage && !isFetchingNextCommunityPage && fetchNextCommunityPage()}
                 onEndReachedThreshold={0.8}
                 renderItem={({ item }) => (
                     <Pressable key={item.id} onPress={() => setSelectedTab(item.id)}>
